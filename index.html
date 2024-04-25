@@ -86,7 +86,6 @@ function initAudio() {
         myAudio.src = "audio/" + r + ".mp3";
         myAudio.play();
     });
-    myAudio.play();
 }
 
 function musicOnOff() {
@@ -94,6 +93,66 @@ function musicOnOff() {
         myAudio.play();
     } else {
         myAudio.pause();
+    }
+}
+
+function getLangStr(n) {
+    let str;
+    if (n == 1) { //score
+        if (lang == "EN") {
+            str = "Score: ".concat(score);
+            return str
+        } else if (lang == "FR") {
+            str = "Score : ".concat(score);
+            return str
+        } else if (lang == "SP") {
+            str = "Puntuaci\u00f3n: ".concat(score);
+            return str
+        } else if (lang == "GR") {
+            str = "Punktzahl: ".concat(score);
+            return str
+        } else if (lang == "PL") {
+            str = "Wynik: ".concat(score);
+            return str
+        }
+    }
+    if (n == 2) { // Correct
+        if (lang == "EN") {
+            str = "Correct"
+            return str
+        } else if (lang == "FR") {
+            str = "Correct";
+            return str
+        } else if (lang == "SP") {
+            str = "Correcto:";
+            return str
+        } else if (lang == "GR") {
+            str = "Richtig";
+            return str
+        } else if (lang == "PL") {
+            str = "Poprawnie";
+            return str
+        }
+
+    }
+    if (n == 3) { // "Wrong "
+        if (lang == "EN") {
+            str = "Wrong"
+            return str
+        } else if (lang == "FR") {
+            str = "Faux";
+            return str
+        } else if (lang == "SP") {
+            str = "Incorrecto";
+            return str
+        } else if (lang == "GR") {
+            str = "Falsch";
+            return str
+        } else if (lang == "PL") {
+            str = "Źle";
+            return str
+        }
+
     }
 }
  
@@ -109,6 +168,7 @@ function start() {
         if (prevSong == -1) {
             prevSong = 0;
             initAudio();
+            myAudio.play();
         }
 
         if (nxt == 1) {
@@ -157,7 +217,7 @@ function start() {
                         let s = wrapText(questionJson.correct_answer, wrapLen);
                         printText(s,320,(160 + (ans*40)));
                     }
-                    console.log("score: " + score);
+                    //console.log("score: " + score);
                 } else {
                     score --;
                     ctx.fillStyle = "Red";
@@ -175,7 +235,11 @@ function start() {
                     }
                 }
                 ctx.fillStyle = "Yellow";
-                printText("Score: ".concat(score),400,50);
+                if (ans > 0 && ans == ra) {
+                    printText(getLangStr(2),400,25); // correct
+                } else {
+                    printText(getLangStr(3),400,25); // wrong
+                }
                 nxt ++;
             }
         }
@@ -208,6 +272,8 @@ function otQuestion() {
         // Work with JSON data here
         questionJson = data.results[0];
         drawBkgnd();
+        ctx.fillStyle = "Yellow";
+        printText(getLangStr(1),400,50); //score: 
         ctx.fillStyle = "Blue";
         let s1 = wrapText(fjson(questionJson.question), wrapLen);
         printText(s1, 320, 120);
@@ -230,6 +296,8 @@ function otQuestion() {
 function lsl3Question() {
     ansArray = [];
     drawBkgnd();
+    ctx.fillStyle = "Yellow";
+    printText(getLangStr(1),400,50); //score: 
     // load questions
     // each text file has five questions
     // files range from 141 to 166. Looks like in the game only 141-161 are used?
@@ -363,57 +431,57 @@ function printText(text, x ,y) {
     }
 }
 
-function lang2(l) {
+function langSel(l) {
     ctx.fillStyle = "Green";
     switch (l) {
         case 1:
             lang = "EN";
+            wrapLen = 28;
+            ctx.font = "30px SQ3font";
             break;
         case 2:
             lang = "SP";
+            wrapLen = 35;
+            ctx.font = "16px arial";
             break;
         case 3:
             lang = "FR";
+            wrapLen = 35;
+            ctx.font = "16px arial";
             break;
         case 4:
             lang = "GR";
+            wrapLen = 35;
+            ctx.font = "16px arial";
             break;
         case 5:
             lang = "PL";
+            wrapLen = 35;
+            ctx.font = "16px arial";
             break;
         default:
         lang = "EN";
     }
     nextQuestion();
     //console.log("lang: " + lang);
+    ctx.fillStyle = "Black";
     switch (l) {
         case 1:
-            wrapLen = 28;
-            ctx.font = "30px SQ3font";
             printText("English",350,400);
             break;
         case 2:
-            wrapLen = 35;
-            ctx.font = "16px arial";
             printText("Espa\u00f1ol",350,400);
             break;
         case 3:
-            wrapLen = 35;
-            ctx.font = "16px arial";
             printText("Fran\u00e7ais",350,400);
             break;
         case 4:
-            wrapLen = 35;
-            ctx.font = "16px arial";
             printText("Deutsch",350,400);
             break;
         case 5:
-            wrapLen = 35;
-            ctx.font = "16px arial";
             printText("Polski",350,400);
             break;
         default:
-        lang = "EN";
     }
 }
 
@@ -467,11 +535,11 @@ function wrapText(text, maxWidth) {
 </script>
 
 <br>
-<button type="button" class="butt" onclick="lang2(1)">English</button>
-<button type="button" class="butt" onclick="lang2(2)">Espa&#x00F1ol</button>
-<button type="button" class="butt" onclick="lang2(3)">Fran&#231ais</button>
-<button type="button" class="butt" onclick="lang2(4)">Deutsch</button>
-<button type="button" class="butt" onclick="lang2(5)">Polski</button>
+<button type="button" class="butt" onclick="langSel(1)">English</button>
+<button type="button" class="butt" onclick="langSel(2)">Espa&#x00F1ol</button>
+<button type="button" class="butt" onclick="langSel(3)">Fran&#231ais</button>
+<button type="button" class="butt" onclick="langSel(4)">Deutsch</button>
+<button type="button" class="butt" onclick="langSel(5)">Polski</button>
 <!--button type="button" class="butt" onclick="type2()">lsl3/OpenTrivia</button-->
 <button type="button" class="butt" onclick="musicOnOff()">Music On/Off</button>
 </body>
