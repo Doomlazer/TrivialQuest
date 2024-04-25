@@ -42,7 +42,8 @@ var langLock = 0;
 let r;
 let ansArray = [];
 let wrapLen = 28;
-let prevSong = 0;
+let prevSong = -1;
+const myAudio = document.createElement("audio");
 
 function searchForSpecialChars() {
     lang = "FR";
@@ -74,14 +75,8 @@ function searchForSpecialChars() {
         )
     }
 }
- 
 
-function start() {
-    ctx.imageSmoothingEnabled = false;
-    drawBkgnd();
-    ctx.font = "30px SQ3font";
-
-    const myAudio = document.createElement("audio");
+function initAudio() {
     myAudio.src = "audio/0.mp3";
     myAudio.addEventListener("ended", function() {
         let r = prevSong;
@@ -92,10 +87,30 @@ function start() {
         myAudio.play();
     });
     myAudio.play();
+}
+
+function musicOnOff() {
+    if (myAudio.paused) {
+        myAudio.play();
+    } else {
+        myAudio.pause();
+    }
+}
+ 
+
+function start() {
+    ctx.imageSmoothingEnabled = false;
+    drawBkgnd();
+    ctx.font = "30px SQ3font";
 
     c.addEventListener("click", getClickPosition, false);
 
     function getClickPosition(e) {
+        if (prevSong == -1) {
+            prevSong = 0;
+            initAudio();
+        }
+
         if (nxt == 1) {
             nxt = 0;
             nextQuestion();
@@ -458,5 +473,6 @@ function wrapText(text, maxWidth) {
 <button type="button" class="butt" onclick="lang2(4)">Deutsch</button>
 <button type="button" class="butt" onclick="lang2(5)">Polski</button>
 <button type="button" class="butt" onclick="type2()">lsl3/OpenTrivia</button>
+<button type="button" class="butt" onclick="musicOnOff()">Music On/Off</button>
 </body>
 </html>
