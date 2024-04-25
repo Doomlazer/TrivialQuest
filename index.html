@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<style type="text/css">
+@font-face {
+    font-family: SQ3font;
+    src: url(SQ3n001.ttf);
+}
+
+* {
+    font-family: SQ3font;
+    font-size: 30px;
+    box-sizing: border-box;
+}
+.butt {
+    font-size: 16px;
+    font-family: "arial";
+}
+</style>
+<body onload="start()">
+
+<canvas id="myCanvas" width="640" height="458" style="border:1px solid #d3d3d3;">
+Your browser does not support the HTML5 canvas tag.</canvas>
+<img id="mask" src="img/lsl3/mask.png" width="642" height="458" hidden>
+<img id="background" src="img/lsl3/background.png" width="642" height="458" hidden>
+
+<script>
+var c = document.getElementById("myCanvas");
+var ctx = c.getContext("2d");
+//ctx.scale(2, 2);
+const mask = document.getElementById("mask");
+const bkgnd = document.getElementById("background");
+var score = 0;
+var ra;
+var splitData;
+var questionJson;
+var q;
+var nxt = 0;
+var qType = 1;
+var lang = "EN";
+var langLock = 0;
+let r;
+let ansArray = [];
+let wrapLen = 28;
+let prevSong = 0;
+
+function searchForSpecialChars() {
+    lang = "FR";
+    let holder = [];
+    for (let i = 141; i < 167; i++) {
+        let s = "data/" + lang + "/lsl3/text." + i;
+        console.log("Searching file: " + s);
+        fetch(s)
+        //.then(response => response.text())
+        .then(response => response.arrayBuffer())
+        .then((buffer) => {
+
+                let decoder = new TextDecoder("iso-8859-1");
+                let data = decoder.decode(buffer);
+                //console.log(data);
+                let x2=0;
+                for (let x of data) {
+                    if (data.charCodeAt(x2) > 200) {
+                        //console.log("x: " + x + " charat: " + data.charCodeAt(x2));
+                        let st = x+" - "+data.charCodeAt(x2).toString(16) + " - " + i;
+                        if (!holder.includes(st)) {
+                            holder.push(st);
+                        }
+                    }
+                    x2 ++;
+                }
+                console.log(holder);
+            }
+        )
+    }
+}
+ 
+
+function start() {
+    ctx.imageSmoothingEnabled = false;
+    drawBkgnd();
+    ctx.font = "30px SQ3font";
+
+    const myAudio = document.createElement("audio");
+    myAudio.src = "audio/0.mp3";
+    myAudio.addEventListener("ended", function() {
+        let r = prevSong;
+        while (r == prevSong ) {
+            r = Math.floor(Math.random() * 7);
+        }
+        myAudio.src = "audio/" + r + ".mp3";
+        myAudio.play();
+    });
+    myAudio.play();
+
+    c.addEventListener("click", getClickPosition, false);
+
+    function getClickPosition(e) {
+        if (nxt == 1) {
+            nxt = 0;
+            nextQuestion();
+        } else {
+            var xPosition = e.clientX;
+            var yPosition = e.clientY - 10;
+            var ans = 0;
+            /*console.log(xPosition);
+            console.log(yPosition);
+            ctx.rect(290, 170, 300, 5);
+            ctx.fill(); 
+            ctx.rect(250, 210, 300, 5);
+            ctx.fill(); 
+            ctx.rect(250, 250, 300, 5);
+            ctx.fill(); 
+            ctx.rect(250, 290, 300, 5);
+            ctx.fill(); 
+            ctx.rect(250, 330, 300, 5);
+            ctx.fill(); 
+            //mouse
+            ctx.rect(xPosition, yPosition, 10, 10);
+            ctx.fill(); 
+            */
+            if (yPosition > 170 && yPosition <= 210) {
+                ans = 1;
+            } else if (yPosition > 210 && yPosition <= 250) {
+                ans = 2;
+            } else if (yPosition > 250 && yPosition <= 290) {
+                ans = 3;
+            } else if (yPosition > 290 && yPosition <= 330) {
+                ans = 4;
+            };
+            //console.log("ra question answer: " + ra);
+            //console.log("ans player's answer: " + ans);
+            
+            if (ans > 0) {
+                if (ans == ra) {
+                    score ++;
+                    ctx.fillStyle = "Green";
+                    if (qType == 1) {
+                        //let s = wrapText(splitData[(q+ans)], wrapLen);
+                        printText(ansArray[ans-1], 320, (160 + (ans*40)));
+                    } else {
+                        let s = wrapText(questionJson.correct_answer, wrapLen);
+                        printText(s,320,(160 + (ans*40)));
+                    }
+                    console.log("score: " + score);
+                } else {
+                    score --;
+                    ctx.fillStyle = "Red";
+                    if (qType == 1) {
+                        //let s = wrapText(splitData[(q+ans)], wrapLen);
+                        printText(ansArray[ans-1], 320, (160 + (ans*40)));
+                    } else {
+                        let a = ans;
+                        a --;
+                        if (a > ra) {
+                            a --;
+                        }
+                        let s = wrapText(questionJson.incorrect_answers[a], wrapLen);
+                        printText(s,320,(160 + (ans*40)));
+                    }
+                }
+                ctx.fillStyle = "Yellow";
+                printText("Score: ".concat(score),400,50);
+                nxt ++;
+            }
+        }
+    }
+    nextQuestion()
+}
+
+function nextQuestion() {
+    if (qType == 1) {
+        lsl3Question();
+    } else if (qType == 2) {
+        otQuestion();
+    }
+}
+
+function fjson(text) {
+    let s = text.replaceAll("&quot;", "\"");
+    s = s.replaceAll("&#039;", "'");
+    s = s.replaceAll("&#amp;", "&");
+    return s;
+}
+
+function otQuestion() {
+    drawBkgnd();
+    ctx.fillStyle = "Blue";
+    printText("Fetching question...",320,120);
+    fetch("https://opentdb.com/api.php?amount=1&type=multiple")
+    .then(response => { return response.json(); })
+    .then((data) => {
+        // Work with JSON data here
+        questionJson = data.results[0];
+        drawBkgnd();
+        ctx.fillStyle = "Blue";
+        let s1 = wrapText(fjson(questionJson.question), wrapLen);
+        printText(s1, 320, 120);
+        r = Math.floor(Math.random() * 4);
+        let ia = 0;
+        for (let i = 0;i<4;i++) {
+            if (i == r) {
+                let s = wrapText(fjson(questionJson.correct_answer), wrapLen);
+                printText(s,320,200+(i*40));
+                ra = i+1;
+            } else {
+                let s = wrapText(questionJson.incorrect_answers[ia], wrapLen);
+                printText(s,320,200+(i*40));
+                ia ++;
+            }
+        }
+    }).catch(err => {});
+}
+
+function lsl3Question() {
+    ansArray = [];
+    drawBkgnd();
+    // load questions
+    // each text file has five questions
+    // files range from 141 to 166. Looks like in the game only 141-161 are used?
+    let r = Math.floor(Math.random() * (166 - 141) + 141);
+    //r = 153 // testing only!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    let s = "data/" + lang + "/lsl3/text.";
+    s = s.concat(r);
+    console.log("s: " + s);
+    fetch(s)
+    //.then(response => response.text())
+    .then(response => response.arrayBuffer())
+    .then((buffer) => {
+
+            let decoder = new TextDecoder("iso-8859-1");
+            let data = decoder.decode(buffer);
+            //console.log(data);
+            let trunk = data.slice(2);
+            if (lang == "FR") {
+                trunk = trunk.replaceAll("\u0152","\u00ee"); // Œ -> î
+                trunk = trunk.replaceAll("\u0160","\u00e8"); // Š -> è
+                //trunk = trunk.replaceAll("\u0192","?2"); // ƒ
+                trunk = trunk.replaceAll("\u02c6","\u00ea"); // ^ -> ê
+                trunk = trunk.replaceAll("\u2013","\u00fb"); // — -> û
+                trunk = trunk.replaceAll("\u2014","\u00f9"); // — -> ù
+                trunk = trunk.replaceAll("\u201a","\u00e9"); // ‚ -> é
+                trunk = trunk.replaceAll("\u201c","\u00f4"); // “ -> ô
+                trunk = trunk.replaceAll("\u2021","\u00e7"); // ‡ -> ç
+                trunk = trunk.replaceAll("\u2026","\u00e0"); // … -> à
+                trunk = trunk.replaceAll("\u2030","\u00eb"); // ‰ -> ë
+            } else if (lang == "GR") {
+                trunk = trunk.replaceAll("\u00e1","?1"); // á
+                trunk = trunk.replaceAll("\u0161","?2"); // š
+                trunk = trunk.replaceAll("\u017d","?3"); // Ž
+                trunk = trunk.replaceAll("\u0192","?4"); // ƒ
+                trunk = trunk.replaceAll("\u201a","?5"); // ‚
+                trunk = trunk.replaceAll("\u201d","?6"); // ”
+                trunk = trunk.replaceAll("\u201e","\u00e4"); // „ -> ä
+                trunk = trunk.replaceAll("\u2122","?8"); // ™
+            } else if (lang == "SP") {
+                trunk = trunk.replaceAll("\u0026","\u00bf"); // & -> ¿
+                trunk = trunk.replaceAll("\u002b","\u00e9"); // + -> é
+                trunk = trunk.replaceAll("\u007d","\u00f1"); // } -> ñ
+                trunk = trunk.replaceAll("\u003e","\u00f3"); // > -> ó
+                trunk = trunk.replaceAll("\u007b","\u00fa"); // { -> ú
+                trunk = trunk.replaceAll("\u002a","\u00e1"); // * -> á
+                trunk = trunk.replaceAll("\u007c","\u00ed"); // | -> í
+                trunk = trunk.replaceAll("\u005e","\u00a1"); // ^ -> ¡
+            }            
+            //console.log(trunk);
+            splitData = trunk.split("\x00");
+            q = Math.floor(Math.random()*4)*5;
+            //q = 0 // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+            console.log("q: " + q);
+            //console.log(splitData[0]);
+            ctx.fillStyle = "Blue";
+            let temp = splitData[q].slice(1);
+            let temp1 = splitData[q+1];
+            let temp2 = splitData[q+2];
+            let temp3 = splitData[q+3];
+            let temp4 = splitData[q+4];
+            if (lang == "FR") {
+                let tempArray = temp.split("%F");
+                temp = tempArray[1];
+                let tempArray1 = temp1.split("%F");
+                temp1 = tempArray1[1];
+                let tempArray2 = temp2.split("%F");
+                temp2 = tempArray2[1];
+                let tempArray3 = temp3.split("%F");
+                temp3 = tempArray3[1];
+                let tempArray4 = temp4.split("%F");
+                temp4 = tempArray4[1];
+            } else if (lang == "GR") {
+                let tempArray = temp.split("%G");
+                temp = tempArray[1];
+                let tempArray1 = temp1.split("%G");
+                temp1 = tempArray1[1];
+                let tempArray2 = temp2.split("%G");
+                temp2 = tempArray2[1];
+                let tempArray3 = temp3.split("%G");
+                temp3 = tempArray3[1];
+                let tempArray4 = temp4.split("%G");
+                temp4 = tempArray4[1];
+            }
+            let string = wrapText(temp, wrapLen);
+            console.log(string);
+            printText(string,320,120);
+            ra = splitData[q].slice(0,1);
+            ansArray.push(wrapText(temp1, wrapLen));
+            ansArray.push(wrapText(temp2, wrapLen));
+            ansArray.push(wrapText(temp3, wrapLen));
+            ansArray.push(wrapText(temp4, wrapLen));
+            let x2 = 0;
+            for (let x of ansArray[1]) {
+                console.log("x: " + x + " charat: " + ansArray[1].charCodeAt(x2));
+                x2 ++;
+            }
+            printText(ansArray[0],320,200);
+            printText(ansArray[1],320,240);
+            printText(ansArray[2],320,280);
+            printText(ansArray[3],320,320);
+        }
+    )
+};
+
+function drawBkgnd() {
+    ctx.clearRect(0, 0, c.width, c.height);
+    ctx.drawImage(bkgnd, 0, 0);
+    ctx.beginPath();
+    // bikini y: 120 full, 200 nude
+    ctx.fillStyle = "Black";
+    ctx.rect(50, 120+score, 125, 125);
+    ctx.fill();  
+    ctx.drawImage(mask, 0, 0); 
+};
+
+function printText(text, x ,y) {
+    //ctx.font = "30px SQ3font";
+    //ctx.textAlign = "center";
+    //drawBkgnd();
+    let textArray = text.split("\n");
+    ctx.fillText(textArray[0], x, y);
+    if (typeof textArray[1] !== 'undefined') {
+        if (textArray[0] != textArray[1]) {
+            ctx.fillText(textArray[1], x, y+16);
+        }
+    }
+    if (typeof textArray[2] !== 'undefined') {
+        if (textArray[0] != textArray[2]) {
+            ctx.fillText(textArray[2], x, y+32);
+        }
+    }
+}
+
+function lang2(l) {
+    ctx.fillStyle = "Green";
+    switch (l) {
+        case 1:
+            lang = "EN";
+            break;
+        case 2:
+            lang = "SP";
+            break;
+        case 3:
+            lang = "FR";
+            break;
+        case 4:
+            lang = "GR";
+            break;
+        case 5:
+            lang = "PL";
+            break;
+        default:
+        lang = "EN";
+    }
+    nextQuestion();
+    //console.log("lang: " + lang);
+    switch (l) {
+        case 1:
+            wrapLen = 28;
+            ctx.font = "30px SQ3font";
+            printText("English",350,400);
+            break;
+        case 2:
+            wrapLen = 35;
+            ctx.font = "16px arial";
+            printText("Espa\u00f1ol",350,400);
+            break;
+        case 3:
+            wrapLen = 35;
+            ctx.font = "16px arial";
+            printText("Fran\u00e7ais",350,400);
+            break;
+        case 4:
+            wrapLen = 35;
+            ctx.font = "16px arial";
+            printText("Deutsch",350,400);
+            break;
+        case 5:
+            wrapLen = 35;
+            ctx.font = "16px arial";
+            printText("Polski",350,400);
+            break;
+        default:
+        lang = "EN";
+    }
+}
+
+function type2() {
+    if (langLock == 0) {
+        if (qType == 2) {
+            qType = 1;
+        } else {
+            qType = 2;
+        }
+    }
+    nextQuestion();
+    if (langLock == 0) {
+        if (qType == 1) {
+            if (lang == "SP") {
+                printText("Preguntas sobre LSL3",350,400);
+            } else if (lang == "EN") {
+                printText("LSL3 questions",350,400);
+            }
+        } else {
+            printText("Open Trivia questions",350,400);
+            printText("English only :(",350,420);
+        }
+        langLock = 1;
+    }
+}
+
+function wrapText(text, maxWidth) {
+
+    if (text.length >= maxWidth) {
+        let i = maxWidth;
+        let x;
+        while (text.charAt(i) != " ") {
+            //console.log("text.charAt(maxWidth): " + text.charAt(maxWidth));
+            i --;
+            x = i;
+        }
+        //console.log("Space found at: " + x);
+        let pre = text.slice(0, x);
+        let post = text.slice(x+1);
+        text = pre + "\n" + post;
+        if (text.length > maxWidth*2) {
+            for (let i=maxWidth*2; text[i] == " "; i--) {
+                text[i].replace(" ", "\n");
+            }
+        }
+    }
+    return text
+}
+
+</script>
+
+<br>
+<button type="button" class="butt" onclick="lang2(1)">English</button>
+<button type="button" class="butt" onclick="lang2(2)">Espa&#x00F1ol</button>
+<button type="button" class="butt" onclick="lang2(3)">Fran&#231ais</button>
+<button type="button" class="butt" onclick="lang2(4)">Deutsch</button>
+<button type="button" class="butt" onclick="lang2(5)">Polski</button>
+<button type="button" class="butt" onclick="type2()">lsl3/OpenTrivia</button>
+</body>
+</html>
