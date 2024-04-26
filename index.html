@@ -209,7 +209,7 @@ function initClick() {
 
             if (ans > 0) {
                 let a = ans-2;
-                if (ans == rightAns) {
+                if (ans -1 == rightAns) {
                     score ++;
                     ctx.fillStyle = "Green";
                     let str;
@@ -237,7 +237,7 @@ function initClick() {
                 }
 
                 ctx.fillStyle = "Yellow";
-                if (ans > 0 && ans == rightAns) {
+                if (ans > 0 && ans-1 == rightAns) {
                     printText(getLangStr(2),400,25); // correct
                 } else {
                     printText(getLangStr(3),400,25); // wrong
