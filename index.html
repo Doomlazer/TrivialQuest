@@ -31,10 +31,12 @@ var ctx = c.getContext("2d");
 const mask = document.getElementById("mask");
 const bkgnd = document.getElementById("background");
 var score = 0;
-var ra;
+var rightAns;
 var splitData;
 var questionJson;
 var q;
+var qSpacing = 60;
+var qBaseNum = 170;
 var nxt = 0;
 var qType = 1;
 var lang = "EN";
@@ -161,7 +163,11 @@ function start() {
     ctx.imageSmoothingEnabled = false;
     drawBkgnd();
     ctx.font = "30px SQ3font";
+    initClick();
+    nextQuestion()
+}
 
+function initClick() {
     c.addEventListener("click", getClickPosition, false);
 
     function getClickPosition(e) {
@@ -172,79 +178,75 @@ function start() {
         }
 
         if (nxt == 1) {
+            // 2nd click triggers new question
             nxt = 0;
             nextQuestion();
         } else {
+            // player selects answer
             var xPosition = e.clientX;
             var yPosition = e.clientY - 10;
             var ans = 0;
-            /*console.log(xPosition);
-            console.log(yPosition);
-            ctx.rect(290, 170, 300, 5);
-            ctx.fill(); 
-            ctx.rect(250, 210, 300, 5);
-            ctx.fill(); 
-            ctx.rect(250, 250, 300, 5);
-            ctx.fill(); 
-            ctx.rect(250, 290, 300, 5);
-            ctx.fill(); 
-            ctx.rect(250, 330, 300, 5);
-            ctx.fill(); 
+
+            /* testing guidelines
+            for (let i=0; i<5; i++) {
+                ctx.fillStyle = "Black";
+                ctx.rect(290, qBaseNum+(i*qSpacing), 300, 5);
+                ctx.fill(); 
+            }
+
             //mouse
             ctx.rect(xPosition, yPosition, 10, 10);
             ctx.fill(); 
             */
-            if (yPosition > 170 && yPosition <= 210) {
-                ans = 1;
-            } else if (yPosition > 210 && yPosition <= 250) {
-                ans = 2;
-            } else if (yPosition > 250 && yPosition <= 290) {
-                ans = 3;
-            } else if (yPosition > 290 && yPosition <= 330) {
-                ans = 4;
-            };
-            //console.log("ra question answer: " + ra);
-            //console.log("ans player's answer: " + ans);
-            
+
+            // check if clicked in an answer
+            for (let i = 0; i<4; i++) {
+                if (yPosition > (qBaseNum + (i*qSpacing)) && yPosition <= (qBaseNum + qSpacing + (i*qSpacing))) {
+                    ans = i+2;
+                    console.log("ans: "+ans);
+                }
+            }
+
             if (ans > 0) {
-                if (ans == ra) {
+                let a = ans-2;
+                if (ans == rightAns) {
                     score ++;
                     ctx.fillStyle = "Green";
+                    let str;
                     if (qType == 1) {
-                        //let s = wrapText(splitData[(q+ans)], wrapLen);
-                        printText(ansArray[ans-1], 320, (160 + (ans*40)));
+                        str = ansArray[a];
                     } else {
-                        let s = wrapText(questionJson.correct_answer, wrapLen);
-                        printText(s,320,(160 + (ans*40)));
+                        str = wrapText(questionJson.correct_answer, wrapLen); 
                     }
+                    printText(str, 320, qBaseNum + (qSpacing/2) + (qSpacing*a));
                     //console.log("score: " + score);
                 } else {
                     score --;
                     ctx.fillStyle = "Red";
                     if (qType == 1) {
                         //let s = wrapText(splitData[(q+ans)], wrapLen);
-                        printText(ansArray[ans-1], 320, (160 + (ans*40)));
+                        printText(ansArray[a], 320, qBaseNum + (qSpacing/2) + (qSpacing*a));
                     } else {
-                        let a = ans;
-                        a --;
-                        if (a > ra) {
-                            a --;
+                        let b = a
+                        if (b > rightAns) {
+                            b --;
                         }
-                        let s = wrapText(questionJson.incorrect_answers[a], wrapLen);
-                        printText(s,320,(160 + (ans*40)));
+                        let s = wrapText(questionJson.incorrect_answers[b], wrapLen);
+                        printText(s, 320, qBaseNum + (qSpacing/2) + (qSpacing*a));
                     }
                 }
+
                 ctx.fillStyle = "Yellow";
-                if (ans > 0 && ans == ra) {
+                if (ans > 0 && ans == rightAns) {
                     printText(getLangStr(2),400,25); // correct
                 } else {
                     printText(getLangStr(3),400,25); // wrong
                 }
+                // wait a click before next question
                 nxt ++;
             }
         }
     }
-    nextQuestion()
 }
 
 function nextQuestion() {
@@ -282,11 +284,11 @@ function otQuestion() {
         for (let i = 0;i<4;i++) {
             if (i == r) {
                 let s = wrapText(fjson(questionJson.correct_answer), wrapLen);
-                printText(s,320,200+(i*40));
-                ra = i+1;
+                printText(s, 320, qBaseNum + (qSpacing/2) + (qSpacing*i));
+                rightAns = i+1;
             } else {
                 let s = wrapText(questionJson.incorrect_answers[ia], wrapLen);
-                printText(s,320,200+(i*40));
+                printText(s, 320, qBaseNum + (qSpacing/2) + (qSpacing*i));
                 ia ++;
             }
         }
@@ -318,7 +320,7 @@ function lsl3Question() {
             if (lang == "FR") {
                 trunk = trunk.replaceAll("\u0152","\u00ee"); // Œ -> î
                 trunk = trunk.replaceAll("\u0160","\u00e8"); // Š -> è
-                //trunk = trunk.replaceAll("\u0192","?2"); // ƒ
+                trunk = trunk.replaceAll("\u0192","?2"); // ƒ
                 trunk = trunk.replaceAll("\u02c6","\u00ea"); // ^ -> ê
                 trunk = trunk.replaceAll("\u2013","\u00fb"); // — -> û
                 trunk = trunk.replaceAll("\u2014","\u00f9"); // — -> ù
@@ -358,6 +360,7 @@ function lsl3Question() {
             let temp2 = splitData[q+2];
             let temp3 = splitData[q+3];
             let temp4 = splitData[q+4];
+            // French & German patch files contain english, remove it
             if (lang == "FR") {
                 let tempArray = temp.split("%F");
                 temp = tempArray[1];
@@ -382,22 +385,17 @@ function lsl3Question() {
                 temp4 = tempArray4[1];
             }
             let string = wrapText(temp, wrapLen);
-            console.log(string);
+            //console.log(string);
             printText(string,320,120);
-            ra = splitData[q].slice(0,1);
+            rightAns = splitData[q].slice(0,1);
             ansArray.push(wrapText(temp1, wrapLen));
             ansArray.push(wrapText(temp2, wrapLen));
             ansArray.push(wrapText(temp3, wrapLen));
             ansArray.push(wrapText(temp4, wrapLen));
             let x2 = 0;
-            for (let x of ansArray[1]) {
-                console.log("x: " + x + " charat: " + ansArray[1].charCodeAt(x2));
-                x2 ++;
+            for (let i = 0; i < 4; i ++) {
+                printText(ansArray[i], 320, qBaseNum + (qSpacing/2) + (qSpacing*i));
             }
-            printText(ansArray[0],320,200);
-            printText(ansArray[1],320,240);
-            printText(ansArray[2],320,280);
-            printText(ansArray[3],320,320);
         }
     )
 };
@@ -405,18 +403,16 @@ function lsl3Question() {
 function drawBkgnd() {
     ctx.clearRect(0, 0, c.width, c.height);
     ctx.drawImage(bkgnd, 0, 0);
-    ctx.beginPath();
-    // bikini y: 120 full, 200 nude
+    // bikini, y between 120 - 200
     ctx.fillStyle = "Black";
+    ctx.beginPath();
     ctx.rect(50, 120+score, 125, 125);
-    ctx.fill();  
+    ctx.fill(); 
+    // overlay 
     ctx.drawImage(mask, 0, 0); 
 };
 
 function printText(text, x ,y) {
-    //ctx.font = "30px SQ3font";
-    //ctx.textAlign = "center";
-    //drawBkgnd();
     let textArray = text.split("\n");
     ctx.fillText(textArray[0], x, y);
     if (typeof textArray[1] !== 'undefined') {
@@ -460,32 +456,35 @@ function langSel(l) {
             ctx.font = "16px arial";
             break;
         default:
-        lang = "EN";
     }
+
     nextQuestion();
-    //console.log("lang: " + lang);
+
+    // indicate langague has changed
     ctx.fillStyle = "Black";
+    let str;
     switch (l) {
         case 1:
-            printText("English",350,400);
+            str = "English";
             break;
         case 2:
-            printText("Espa\u00f1ol",350,400);
+            str = "Espa\u00f1ol";
             break;
         case 3:
-            printText("Fran\u00e7ais",350,400);
+            str = "Fran\u00e7ais";
             break;
         case 4:
-            printText("Deutsch",350,400);
+            str = "Deutsch";
             break;
         case 5:
-            printText("Polski",350,400);
+            str = "Polski";
             break;
         default:
     }
+    printText(str,350,450);
 }
 
-function type2() {
+function switchLSLorOpenTrivia() { // REDO
     if (langLock == 0) {
         if (qType == 2) {
             qType = 1;
@@ -540,7 +539,7 @@ function wrapText(text, maxWidth) {
 <button type="button" class="butt" onclick="langSel(3)">Fran&#231ais</button>
 <button type="button" class="butt" onclick="langSel(4)">Deutsch</button>
 <button type="button" class="butt" onclick="langSel(5)">Polski</button>
-<!--button type="button" class="butt" onclick="type2()">lsl3/OpenTrivia</button-->
+<!--button type="button" class="butt" onclick="switchLSLorOpenTrivia()">lsl3/OpenTrivia</button-->
 <button type="button" class="butt" onclick="musicOnOff()">Music On/Off</button>
 </body>
 </html>
