@@ -21,14 +21,16 @@
 
 <canvas id="myCanvas" width="640" height="458" style="border:1px solid #d3d3d3;">
 Your browser does not support the HTML5 canvas tag.</canvas>
-<img id="mask" src="img/lsl3/mask.png" width="642" height="458" hidden>
+<img id="maskEN" src="img/lsl3/mask.png" width="642" height="458" hidden>
+<img id="maskFR" src="img/lsl3/maskFR.png" width="642" height="458" hidden>
+<img id="maskGR" src="img/lsl3/maskGR.png" width="642" height="458" hidden>
 <img id="background" src="img/lsl3/background.png" width="642" height="458" hidden>
 
 <script>
 var c = document.getElementById("myCanvas");
 var ctx = c.getContext("2d");
 //ctx.scale(2, 2);
-const mask = document.getElementById("mask");
+var mask = document.getElementById("maskEN");
 const bkgnd = document.getElementById("background");
 var score = 0;
 var rightAns;
@@ -48,9 +50,9 @@ let prevSong = -1;
 const myAudio = document.createElement("audio");
 
 function searchForSpecialChars() {
-    lang = "FR";
+    lang = "GR";
     let holder = [];
-    for (let i = 141; i < 167; i++) {
+    for (let i = 155; i < 156; i++) {
         let s = "data/" + lang + "/lsl3/text." + i;
         console.log("Searching file: " + s);
         fetch(s)
@@ -63,8 +65,8 @@ function searchForSpecialChars() {
                 //console.log(data);
                 let x2=0;
                 for (let x of data) {
-                    if (data.charCodeAt(x2) > 200) {
-                        //console.log("x: " + x + " charat: " + data.charCodeAt(x2));
+                    if (data.charCodeAt(x2) > 0) {
+                        console.log("x: " + x + " charat: " + data.charCodeAt(x2));
                         let st = x+" - "+data.charCodeAt(x2).toString(16) + " - " + i;
                         if (!holder.includes(st)) {
                             holder.push(st);
@@ -129,7 +131,7 @@ function getLangStr(n) {
             str = "Correcto:";
             return str
         } else if (lang == "GR") {
-            str = "Richtig";
+            str = "Stimmt";
             return str
         } else if (lang == "PL") {
             str = "Poprawnie";
@@ -151,7 +153,7 @@ function getLangStr(n) {
             str = "Falsch";
             return str
         } else if (lang == "PL") {
-            str = "Źle";
+            str = "\u0179le"; // Źle
             return str
         }
 
@@ -164,7 +166,7 @@ function start() {
     drawBkgnd();
     ctx.font = "30px SQ3font";
     initClick();
-    nextQuestion()
+    nextQuestion();
 }
 
 function initClick() {
@@ -304,7 +306,7 @@ function lsl3Question() {
     // each text file has five questions
     // files range from 141 to 166. Looks like in the game only 141-161 are used?
     let r = Math.floor(Math.random() * (166 - 141) + 141);
-    //r = 153 // testing only!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    //r = 155 // testing only!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     let s = "data/" + lang + "/lsl3/text.";
     s = s.concat(r);
     console.log("s: " + s);
@@ -320,7 +322,7 @@ function lsl3Question() {
             if (lang == "FR") {
                 trunk = trunk.replaceAll("\u0152","\u00ee"); // Œ -> î
                 trunk = trunk.replaceAll("\u0160","\u00e8"); // Š -> è
-                trunk = trunk.replaceAll("\u0192","?2"); // ƒ
+                trunk = trunk.replaceAll("\u0192","\u00e2"); // ƒ -> â
                 trunk = trunk.replaceAll("\u02c6","\u00ea"); // ^ -> ê
                 trunk = trunk.replaceAll("\u2013","\u00fb"); // — -> û
                 trunk = trunk.replaceAll("\u2014","\u00f9"); // — -> ù
@@ -330,14 +332,15 @@ function lsl3Question() {
                 trunk = trunk.replaceAll("\u2026","\u00e0"); // … -> à
                 trunk = trunk.replaceAll("\u2030","\u00eb"); // ‰ -> ë
             } else if (lang == "GR") {
-                trunk = trunk.replaceAll("\u00e1","?1"); // á
+                trunk = trunk.replaceAll("\u0081","\u00fc"); //  -> ü
+                trunk = trunk.replaceAll("\u00e1","\u00df"); // á -> ß
                 trunk = trunk.replaceAll("\u0161","?2"); // š
                 trunk = trunk.replaceAll("\u017d","?3"); // Ž
                 trunk = trunk.replaceAll("\u0192","?4"); // ƒ
                 trunk = trunk.replaceAll("\u201a","?5"); // ‚
-                trunk = trunk.replaceAll("\u201d","?6"); // ”
+                trunk = trunk.replaceAll("\u201d","\u00f6"); // ” -> ö
                 trunk = trunk.replaceAll("\u201e","\u00e4"); // „ -> ä
-                trunk = trunk.replaceAll("\u2122","?8"); // ™
+                trunk = trunk.replaceAll("\u2122","\u00d6"); // ™ -> Ö
             } else if (lang == "SP") {
                 trunk = trunk.replaceAll("\u0026","\u00bf"); // & -> ¿
                 trunk = trunk.replaceAll("\u002b","\u00e9"); // + -> é
@@ -351,7 +354,7 @@ function lsl3Question() {
             //console.log(trunk);
             splitData = trunk.split("\x00");
             q = Math.floor(Math.random()*4)*5;
-            //q = 0 // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+            //q = 10 // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
             console.log("q: " + q);
             //console.log(splitData[0]);
             ctx.fillStyle = "Blue";
@@ -396,11 +399,16 @@ function lsl3Question() {
             for (let i = 0; i < 4; i ++) {
                 printText(ansArray[i], 320, qBaseNum + (qSpacing/2) + (qSpacing*i));
             }
+            let la = ["a.", "b.", "c.","d."];
+            for (let i = 0; i < 4; i ++) {
+                printText(la[i], 300, qBaseNum + (qSpacing/2) + (qSpacing*i));
+            }
         }
     )
 };
 
 function drawBkgnd() {
+
     ctx.clearRect(0, 0, c.width, c.height);
     ctx.drawImage(bkgnd, 0, 0);
     // bikini, y between 120 - 200
@@ -409,6 +417,13 @@ function drawBkgnd() {
     ctx.rect(50, 120+score, 125, 125);
     ctx.fill(); 
     // overlay 
+    if (lang == "FR") {
+        mask = document.getElementById("maskFR");
+    } else if (lang == "GR") {
+        mask = document.getElementById("maskGR");
+    } else {
+        mask = document.getElementById("maskEN");
+    }
     ctx.drawImage(mask, 0, 0); 
 };
 
