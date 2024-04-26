@@ -56,11 +56,11 @@ function doTriviaClick() {
 
         if (ans > 0) {
             let a = ans-2;
-            if (ans -1 == rightAns) {
+            if (ans-1 == rightAns) {
                 score ++;
                 ctx.fillStyle = "Green";
                 let str;
-                if (qType == 1) {
+                if (mode == 1) {
                     str = ansArray[a];
                 } else {
                     str = wrapText(questionJson.correct_answer, wrapLen); 
@@ -293,10 +293,10 @@ function printText(text, x ,y) {
 function switchLSLorOpenTrivia() { // REDO
     if (langLock == 0) {
         // SWITCH qType to use mode instead
-        if (qType == 2) {
-            qType = 1;
+        if (mode == 2) {
+            mode = 1;
         } else {
-            qType = 2;
+            mode = 2;
         }
     }
     nextQuestion();
