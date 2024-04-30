@@ -30,6 +30,7 @@ Your browser does not support the HTML5 canvas tag.</canvas>
 <img id="maskFR" src="img/lsl3/maskFR.png" width="642" height="458" hidden>
 <img id="maskGR" src="img/lsl3/maskGR.png" width="642" height="458" hidden>
 <img id="background" src="img/lsl3/background.png" width="642" height="458" hidden>
+<img id="counter" src="img/misc/counter.bmp" width="191" height="219" hidden>
 
 <script>
 var c = document.getElementById("myCanvas");
@@ -37,6 +38,7 @@ var ctx = c.getContext("2d");
 //ctx.scale(2, 2);
 var mode = 0; // 0 = title, 1 = lsl3, 2 = OpenTrivia
 var mask = document.getElementById("maskEN");
+var cNumImg = document.getElementById("counter");
 var bkgnd;
 var xPosition;
 var yPosition;
@@ -54,6 +56,8 @@ let r;
 let ansArray = [];
 let wrapLen = 28;
 let prevSong = -1;
+var animateIntervalID;
+var counterArray = [0,0,0,0,0,0]; // [c1x,c1y,c2x,c2y,c3x,x3y]
 const myAudio = document.createElement("audio");
 
 function start() {
@@ -63,6 +67,112 @@ function start() {
     initClick();
     //nextQuestion();
 }
+
+function animate() {
+    // inc counter
+    let counterVal = counterArray[1]*100+counterArray[3]*10+counterArray[5];
+    //console.log("counterVal: " + counterVal);
+    if (score != counterVal) {
+        if (score < counterVal) {
+
+            // count down
+
+            counterArray[4] --;
+            // left digit inc
+            if (counterArray[4] < 0) {
+                counterArray[5] --;
+                counterArray[4] = 15;
+                if (counterArray[5] < 0) {
+                    counterArray[5] = 9;
+                    counterArray[2] -- ; // inc middle d
+                }
+            }
+            // middle digit
+            if (counterArray[2] != 0) {
+                counterArray[2] --;
+                if (counterArray[2] < 0) {
+                    counterArray[3] --;
+                    counterArray[2] = 15;
+                    if (counterArray[3] < 0) {
+                        counterArray[3] = 9;
+                        counterArray[0] -- ; // inc left d
+                    }
+                }
+            }
+            // left digit
+            if (counterArray[0] != 0) {
+                counterArray[0] --;
+                if (counterArray[0] < 0) {
+                    counterArray[1] --;
+                    counterArray[0] = 15;
+                    if (counterArray[1] < 0) {
+                        // below 000, buggy
+                    }
+                }
+            }
+        } else {
+
+            // count up
+
+            counterArray[4] ++;
+            // left digit inc
+            if (counterArray[4] > 15) {
+                counterArray[5] ++;
+                counterArray[4] = 0;
+                if (counterArray[5] > 9) {
+                    counterArray[5] = 0;
+                    counterArray[2] ++ ; // inc middle d
+                }
+            }
+            // middle digit
+            if (counterArray[2] != 0) {
+                counterArray[2] ++;
+                if (counterArray[2] > 15) {
+                    counterArray[3] ++;
+                    counterArray[2] = 0;
+                    if (counterArray[3] > 9) {
+                        counterArray[3] = 0;
+                        counterArray[0] ++ ; // inc left d
+                    }
+                }
+            }
+            // left digit
+            if (counterArray[0] != 0) {
+                counterArray[0] ++;
+                if (counterArray[0] > 15) {
+                    counterArray[1] ++;
+                    counterArray[0] = 0;
+                    if (counterArray[1] > 9) {
+                        // break 999 
+                    }
+                }
+            }
+        }
+    }
+    drawCounter();
+}
+
+function drawCounter() {
+    let x = 475;
+    let y = 34;
+    for (let i = 0; i < 3; i++){
+        let sx = counterArray[i*2] * 12 // Num's x loc on spritesheet
+        let sy = counterArray[i*2+1] * 22 // Num's y loc on spritesheet
+        let dx = x + (i * 11);
+        ctx.drawImage(cNumImg, sx,sy, 11, 21, dx, y, 11, 21);
+    } 
+}
+
+
+/*
+function startAnimate() {
+    animateIntervalID = setInterval(animate, parseInt(animationSpeed, 10));
+}
+
+function stopAnimate() {
+    clearInterval(animateIntervalID);
+}
+*/
 
 </script>
 

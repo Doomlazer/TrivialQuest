@@ -23,6 +23,7 @@ function initClick() {
 function doTitleClick() {
     mode = 1;
     nextQuestion();
+    animateIntervalID = setInterval(animate, 100);
 }
 
 function doTriviaClick() {
@@ -273,6 +274,7 @@ function drawBkgnd() {
         mask = document.getElementById("maskEN");
     }
     ctx.drawImage(mask, 0, 0); 
+    drawCounter();
 };
 
 function printText(text, x ,y) {
