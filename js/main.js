@@ -21,7 +21,13 @@ function initClick() {
 }
 
 function doTitleClick() {
-    mode = 1;
+    if (xPosition < c.width/2) {
+        // lsl
+        mode = 1;
+    } else {
+        // kings questions
+        mode = 3;
+    }
     nextQuestion();
     animateIntervalID = setInterval(animate, 100);
 }
@@ -66,21 +72,21 @@ function doTriviaClick() {
                 } else {
                     str = wrapText(questionJson.correct_answer, wrapLen); 
                 }
-                printText(str, 320, qBaseNum + (qSpacing/2) + (qSpacing*a));
+                printText(str, 331, qBaseNum + (qSpacing/2) + (qSpacing*a));
                 //console.log("score: " + score);
             } else {
                 score --;
                 ctx.fillStyle = "Red";
                 if (mode == 1) {
                     //let s = wrapText(splitData[(q+ans)], wrapLen);
-                    printText(ansArray[a], 320, qBaseNum + (qSpacing/2) + (qSpacing*a));
+                    printText(ansArray[a], 331, qBaseNum + (qSpacing/2) + (qSpacing*a));
                 } else {
                     let b = a
                     if (b > rightAns) {
                         b --;
                     }
                     let s = wrapText(questionJson.incorrect_answers[b], wrapLen);
-                    printText(s, 320, qBaseNum + (qSpacing/2) + (qSpacing*a));
+                    printText(s, 331, qBaseNum + (qSpacing/2) + (qSpacing*a));
                 }
             }
 
@@ -101,10 +107,18 @@ function nextQuestion() {
         lsl3Question();
     } else if (mode == 2) {
         otQuestion();
+    } else if (mode == 3) {
+        kQQuestion();
     }
 }
 
-
+function kQQuestion() {
+    ansArray = [];
+    drawBkgnd();
+    ctx.fillStyle = "Yellow";
+    printText(getLangStr(1),400,50); //score: 
+    console.log("mode: " + mode);
+}
 
 function otQuestion() {
     drawBkgnd();
@@ -120,17 +134,17 @@ function otQuestion() {
         printText(getLangStr(1),400,50); //score: 
         ctx.fillStyle = "Blue";
         let s1 = wrapText(fjson(questionJson.question), wrapLen);
-        printText(s1, 320, 120);
+        printText(s1, 331, 120);
         r = Math.floor(Math.random() * 4);
         let ia = 0;
         for (let i = 0;i<4;i++) {
             if (i == r) {
                 let s = wrapText(fjson(questionJson.correct_answer), wrapLen);
-                printText(s, 320, qBaseNum + (qSpacing/2) + (qSpacing*i));
+                printText(s, 331, qBaseNum + (qSpacing/2) + (qSpacing*i));
                 rightAns = i+1;
             } else {
                 let s = wrapText(questionJson.incorrect_answers[ia], wrapLen);
-                printText(s, 320, qBaseNum + (qSpacing/2) + (qSpacing*i));
+                printText(s, 331, qBaseNum + (qSpacing/2) + (qSpacing*i));
                 ia ++;
             }
         }
@@ -146,7 +160,7 @@ function lsl3Question() {
     // each text file has five questions
     // files range from 141 to 166. Looks like in the game only 141-161 are used?
     let r = Math.floor(Math.random() * (166 - 141) + 141);
-    //r = 155 // testing only!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    //r = 148 // testing only!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     let s = "data/" + lang + "/lsl3/text.";
     s = s.concat(r);
     console.log("s: " + s);
@@ -194,8 +208,8 @@ function lsl3Question() {
             //console.log(trunk);
             splitData = trunk.split("\x00");
             q = Math.floor(Math.random()*4)*5;
-            //q = 10 // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-            console.log("q: " + q);
+            //q = 5 // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+            //console.log("q: " + q);
             //console.log(splitData[0]);
             ctx.fillStyle = "Blue";
             let temp = splitData[q].slice(1);
@@ -229,19 +243,21 @@ function lsl3Question() {
             }
             let string = wrapText(temp, wrapLen);
             //console.log(string);
-            printText(string,320,120);
+            // print question
+            printText(string,302,120);
             rightAns = splitData[q].slice(0,1);
-            ansArray.push(wrapText(temp1, wrapLen));
-            ansArray.push(wrapText(temp2, wrapLen));
-            ansArray.push(wrapText(temp3, wrapLen));
-            ansArray.push(wrapText(temp4, wrapLen));
+            let adj = 5;
+            ansArray.push(wrapText(temp1, wrapLen-adj));
+            ansArray.push(wrapText(temp2, wrapLen-adj));
+            ansArray.push(wrapText(temp3, wrapLen-adj));
+            ansArray.push(wrapText(temp4, wrapLen-adj));
             let x2 = 0;
             for (let i = 0; i < 4; i ++) {
-                printText(ansArray[i], 320, qBaseNum + (qSpacing/2) + (qSpacing*i));
+                printText(ansArray[i], 331, qBaseNum + (qSpacing/2) + (qSpacing*i));
             }
             let la = ["a.", "b.", "c.","d."];
             for (let i = 0; i < 4; i ++) {
-                printText(la[i], 300, qBaseNum + (qSpacing/2) + (qSpacing*i));
+                printText(la[i], 302, qBaseNum + (qSpacing/2) + (qSpacing*i));
             }
         }
     )
@@ -258,22 +274,32 @@ function drawTitle() {
 function drawBkgnd() {
 
     ctx.clearRect(0, 0, c.width, c.height);
-    bkgnd = document.getElementById("background");
-    ctx.drawImage(bkgnd, 0, 0);
-    // bikini, y between 120 - 200
-    ctx.fillStyle = "Black";
-    ctx.beginPath();
-    ctx.rect(50, 120+score, 125, 125);
-    ctx.fill(); 
-    // overlay 
-    if (lang == "FR") {
-        mask = document.getElementById("maskFR");
-    } else if (lang == "GR") {
-        mask = document.getElementById("maskGR");
-    } else {
-        mask = document.getElementById("maskEN");
+
+    if (mode == 1 || mode == 2) {
+        // Larry 3 or open questions background
+        bkgnd = document.getElementById("background");
+        ctx.drawImage(bkgnd, 0, 0);
+        // bikini, y between 120 - 200
+        ctx.fillStyle = "Black";
+        ctx.beginPath();
+        ctx.rect(50, 120+score, 125, 125);
+        ctx.fill(); 
+        // overlay 
+        if (lang == "FR") {
+            mask = document.getElementById("maskFR");
+        } else if (lang == "GR") {
+            mask = document.getElementById("maskGR");
+        } else {
+            mask = document.getElementById("maskEN");
+        }
+        ctx.drawImage(mask, 0, 0); 
+    } else if (mode == 3) {
+        // KingsQuestions background
+        bkgnd = document.getElementById("kQuestions");
+        ctx.drawImage(bkgnd, 0, 0);
+        drawKQShip();
     }
-    ctx.drawImage(mask, 0, 0); 
+    
     drawCounter();
 };
 
@@ -282,12 +308,12 @@ function printText(text, x ,y) {
     ctx.fillText(textArray[0], x, y);
     if (typeof textArray[1] !== 'undefined') {
         if (textArray[0] != textArray[1]) {
-            ctx.fillText(textArray[1], x, y+16);
+            ctx.fillText(textArray[1], x, y+18);
         }
     }
     if (typeof textArray[2] !== 'undefined') {
         if (textArray[0] != textArray[2]) {
-            ctx.fillText(textArray[2], x, y+32);
+            ctx.fillText(textArray[2], x, y+36);
         }
     }
 }

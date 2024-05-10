@@ -57,23 +57,43 @@ function fjson(text) {
 }
 
 function wrapText(text, maxWidth) {
-
     if (text.length >= maxWidth) {
+        console.log("maxWidth: " + maxWidth);
         let i = maxWidth;
         let x;
-        while (text.charAt(i) != " ") {
-            //console.log("text.charAt(maxWidth): " + text.charAt(maxWidth));
-            i --;
+        let pre;
+        let post;
+
+        if (text.charAt(i) == " ") {
+            // if space at maxWidth 
             x = i;
-        }
-        //console.log("Space found at: " + x);
-        let pre = text.slice(0, x);
-        let post = text.slice(x+1);
-        text = pre + "\n" + post;
-        if (text.length > maxWidth*2) {
-            for (let i=maxWidth*2; text[i] == " "; i--) {
-                text[i].replace(" ", "\n");
+        } else {
+            // else find nearest previous space
+            while (text.charAt(i) != " ") {
+                i --;
+                x = i;
             }
+        }
+        let fullText = text;
+        pre = text.slice(0, x);
+        post = text.slice(x+1);
+        text = pre + "\n" + post;
+
+        // wrap to a third line if needed
+        if (post.length >= maxWidth) {
+            i = maxWidth+pre.length+2;
+            if (text.charAt(i) == " ") {
+                x = i;
+            } else {
+                while (text.charAt(i) != " ") {
+                    i --;
+                    x = i;
+                    //console.log("text.charAt(i): " + text.charAt(i) +", i: "+i );
+                }
+            }
+            pre = text.slice(0, x);
+            post = text.slice(x+1);
+            text = pre + "\n" + post;
         }
     }
     return text

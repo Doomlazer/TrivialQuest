@@ -4,7 +4,7 @@
 <style type="text/css">
 @font-face {
     font-family: SQ3font;
-    src: url(SQ3n001.ttf);
+    src: url(fonts/LSL3n004.otf);
 }
 
 * {
@@ -31,6 +31,8 @@ Your browser does not support the HTML5 canvas tag.</canvas>
 <img id="maskGR" src="img/lsl3/maskGR.png" width="642" height="458" hidden>
 <img id="background" src="img/lsl3/background.png" width="642" height="458" hidden>
 <img id="counter" src="img/misc/counter.bmp" width="191" height="219" hidden>
+<img id="kQuestions" src="img/kQuestions/background.png" width="642" height="458" hidden>
+<img id="rockSide" src="img/kQuestions/rockSide51x57.png" hidden>
 
 <script>
 var c = document.getElementById("myCanvas");
@@ -39,6 +41,9 @@ var ctx = c.getContext("2d");
 var mode = 0; // 0 = title, 1 = lsl3, 2 = OpenTrivia
 var mask = document.getElementById("maskEN");
 var cNumImg = document.getElementById("counter");
+var kQShipImg = document.getElementById("rockSide");
+var shipMode = 0;
+var shipCel = 0;
 var bkgnd;
 var xPosition;
 var yPosition;
@@ -47,14 +52,14 @@ var rightAns;
 var splitData;
 var questionJson;
 var q;
-var qSpacing = 60;
-var qBaseNum = 170;
+var qSpacing = 75;
+var qBaseNum = 150;
 var nxt = 0;
 var lang = "EN";
 var langLock = 0;
 let r;
 let ansArray = [];
-let wrapLen = 28;
+let wrapLen = 32;
 let prevSong = -1;
 var animateIntervalID;
 var counterArray = [0,0,0,0,0,0]; // [c1x,c1y,c2x,c2y,c3x,x3y]
@@ -62,105 +67,146 @@ const myAudio = document.createElement("audio");
 
 function start() {
     ctx.imageSmoothingEnabled = false;
-    ctx.font = "30px SQ3font";
+    ctx.font = "23px SQ3font";
     drawTitle();
     initClick();
     //nextQuestion();
 }
 
 function animate() {
-    // inc counter
-    let counterVal = counterArray[1]*100+counterArray[3]*10+counterArray[5];
-    //console.log("counterVal: " + counterVal);
-    if (score != counterVal) {
-        if (score < counterVal) {
+    if (mode == 1) {
+        // mode 1 counter animation FIX this later
 
-            // count down
+        // inc counter
+        let counterVal = counterArray[1]*100+counterArray[3]*10+counterArray[5];
+        //console.log("counterVal: " + counterVal + ", score: "+ score);
+        sMod = Math.abs(score);
+        //console.log("sMod: " + sMod);
+        if (sMod != counterVal) {
+            console.log("sMod != conuterVal");
+            if (sMod < counterVal) {
+                console.log("sMod LESSTHAN conuterVal");
+                // count down
 
-            counterArray[4] --;
-            // left digit inc
-            if (counterArray[4] < 0) {
-                counterArray[5] --;
-                counterArray[4] = 15;
-                if (counterArray[5] < 0) {
-                    counterArray[5] = 9;
-                    counterArray[2] -- ; // inc middle d
-                }
-            }
-            // middle digit
-            if (counterArray[2] != 0) {
-                counterArray[2] --;
-                if (counterArray[2] < 0) {
-                    counterArray[3] --;
-                    counterArray[2] = 15;
-                    if (counterArray[3] < 0) {
-                        counterArray[3] = 9;
-                        counterArray[0] -- ; // inc left d
+                counterArray[4] --;
+                // left digit inc
+                if (counterArray[4] < 0) {
+                    counterArray[5] --;
+                    counterArray[4] = 15;
+                    if (counterArray[5] < 0) {
+                        counterArray[5] = 9;
+                        counterArray[2] -- ; // inc middle d
                     }
                 }
-            }
-            // left digit
-            if (counterArray[0] != 0) {
-                counterArray[0] --;
-                if (counterArray[0] < 0) {
-                    counterArray[1] --;
-                    counterArray[0] = 15;
-                    if (counterArray[1] < 0) {
-                        // below 000, buggy
+                // middle digit
+                if (counterArray[2] != 0) {
+                    counterArray[2] --;
+                    if (counterArray[2] < 0) {
+                        counterArray[3] --;
+                        counterArray[2] = 15;
+                        if (counterArray[3] < 0) {
+                            counterArray[3] = 9;
+                            counterArray[0] -- ; // inc left d
+                        }
                     }
                 }
-            }
-        } else {
-
-            // count up
-
-            counterArray[4] ++;
-            // left digit inc
-            if (counterArray[4] > 15) {
-                counterArray[5] ++;
-                counterArray[4] = 0;
-                if (counterArray[5] > 9) {
-                    counterArray[5] = 0;
-                    counterArray[2] ++ ; // inc middle d
-                }
-            }
-            // middle digit
-            if (counterArray[2] != 0) {
-                counterArray[2] ++;
-                if (counterArray[2] > 15) {
-                    counterArray[3] ++;
-                    counterArray[2] = 0;
-                    if (counterArray[3] > 9) {
-                        counterArray[3] = 0;
-                        counterArray[0] ++ ; // inc left d
+                // left digit
+                if (counterArray[0] != 0) {
+                    counterArray[0] --;
+                    if (counterArray[0] < 0) {
+                        counterArray[1] --;
+                        counterArray[0] = 15;
+                        if (counterArray[1] < 0) {
+                            // below 000
+                            counterArray[1] = 9;
+                        }
                     }
                 }
-            }
-            // left digit
-            if (counterArray[0] != 0) {
-                counterArray[0] ++;
-                if (counterArray[0] > 15) {
-                    counterArray[1] ++;
-                    counterArray[0] = 0;
-                    if (counterArray[1] > 9) {
-                        // break 999 
+            } else {
+                console.log("sMod GREATER conuterVal");
+                // count up
+
+                counterArray[4] ++;
+                // left digit inc
+                if (counterArray[4] > 15) {
+                    counterArray[5] ++;
+                    counterArray[4] = 0;
+                    if (counterArray[5] > 9) {
+                        counterArray[5] = 0;
+                    }
+                    if (counterArray[5] == 9) {
+                        counterArray[2] ++ ; // inc middle d
+                    }
+                }
+                // middle digit
+                if (counterArray[2] != 0) {
+                    if (counterArray[3] == 9 && counterArray[2] == 1) {
+                        counterArray[0] ++;
+                    }
+                    counterArray[2] ++;
+                    if (counterArray[2] > 15) {
+                        counterArray[3] ++;
+                        counterArray[2] = 0;
+                        if (counterArray[3] > 9) {
+                            counterArray[3] = 0;
+                        }
+                    }
+                }
+                // left digit
+                if (counterArray[0] != 0) {
+                        counterArray[0] ++;
+                    if (counterArray[0] > 15) {
+                        counterArray[1] ++;
+                        counterArray[0] = 0;
+                        if (counterArray[1] > 9) {
+                            // above 999 
+                            counterArray[1] = 0;
+                        }
                     }
                 }
             }
         }
+    } else if (mode == 3) {
+        // shipAnimation
+        drawBkgnd();
+        drawKQShip();
     }
     drawCounter();
 }
 
 function drawCounter() {
     let x = 475;
-    let y = 34;
+    let y = 25;
     for (let i = 0; i < 3; i++){
         let sx = counterArray[i*2] * 12 // Num's x loc on spritesheet
         let sy = counterArray[i*2+1] * 22 // Num's y loc on spritesheet
-        let dx = x + (i * 11);
-        ctx.drawImage(cNumImg, sx,sy, 11, 21, dx, y, 11, 21);
+        let dx = x + (i * (11*2)); // 11*2 for 2x spacing
+        ctx.drawImage(cNumImg, sx,sy, 11, 21, dx, y, 11*2, 21*2);
     } 
+}
+
+function drawKQShip() {
+
+    kQShipImg = document.getElementById("rockSide");
+    let x = 120;
+    let y = 290;
+    let celW;
+    let celH;
+    let sx;
+    let sy;
+    if (shipMode == 0) {
+        // rockSide
+        celW = 51;
+        celH = 57; 
+        sx = shipCel*(celW+1); //Num's x loc on spritesheet
+        sy = 0 // one row, so always 0
+    }
+    //console.log("shipMode: " + shipMode);
+    ctx.drawImage(kQShipImg, sx,sy, celW, celH, x, y, celW*1.25, celH*1.25);
+    shipCel ++;
+    if (shipCel > 7) {
+        shipCel = 0;
+    }
 }
 
 
@@ -174,6 +220,15 @@ function stopAnimate() {
 }
 */
 
+function scoreUpDown(v) {
+    if (v == 1) {
+        score ++;
+    } else {
+        score --;
+    }
+    drawBkgnd();
+}
+
 </script>
 
 <br>
@@ -184,5 +239,7 @@ function stopAnimate() {
 <button type="button" class="butt" onclick="langSel(5)">Polski</button>
 <!--button type="button" class="butt" onclick="switchLSLorOpenTrivia()">lsl3/OpenTrivia</button-->
 <button type="button" class="butt" onclick="musicOnOff()">Music On/Off</button>
+<button type="button" class="butt" onclick="scoreUpDown(1)">scoreUp</button>
+<button type="button" class="butt" onclick="scoreUpDown(0)">scoreDown</button>
 </body>
 </html>

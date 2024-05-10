@@ -3,8 +3,8 @@ function langSel(l) {
     switch (l) {
         case 1:
             lang = "EN";
-            wrapLen = 28;
-            ctx.font = "30px SQ3font";
+            wrapLen = 35;
+            ctx.font = "23px SQ3font";
             break;
         case 2:
             lang = "SP";
