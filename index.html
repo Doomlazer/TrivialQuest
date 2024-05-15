@@ -78,14 +78,10 @@ function animate() {
         // mode 1 counter animation FIX this later
 
         // inc counter
-        let counterVal = counterArray[1]*100+counterArray[3]*10+counterArray[5];
-        //console.log("counterVal: " + counterVal + ", score: "+ score);
-        sMod = Math.abs(score);
-        //console.log("sMod: " + sMod);
-        if (sMod != counterVal) {
-            console.log("sMod != conuterVal");
-            if (sMod < counterVal) {
-                console.log("sMod LESSTHAN conuterVal");
+        let counterVal = counterArray[1]*100+counterArray[3]*10+counterArray[5]+(counterArray[4]/15);
+        if (score < 0) score = 0;
+        if (score != counterVal) {
+            if (score < counterVal) {
                 // count down
 
                 counterArray[4] --;
@@ -123,7 +119,6 @@ function animate() {
                     }
                 }
             } else {
-                console.log("sMod GREATER conuterVal");
                 // count up
 
                 counterArray[4] ++;
@@ -175,8 +170,8 @@ function animate() {
 }
 
 function drawCounter() {
-    let x = 475;
-    let y = 25;
+    let x = 500;
+    let y = 20;
     for (let i = 0; i < 3; i++){
         let sx = counterArray[i*2] * 12 // Num's x loc on spritesheet
         let sy = counterArray[i*2+1] * 22 // Num's y loc on spritesheet
@@ -239,7 +234,7 @@ function scoreUpDown(v) {
 <button type="button" class="butt" onclick="langSel(5)">Polski</button>
 <!--button type="button" class="butt" onclick="switchLSLorOpenTrivia()">lsl3/OpenTrivia</button-->
 <button type="button" class="butt" onclick="musicOnOff()">Music On/Off</button>
-<button type="button" class="butt" onclick="scoreUpDown(1)">scoreUp</button>
-<button type="button" class="butt" onclick="scoreUpDown(0)">scoreDown</button>
+<!--button type="button" class="butt" onclick="scoreUpDown(1)">scoreUp</button>
+<button type="button" class="butt" onclick="scoreUpDown(0)">scoreDown</button-->
 </body>
 </html>

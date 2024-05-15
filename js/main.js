@@ -21,13 +21,15 @@ function initClick() {
 }
 
 function doTitleClick() {
-    if (xPosition < c.width/2) {
+    /*if (xPosition < c.width/2) {
         // lsl
         mode = 1;
     } else {
         // kings questions
         mode = 3;
-    }
+    }*/
+    mode = 1; // mode 1 only until KQ is done
+    
     nextQuestion();
     animateIntervalID = setInterval(animate, 100);
 }
