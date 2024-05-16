@@ -98,3 +98,18 @@ function wrapText(text, maxWidth) {
     }
     return text
 }
+
+function printText(text, x ,y) {
+    let textArray = text.split("\n");
+    ctx.fillText(textArray[0], x, y);
+    if (typeof textArray[1] !== 'undefined') {
+        if (textArray[0] != textArray[1]) {
+            ctx.fillText(textArray[1], x, y+18);
+        }
+    }
+    if (typeof textArray[2] !== 'undefined') {
+        if (textArray[0] != textArray[2]) {
+            ctx.fillText(textArray[2], x, y+36);
+        }
+    }
+}

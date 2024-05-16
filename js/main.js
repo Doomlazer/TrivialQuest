@@ -1,5 +1,5 @@
 function initClick() {
-    c.addEventListener("click", getClickPosition, false);
+    c.addEventListener('click', getClickPosition, false);
 
     function getClickPosition(e) {
         xPosition = e.clientX;
@@ -15,8 +15,53 @@ function initClick() {
             doTitleClick();
         } else if (mode == 1) {
             doTriviaClick();
+        } else if (mode == 4) {
+            //pqQuestion();
         }
      
+    }
+
+    document.addEventListener('keydown', doKD, false);
+    //console.log("mugStrinit: " + mugStr);
+
+    function doKD(e) {
+        if (mode == 4) {
+            if(!((e.keyCode > 95 && e.keyCode < 106) || (e.keyCode > 47 && e.keyCode < 58) || e.keyCode == 8)) {
+                e.preventDefault();
+            }
+            if (e.keyCode == 8) {
+                mugStr = mugStr.slice(0, -1)
+            } else if (e.keyCode == 13) {
+                // return key
+                if (mugStr == mugArray[mugCel]) {
+                    score ++;
+                    if (score > 7) {
+                        mode = 1;
+                        drawBkgnd();
+                        nxt == 1;
+                        nextQuestion();
+                    }
+                } else {
+                    score --;
+                    if (score < 5) {
+                        mode = 1;
+                        drawBkgnd();
+                        nxt == 1;
+                        nextQuestion();
+                    }
+                }
+                mugStr = "";
+                if (mode == 4) {
+                    pqQuestion();
+                }
+            } else if (e.keyCode == 16 || e.keyCode == 20) {
+                // r & l shift and capslock disable
+            } else {
+                mugStr = mugStr + String.fromCharCode(e.keyCode);
+                //mugStr = mugStr + e.keyCode;
+            }
+            //console.log("mugStr: " + mugStr);
+        }
     }
 }
 
@@ -28,7 +73,9 @@ function doTitleClick() {
         // kings questions
         mode = 3;
     }*/
-    mode = 1; // mode 1 only until KQ is done
+        //mode 4 pq2 mugs
+
+    mode = 1;
     
     nextQuestion();
     animateIntervalID = setInterval(animate, 100);
@@ -67,11 +114,15 @@ function doTriviaClick() {
             let a = ans-2;
             if (ans-1 == rightAns) {
                 score ++;
+                if (score > 5 && score < 7) {
+                    mode = 4;
+                    return;
+                }
                 ctx.fillStyle = "Green";
                 let str;
                 if (mode == 1) {
                     str = ansArray[a];
-                } else {
+                } else if (mode == 2) {
                     str = wrapText(questionJson.correct_answer, wrapLen); 
                 }
                 printText(str, 331, qBaseNum + (qSpacing/2) + (qSpacing*a));
@@ -110,11 +161,19 @@ function nextQuestion() {
     } else if (mode == 2) {
         otQuestion();
     } else if (mode == 3) {
-        kQQuestion();
+        kqQuestion();
+    } else if (mode == 4) {
+        pqQuestion();
     }
 }
 
-function kQQuestion() {
+function pqQuestion() {
+    mugStr = "";
+    console.log("next mugshot");
+    mugCel = Math.floor(Math.random()*8);
+}
+
+function kqQuestion() {
     ansArray = [];
     drawBkgnd();
     ctx.fillStyle = "Yellow";
@@ -279,6 +338,7 @@ function drawBkgnd() {
 
     if (mode == 1 || mode == 2) {
         // Larry 3 or open questions background
+        ctx.font = "23px SQ3font";
         bkgnd = document.getElementById("background");
         ctx.drawImage(bkgnd, 0, 0);
         // bikini, y between 120 - 200
@@ -300,25 +360,18 @@ function drawBkgnd() {
         bkgnd = document.getElementById("kQuestions");
         ctx.drawImage(bkgnd, 0, 0);
         drawKQShip();
+    } else if (mode == 4) {
+        // PoliceQuest Mugshot background
+        bkgnd = document.getElementById("pq2bkgrnd");
+        ctx.drawImage(bkgnd, 0, 0);
+        drawPQ2Mug();
+        ctx.font = "28px SQ3font";
+        ctx.fillStyle = "Black";
+        printText(mugStr, 180, 372); //player text:
     }
     
     drawCounter();
 };
-
-function printText(text, x ,y) {
-    let textArray = text.split("\n");
-    ctx.fillText(textArray[0], x, y);
-    if (typeof textArray[1] !== 'undefined') {
-        if (textArray[0] != textArray[1]) {
-            ctx.fillText(textArray[1], x, y+18);
-        }
-    }
-    if (typeof textArray[2] !== 'undefined') {
-        if (textArray[0] != textArray[2]) {
-            ctx.fillText(textArray[2], x, y+36);
-        }
-    }
-}
 
 function switchLSLorOpenTrivia() { // REDO
     if (langLock == 0) {
