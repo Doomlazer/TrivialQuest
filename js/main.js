@@ -338,7 +338,7 @@ function drawBkgnd() {
 
     if (mode == 1 || mode == 2) {
         // Larry 3 or open questions background
-        ctx.font = "23px SQ3font";
+        setFont(langNum); 
         bkgnd = document.getElementById("background");
         ctx.drawImage(bkgnd, 0, 0);
         // bikini, y between 120 - 200

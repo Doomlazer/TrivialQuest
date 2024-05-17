@@ -1,5 +1,5 @@
-function langSel(l) {
-    ctx.fillStyle = "Green";
+function setFont(l) {
+    langNum = l;
     switch (l) {
         case 1:
             lang = "EN";
@@ -28,6 +28,11 @@ function langSel(l) {
             break;
         default:
     }
+}
+
+function langSel(l) {
+    ctx.fillStyle = "Green";
+    setFont(l);
 
     nextQuestion();
 
