@@ -367,7 +367,7 @@ function drawBkgnd() {
         drawPQ2Mug();
         ctx.font = "28px SQ3font";
         ctx.fillStyle = "Black";
-        printText(mugStr, 180, 372); //player text:
+        printText(mugStr, 180, 370); //player text:
     }
     
     drawCounter();

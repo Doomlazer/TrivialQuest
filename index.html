@@ -4,7 +4,7 @@
 <style type="text/css">
 @font-face {
     font-family: SQ3font;
-    src: url(fonts/LSL3n004.otf);
+    src: url(fonts/LSL3n004I.ttf);
 }
 
 * {
@@ -66,7 +66,7 @@ var langNum = 1;
 var langLock = 0;
 let r;
 let ansArray = [];
-let wrapLen = 32;
+let wrapLen = 30; //32;
 let prevSong = -1;
 var animateIntervalID;
 var counterArray = [0,0,0,0,0,0]; // [c1x,c1y,c2x,c2y,c3x,x3y]
@@ -74,7 +74,7 @@ const myAudio = document.createElement("audio");
 
 function start() {
     ctx.imageSmoothingEnabled = false;
-    ctx.font = "23px SQ3font";
+    ctx.font = "26px SQ3font";
     drawTitle();
     initClick();
     mugCel = Math.floor(Math.random()*8);
@@ -228,23 +228,20 @@ function drawKQShip() {
 
 function drawPQ2Mug() {
 
-pqMugImg = document.getElementById("pq2mug"); //39 x 52 x 8 mugs
-let x = 89;
-let y = 66;
-let celW;
-let celH;
-let sx;
-let sy;
+    pqMugImg = document.getElementById("pq2mug"); //39 x 52 x 8 mugs
+    let x = 89;
+    let y = 66;
+    let celW;
+    let celH;
+    let sx;
+    let sy;
 
-// mugshot
-celW = 38;
-celH = 52; 
-sx = mugCel*(celW+1); //Num's x loc on spritesheet
-sy = 0 // one row, so always 0
-ctx.drawImage(pqMugImg, sx,sy, celW, celH, x, y, celW*2, celH*2.25);
-
-// player text string
-
+    // mugshot
+    celW = 38;
+    celH = 52; 
+    sx = mugCel*(celW+1); //Num's x loc on spritesheet
+    sy = 0 // one row, so always 0
+    ctx.drawImage(pqMugImg, sx,sy, celW, celH, x, y, celW*2, celH*2.25);
 
 }
 

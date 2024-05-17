@@ -3,28 +3,33 @@ function setFont(l) {
     switch (l) {
         case 1:
             lang = "EN";
-            wrapLen = 35;
-            ctx.font = "23px SQ3font";
+            //wrapLen = 35;
+            //ctx.font = "23px SQ3font";
+            ctx.font = "26px SQ3font";
             break;
         case 2:
             lang = "SP";
-            wrapLen = 35;
-            ctx.font = "16px arial";
+            //wrapLen = 35;
+            //ctx.font = "16px arial";
+            ctx.font = "26px SQ3font";
             break;
         case 3:
             lang = "FR";
-            wrapLen = 35;
-            ctx.font = "16px arial";
+            //wrapLen = 35;
+            //ctx.font = "16px arial";
+            ctx.font = "26px SQ3font";
             break;
         case 4:
             lang = "GR";
-            wrapLen = 35;
-            ctx.font = "16px arial";
+            //wrapLen = 35;
+            //ctx.font = "16px arial";
+            ctx.font = "26px SQ3font";
             break;
         case 5:
             lang = "PL";
             wrapLen = 35;
-            ctx.font = "16px arial";
+            //ctx.font = "16px arial";
+            ctx.font = "26px SQ3font";
             break;
         default:
     }
@@ -57,7 +62,7 @@ function langSel(l) {
             break;
         default:
     }
-    printText(str,350,450);
+    //printText(str,350,450);
 }
 
 function getLangStr(n) {
