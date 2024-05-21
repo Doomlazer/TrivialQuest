@@ -35,12 +35,14 @@ Your browser does not support the HTML5 canvas tag.</canvas>
 <img id="rockSide" src="img/kQuestions/rockSide51x57.png" hidden>
 <img id="pq2bkgrnd" src="img/pq2Mug/pq2bkgrnd.png" width="642" height="458" hidden>
 <img id="pq2mug" src="img/pq2Mug/pq2mug.png" width="312" height="52" hidden>
+<img id="lsl1vgabkgrnd" src="img/lsl1vga/lsl1vgabkgrnd.png" width="642" height="458" hidden>
 
 <script>
 var c = document.getElementById("myCanvas");
 var ctx = c.getContext("2d");
 //ctx.scale(2, 2);
-var mode = 0; // 0 = title, 1 = lsl3, 2 = OpenTrivia, 3 = Kings questions, 4 = pq2Mugshots
+var mode = 0; // 0 = title, 1 = lsl3, 2 = OpenTrivia, 3 = Kings questions, 
+              // 4 = pq2Mugshots, 5 = lsl1vga
 var mask = document.getElementById("maskEN");
 var cNumImg = document.getElementById("counter");
 var kQShipImg = document.getElementById("rockSide");
@@ -71,6 +73,8 @@ let prevSong = -1;
 var animateIntervalID;
 var counterArray = [0,0,0,0,0,0]; // [c1x,c1y,c2x,c2y,c3x,x3y]
 const myAudio = document.createElement("audio");
+var textUpperLim = 166; // lsl3 text file numbers
+var textLowerLim = 141;
 
 function start() {
     ctx.imageSmoothingEnabled = false;
@@ -82,7 +86,7 @@ function start() {
 }
 
 function animate() {
-    if (mode == 1) {
+    if (mode == 1 || mode == 5) {
         //
     } else if (mode == 3) {
         // shipAnimation
@@ -91,8 +95,7 @@ function animate() {
     } else if (mode == 4) {
         // shipAnimation
         drawBkgnd();
-        drawPQ2Mug();
-        
+        drawPQ2Mug();    
     }
     animateCounter()
     drawCounter();

@@ -17,6 +17,8 @@ function initClick() {
             doTriviaClick();
         } else if (mode == 4) {
             //pqQuestion();
+        } else if (mode == 5) {
+            doTriviaClick();
         }
      
     }
@@ -35,8 +37,8 @@ function initClick() {
                 // return key
                 if (mugStr == mugArray[mugCel]) {
                     score ++;
-                    if (score > 7) {
-                        mode = 1;
+                    if (score > 5) {
+                        mode = 5;
                         drawBkgnd();
                         nxt == 1;
                         nextQuestion();
@@ -114,13 +116,9 @@ function doTriviaClick() {
             let a = ans-2;
             if (ans-1 == rightAns) {
                 score ++;
-                if (score > 5 && score < 7) {
-                    mode = 4;
-                    return;
-                }
                 ctx.fillStyle = "Green";
                 let str;
-                if (mode == 1) {
+                if (mode == 1 || mode == 5) {
                     str = ansArray[a];
                 } else if (mode == 2) {
                     str = wrapText(questionJson.correct_answer, wrapLen); 
@@ -130,8 +128,7 @@ function doTriviaClick() {
             } else {
                 score --;
                 ctx.fillStyle = "Red";
-                if (mode == 1) {
-                    //let s = wrapText(splitData[(q+ans)], wrapLen);
+                if (mode == 1 || mode == 5) {
                     printText(ansArray[a], 331, qBaseNum + (qSpacing/2) + (qSpacing*a));
                 } else {
                     let b = a
@@ -156,6 +153,16 @@ function doTriviaClick() {
 }
 
 function nextQuestion() {
+    if (score > 0 && score < 5) {
+        mode = 1;
+    } else if (score > 4 && score < 6) {
+        mode = 4;
+    } else if (score > 5 && score < 20) {
+        mode = 5;
+    } else {
+        mode = 1;
+    }
+
     if (mode == 1) {
         lsl3Question();
     } else if (mode == 2) {
@@ -164,6 +171,8 @@ function nextQuestion() {
         kqQuestion();
     } else if (mode == 4) {
         pqQuestion();
+    } else if (mode == 5) {
+        lsl3Question();
     }
 }
 
@@ -185,7 +194,7 @@ function otQuestion() {
     drawBkgnd();
     ctx.fillStyle = "Blue";
     printText("Fetching question...",320,120);
-    fetch("https://opentdb.com/api.php?amount=1&type=multiple")
+    fetch("https://opentdb.com/api.php?amount=10&type=multiple")
     .then(response => { return response.json(); })
     .then((data) => {
         // Work with JSON data here
@@ -213,6 +222,8 @@ function otQuestion() {
 }
 
 function lsl3Question() {
+    let gm;
+    let s;
     ansArray = [];
     drawBkgnd();
     ctx.fillStyle = "Yellow";
@@ -220,10 +231,29 @@ function lsl3Question() {
     // load questions
     // each text file has five questions
     // files range from 141 to 166. Looks like in the game only 141-161 are used?
-    let r = Math.floor(Math.random() * (166 - 141) + 141);
+
+    switch (mode) {
+        case 1:
+            textUpperLim = 166;
+            textLowerLim = 141;
+            gm = "lsl3"
+            break;
+        case 5:
+            // lsl1vga
+            textUpperLim = 752;
+            textLowerLim = 721;
+            gm = "lsl1vga"
+            break;
+        default:
+    }
+
+    let r = Math.floor(Math.random() * (textUpperLim - textLowerLim) + textLowerLim);
     //r = 148 // testing only!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    let s = "data/" + lang + "/lsl3/text.";
-    s = s.concat(r);
+    if (mode == 5 && lang != "PL") {
+        s = "data/" + lang + "/" + gm + "/" + r + ".tex";
+    } else {
+        s = "data/" + lang + "/" + gm + "/text."+r;
+    }
     console.log("s: " + s);
     fetch(s)
     //.then(response => response.text())
@@ -256,7 +286,7 @@ function lsl3Question() {
                 trunk = trunk.replaceAll("\u201d","\u00f6"); // ” -> ö
                 trunk = trunk.replaceAll("\u201e","\u00e4"); // „ -> ä
                 trunk = trunk.replaceAll("\u2122","\u00d6"); // ™ -> Ö
-            } else if (lang == "SP") {
+            } else if (lang == "SP" && mode == 1) {
                 trunk = trunk.replaceAll("\u0026","\u00bf"); // & -> ¿
                 trunk = trunk.replaceAll("\u002b","\u00e9"); // + -> é
                 trunk = trunk.replaceAll("\u007d","\u00f1"); // } -> ñ
@@ -265,14 +295,37 @@ function lsl3Question() {
                 trunk = trunk.replaceAll("\u002a","\u00e1"); // * -> á
                 trunk = trunk.replaceAll("\u007c","\u00ed"); // | -> í
                 trunk = trunk.replaceAll("\u005e","\u00a1"); // ^ -> ¡
-            }            
+            } else if (lang == "SP" && mode == 5) {
+                // TODO: lsl1vga sp uses different encoding from lsl3 sp
+            }
             //console.log(trunk);
             splitData = trunk.split("\x00");
             q = Math.floor(Math.random()*4)*5;
             //q = 5 // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-            //console.log("q: " + q);
+            console.log("q: " + q);
             //console.log(splitData[0]);
-            ctx.fillStyle = "Blue";
+            if (mode == 5) {
+                switch (q/5) {
+                    case 0:
+                        ctx.fillStyle = "rgb(223, 223, 71)";
+                        break;
+                    case 1:
+                        ctx.fillStyle = "rgb(135, 235, 135)";
+                        break;
+                    case 2:
+                        ctx.fillStyle = "rgb(135,135, 235)";
+                        break;
+                    case 3:
+                        ctx.fillStyle = "rgb(255, 77, 255)";
+                        break;
+                    case 4:
+                         ctx.fillStyle = "rgb(77, 255, 255)";
+                        break;
+                    default:
+                }
+            } else {
+                ctx.fillStyle = "Blue";
+            }
             let temp = splitData[q].slice(1);
             let temp1 = splitData[q+1];
             let temp2 = splitData[q+2];
@@ -301,9 +354,20 @@ function lsl3Question() {
                 temp3 = tempArray3[1];
                 let tempArray4 = temp4.split("%G");
                 temp4 = tempArray4[1];
+            } else if (lang == "SP" && mode == 5) {
+                let tempArray = temp.split("#S");
+                temp = tempArray[1];
+                let tempArray1 = temp1.split("#S");
+                temp1 = tempArray1[1];
+                let tempArray2 = temp2.split("#S");
+                temp2 = tempArray2[1];
+                let tempArray3 = temp3.split("#S");
+                temp3 = tempArray3[1];
+                let tempArray4 = temp4.split("#S");
+                temp4 = tempArray4[1];
             }
             let string = wrapText(temp, wrapLen);
-            //console.log(string);
+            // console.log(string);
             // print question
             printText(string,302,120);
             rightAns = splitData[q].slice(0,1);
@@ -368,6 +432,10 @@ function drawBkgnd() {
         ctx.font = "28px SQ3font";
         ctx.fillStyle = "Black";
         printText(mugStr, 180, 370); //player text:
+    } else if (mode == 5) {
+        // lsl1vga background
+        bkgnd = document.getElementById("lsl1vgabkgrnd");
+        ctx.drawImage(bkgnd, 0, 0);
     }
     
     drawCounter();
