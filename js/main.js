@@ -112,6 +112,10 @@ function doTriviaClick() {
             }
         }
 
+        let xp = 331;
+        if (mode == 5) {
+            xp = 100;
+        }
         if (ans > 0) {
             let a = ans-2;
             if (ans-1 == rightAns) {
@@ -123,20 +127,20 @@ function doTriviaClick() {
                 } else if (mode == 2) {
                     str = wrapText(questionJson.correct_answer, wrapLen); 
                 }
-                printText(str, 331, qBaseNum + (qSpacing/2) + (qSpacing*a));
+                printText(str, xp, qBaseNum + (qSpacing/2) + (qSpacing*a));
                 //console.log("score: " + score);
             } else {
                 score --;
                 ctx.fillStyle = "Red";
                 if (mode == 1 || mode == 5) {
-                    printText(ansArray[a], 331, qBaseNum + (qSpacing/2) + (qSpacing*a));
+                    printText(ansArray[a], xp, qBaseNum + (qSpacing/2) + (qSpacing*a));
                 } else {
                     let b = a
                     if (b > rightAns) {
                         b --;
                     }
                     let s = wrapText(questionJson.incorrect_answers[b], wrapLen);
-                    printText(s, 331, qBaseNum + (qSpacing/2) + (qSpacing*a));
+                    printText(s, xp, qBaseNum + (qSpacing/2) + (qSpacing*a));
                 }
             }
 
@@ -331,8 +335,8 @@ function lsl3Question() {
             let temp2 = splitData[q+2];
             let temp3 = splitData[q+3];
             let temp4 = splitData[q+4];
-            // French & German patch files contain english, remove it
-            if (lang == "FR") {
+            // French, German, etc. patch files contain english, remove it
+            if (lang == "FR" && mode == 1) {
                 let tempArray = temp.split("%F");
                 temp = tempArray[1];
                 let tempArray1 = temp1.split("%F");
@@ -343,7 +347,7 @@ function lsl3Question() {
                 temp3 = tempArray3[1];
                 let tempArray4 = temp4.split("%F");
                 temp4 = tempArray4[1];
-            } else if (lang == "GR") {
+            } else if (lang == "GR" && mode == 1) {
                 let tempArray = temp.split("%G");
                 temp = tempArray[1];
                 let tempArray1 = temp1.split("%G");
@@ -369,20 +373,24 @@ function lsl3Question() {
             let string = wrapText(temp, wrapLen);
             // console.log(string);
             // print question
-            printText(string,302,120);
+            let x2 = 0;
+            let xp = 331;
+            if (mode == 5) {
+                xp = 100;
+            }
+            printText(string,xp-29,120);
             rightAns = splitData[q].slice(0,1);
             let adj = 5;
             ansArray.push(wrapText(temp1, wrapLen-adj));
             ansArray.push(wrapText(temp2, wrapLen-adj));
             ansArray.push(wrapText(temp3, wrapLen-adj));
             ansArray.push(wrapText(temp4, wrapLen-adj));
-            let x2 = 0;
             for (let i = 0; i < 4; i ++) {
-                printText(ansArray[i], 331, qBaseNum + (qSpacing/2) + (qSpacing*i));
+                printText(ansArray[i], xp, qBaseNum + (qSpacing/2) + (qSpacing*i));
             }
             let la = ["a.", "b.", "c.","d."];
             for (let i = 0; i < 4; i ++) {
-                printText(la[i], 302, qBaseNum + (qSpacing/2) + (qSpacing*i));
+                printText(la[i], xp-29, qBaseNum + (qSpacing/2) + (qSpacing*i));
             }
         }
     )
