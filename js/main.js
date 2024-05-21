@@ -373,12 +373,18 @@ function lsl3Question() {
             let string = wrapText(temp, wrapLen);
             // console.log(string);
             // print question
-            let x2 = 0;
-            let xp = 331;
+            let xp;
+            // reposition questions for mode 1 or 5
             if (mode == 5) {
                 xp = 100;
+                qBaseNum = 100;
+                wrapLen = 50;
+            } else {
+                xp = 331;
+                qBaseNum = 150;
+                wrapLen = 30;
             }
-            printText(string,xp-29,120);
+            printText(string,xp-29,qBaseNum-30);
             rightAns = splitData[q].slice(0,1);
             let adj = 5;
             ansArray.push(wrapText(temp1, wrapLen-adj));

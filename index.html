@@ -71,7 +71,7 @@ let ansArray = [];
 let wrapLen = 30; //32;
 let prevSong = -1;
 var animateIntervalID;
-var counterArray = [0,0,0,0,0,0]; // [c1x,c1y,c2x,c2y,c3x,x3y]
+var counterArray = [0,0,0,0,0,0]; // [c1x,c1y,c2x,c2y,c3x,c3y]
 const myAudio = document.createElement("audio");
 var textUpperLim = 166; // lsl3 text file numbers
 var textLowerLim = 141;
@@ -155,10 +155,10 @@ function animateCounter() {
                 if (counterArray[5] > 9) {
                     counterArray[5] = 0;
                 }
-                if (counterArray[5] == 9) {
+            }
+            if (counterArray[5] == 9 && counterArray[4] == 2) {
                     counterArray[2] ++ ; // inc middle d
                 }
-            }
             // middle digit
             if (counterArray[2] != 0) {
                 if (counterArray[3] == 9 && counterArray[2] == 1) {
@@ -196,6 +196,10 @@ function drawCounter() {
         // pq2
         x = 95;
         y = 190;
+    } else if (mode == 5) {
+        //lsl1vga
+        x = 560;
+        y = 400;
     }
     for (let i = 0; i < 3; i++){
         let sx = counterArray[i*2] * 12 // Num's x loc on spritesheet
