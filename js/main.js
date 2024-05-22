@@ -126,7 +126,7 @@ function doTriviaClick() {
             if (ans > 0) {
                 let a = ans-2;
                 // five = any asnwer correct
-                if (ans-1 == rightAns || ans-1 == 5) {
+                if (ans-1 == rightAns || rightAns == 5) {
                     score ++;
                     ctx.fillStyle = "Green";
                     let str;
