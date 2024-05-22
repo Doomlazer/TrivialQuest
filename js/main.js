@@ -115,7 +115,7 @@ function doTriviaClick() {
             for (let i = 0; i<4; i++) {
                 if (yPosition > (qBaseNum + (i*qSpacing)) && yPosition <= (qBaseNum + qSpacing + (i*qSpacing))) {
                     ans = i+2;
-                    console.log("ans: "+ans);
+                    //console.log("ans: "+ans);
                 }
             }
 
@@ -125,7 +125,8 @@ function doTriviaClick() {
             }
             if (ans > 0) {
                 let a = ans-2;
-                if (ans-1 == rightAns) {
+                // five = any asnwer correct
+                if (ans-1 == rightAns || ans-1 == 5) {
                     score ++;
                     ctx.fillStyle = "Green";
                     let str;
