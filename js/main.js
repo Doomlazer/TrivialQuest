@@ -13,14 +13,11 @@ function initClick() {
 
         if (mode == 0) {
             doTitleClick();
-        } else if (mode == 1) {
+        } else if (mode == 1 || mode == 3 || mode == 5) {
             doTriviaClick();
         } else if (mode == 4) {
             //pqQuestion();
-        } else if (mode == 5) {
-            doTriviaClick();
         }
-     
     }
 
     document.addEventListener('keydown', doKD, false);
@@ -68,17 +65,8 @@ function initClick() {
 }
 
 function doTitleClick() {
-    /*if (xPosition < c.width/2) {
-        // lsl
-        mode = 1;
-    } else {
-        // kings questions
-        mode = 3;
-    }*/
-        //mode 4 pq2 mugs
-
     mode = 1;
-    
+
     nextQuestion();
     animateIntervalID = setInterval(animate, 100);
 }
@@ -90,12 +78,12 @@ function doTriviaClick() {
         nextQuestion();
     } else {
         // player selects answer
-        var ans = 0;
+        ans = 0;
 
         /* testing guidelines
         for (let i=0; i<5; i++) {
             ctx.fillStyle = "Black";
-            ctx.rect(290, qBaseNum+(i*qSpacing), 300, 5);
+            ctx.rect(0, qBaseNum+(i*qSpacing), 600, 5);
             ctx.fill(); 
         }
 
@@ -103,55 +91,75 @@ function doTriviaClick() {
         ctx.rect(xPosition, yPosition, 10, 10);
         ctx.fill(); 
         */
+        
 
-        // check if clicked in an answer
-        for (let i = 0; i<4; i++) {
-            if (yPosition > (qBaseNum + (i*qSpacing)) && yPosition <= (qBaseNum + qSpacing + (i*qSpacing))) {
-                ans = i+2;
-                console.log("ans: "+ans);
-            }
-        }
-
-        let xp = 331;
-        if (mode == 5) {
-            xp = 100;
-        }
-        if (ans > 0) {
-            let a = ans-2;
-            if (ans-1 == rightAns) {
-                score ++;
-                ctx.fillStyle = "Green";
-                let str;
-                if (mode == 1 || mode == 5) {
-                    str = ansArray[a];
-                } else if (mode == 2) {
-                    str = wrapText(questionJson.correct_answer, wrapLen); 
+        if (mode == 3) {
+            // kingsQuestions works different
+            // check if clicked in an answer
+            for (let i = 0; i<4; i++) {
+                if (yPosition > (qBaseNum + (i*qSpacing)) && yPosition <= (qBaseNum + qSpacing + (i*qSpacing))) {
+                    ans = i+1;
+                    console.log("ans: "+ans);
                 }
-                printText(str, xp, qBaseNum + (qSpacing/2) + (qSpacing*a));
-                //console.log("score: " + score);
-            } else {
-                score --;
-                ctx.fillStyle = "Red";
-                if (mode == 1 || mode == 5) {
-                    printText(ansArray[a], xp, qBaseNum + (qSpacing/2) + (qSpacing*a));
+            }
+            if (ans > 0) {
+                if (ans == rightAns) {
+                    score ++;
                 } else {
-                    let b = a
-                    if (b > rightAns) {
-                        b --;
-                    }
-                    let s = wrapText(questionJson.incorrect_answers[b], wrapLen);
-                    printText(s, xp, qBaseNum + (qSpacing/2) + (qSpacing*a));
+                    score --;
+                } 
+                nxt ++;
+            }
+        } else {
+            // check if clicked in an answer
+            for (let i = 0; i<4; i++) {
+                if (yPosition > (qBaseNum + (i*qSpacing)) && yPosition <= (qBaseNum + qSpacing + (i*qSpacing))) {
+                    ans = i+2;
+                    console.log("ans: "+ans);
                 }
             }
 
-            ctx.fillStyle = "Yellow";
-            if (ans > 0 && ans-1 == rightAns) {
-                printText(getLangStr(2),400,25); // correct
-            } else {
-                printText(getLangStr(3),400,25); // wrong
+            let xp = 331;
+            if (mode == 5) {
+                xp = 100;
             }
-            // wait a click before next question
-            nxt ++;
+            if (ans > 0) {
+                let a = ans-2;
+                if (ans-1 == rightAns) {
+                    score ++;
+                    ctx.fillStyle = "Green";
+                    let str;
+                    if (mode == 1 || mode == 5) {
+                        str = ansArray[a];
+                    } else if (mode == 2) {
+                        str = wrapText(questionJson.correct_answer, wrapLen); 
+                    }
+                    printText(str, xp, qBaseNum + (qSpacing/2) + (qSpacing*a));
+                    //console.log("score: " + score);
+                } else {
+                    score --;
+                    ctx.fillStyle = "Red";
+                    if (mode == 1 || mode == 5) {
+                        printText(ansArray[a], xp, qBaseNum + (qSpacing/2) + (qSpacing*a));
+                    } else {
+                        let b = a
+                        if (b > rightAns) {
+                            b --;
+                        }
+                        let s = wrapText(questionJson.incorrect_answers[b], wrapLen);
+                        printText(s, xp, qBaseNum + (qSpacing/2) + (qSpacing*a));
+                    }
+                }
+
+                ctx.fillStyle = "Yellow";
+                if (ans > 0 && ans-1 == rightAns) {
+                    printText(getLangStr(2),400,25); // correct
+                } else {
+                    printText(getLangStr(3),400,25); // wrong
+                }
+                // wait a click before next question
+                nxt ++;
+            }
         }
     }
 }
@@ -162,20 +170,37 @@ function nextQuestion() {
     } else if (score > 4 && score < 6) {
         mode = 4;
     } else if (score > 5 && score < 20) {
+        mode = 3;
+    } else if (score > 19 && score < 30) {
         mode = 5;
     } else {
         mode = 1;
     }
 
     if (mode == 1) {
+        textUpperLim = 166;
+        textLowerLim = 141;
+        qSpacing = 75;
+        qBaseNum = 100; // horribily named question y pos
+        wrapLen = 30;
         lsl3Question();
     } else if (mode == 2) {
         otQuestion();
     } else if (mode == 3) {
+        textUpperLim = 0;
+        textLowerLim = 41;
+        qSpacing = 50;
+        qBaseNum = 75;
+        wrapLen = 40;
         kqQuestion();
     } else if (mode == 4) {
         pqQuestion();
     } else if (mode == 5) {
+        textUpperLim = 752;
+        textLowerLim = 721;
+        qSpacing = 75;
+        qBaseNum = 150;
+        wrapLen = 50;
         lsl3Question();
     }
 }
@@ -187,11 +212,46 @@ function pqQuestion() {
 }
 
 function kqQuestion() {
+    console.log("new kings question");
+    ans = 0;
     ansArray = [];
-    drawBkgnd();
-    ctx.fillStyle = "Yellow";
-    printText(getLangStr(1),400,50); //score: 
-    console.log("mode: " + mode);
+    let r = Math.floor(Math.random() * (textUpperLim - textLowerLim) + textLowerLim);
+    let s = "data/" + lang + "/kq/" + r + ".tex";
+    fetch(s)
+    .then(response => response.arrayBuffer())
+    .then((buffer) => {
+
+            let decoder = new TextDecoder("iso-8859-1");
+            let data = decoder.decode(buffer);
+            console.log("data: "+data);
+            let trunk = data.slice(2);
+            splitData = trunk.split("\x00");
+            ctx.fillStyle = "Blue";
+            let q = 0; // q is always 0 in KQuestions, because only 1 question per file.
+            let temp = splitData[q].slice(1);
+            let temp1 = splitData[q+1];
+            let temp2 = splitData[q+2];
+            let temp3 = splitData[q+3];
+            let temp4 = splitData[q+4];
+            let temp5 = splitData[q+5]; // start of post answer responses
+            let temp6 = splitData[q+6];
+            let temp7 = splitData[q+7];
+            let temp8 = splitData[q+8];
+
+            rightAns = splitData[q].slice(0,1);
+            let adj = 5;
+            ansArray.push(wrapText(temp1, wrapLen-adj));
+            ansArray.push(wrapText(temp2, wrapLen-adj));
+            ansArray.push(wrapText(temp3, wrapLen-adj));
+            ansArray.push(wrapText(temp4, wrapLen-adj));
+            ansArray.push(wrapText(temp5, wrapLen-adj));
+            ansArray.push(wrapText(temp6, wrapLen-adj));
+            ansArray.push(wrapText(temp7, wrapLen-adj));
+            ansArray.push(wrapText(temp8, wrapLen-adj));
+            // pack the question string at the end for this mode
+            ansArray.push(wrapText(temp, wrapLen));
+        }
+    )
 }
 
 function otQuestion() {
@@ -238,14 +298,9 @@ function lsl3Question() {
 
     switch (mode) {
         case 1:
-            textUpperLim = 166;
-            textLowerLim = 141;
             gm = "lsl3"
             break;
         case 5:
-            // lsl1vga
-            textUpperLim = 752;
-            textLowerLim = 721;
             gm = "lsl1vga"
             break;
         default:
@@ -437,6 +492,32 @@ function drawBkgnd() {
         // KingsQuestions background
         bkgnd = document.getElementById("kQuestions");
         ctx.drawImage(bkgnd, 0, 0);
+        let xp = 100;
+        ctx.fillStyle = "Blue";
+        printText(ansArray[8],xp-29,qBaseNum-30); // the question string
+        for (let i = 0; i < 4; i ++) {
+            if (ans == 0) {
+                printText(ansArray[i], xp+29, qBaseNum + (qSpacing/2) + (qSpacing*i));
+            } else {
+                if (ans == i+1) {
+                    // players selection
+                    if (ans == rightAns) {
+                        ctx.fillStyle = "Green"; 
+                    } else {
+                        ctx.fillStyle = "Red"; 
+                    }
+                    printText(ansArray[i+4], xp+29, qBaseNum + (qSpacing/2) + (qSpacing*i));
+                } else {
+                    ctx.fillStyle = "Blue";
+                    printText(ansArray[i], xp+29, qBaseNum + (qSpacing/2) + (qSpacing*i));
+                }
+            }
+        }
+        let la = ["a.", "b.", "c.","d."];
+        ctx.fillStyle = "Blue";
+        for (let i = 0; i < 4; i ++) {
+            printText(la[i], xp, qBaseNum + (qSpacing/2) + (qSpacing*i));
+        }
         drawKQShip();
     } else if (mode == 4) {
         // PoliceQuest Mugshot background

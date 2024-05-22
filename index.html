@@ -56,7 +56,8 @@ var bkgnd;
 var xPosition;
 var yPosition;
 var score = 0;
-var rightAns;
+var rightAns; 
+var ans = 0; // player's answer
 var splitData;
 var questionJson;
 var q;
@@ -192,7 +193,11 @@ function animateCounter() {
 function drawCounter() {
     let x = 500;
     let y = 20;
-    if (mode == 4) {
+    if (mode == 3) {
+        // kingsQuestions
+        x = 570;
+        y = 20;
+    } else if (mode == 4) {
         // pq2
         x = 95;
         y = 190;
