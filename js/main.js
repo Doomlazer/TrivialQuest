@@ -34,41 +34,27 @@ function initClick() {
                 // return key
                 if (mugStr == mugArray[mugCel]) {
                     score ++;
-                    if (score > 5) {
-                        mode = 5;
-                        drawBkgnd();
-                        nxt == 1;
-                        nextQuestion();
-                    }
                 } else {
                     score --;
-                    if (score < 5) {
-                        mode = 1;
-                        drawBkgnd();
-                        nxt == 1;
-                        nextQuestion();
-                    }
+                    notPerfect = 1; 
                 }
+                nxt == 1;
+                nextQuestion();
                 mugStr = "";
-                if (mode == 4) {
-                    pqQuestion();
-                }
             } else if (e.keyCode == 16 || e.keyCode == 20) {
                 // r & l shift and capslock disable
-            } else {
+            } else if ((e.keyCode >= 48 && e.keyCode <= 57) || (e.keyCode >= 65 && e.keyCode <= 90)) {
                 mugStr = mugStr + String.fromCharCode(e.keyCode);
                 //mugStr = mugStr + e.keyCode;
             }
-            //console.log("mugStr: " + mugStr);
         }
     }
 }
 
 function doTitleClick() {
-    mode = 1;
-
+    mode = 5;
     nextQuestion();
-    animateIntervalID = setInterval(animate, 100);
+    animateIntervalID = setInterval(animate, animationSpeed);
 }
 
 function doTriviaClick() {
@@ -107,6 +93,7 @@ function doTriviaClick() {
                     score ++;
                 } else {
                     score --;
+                    notPerfect = 1;
                 } 
                 nxt ++;
             }
@@ -139,6 +126,7 @@ function doTriviaClick() {
                     //console.log("score: " + score);
                 } else {
                     score --;
+                    notPerfect = 1;
                     ctx.fillStyle = "Red";
                     if (mode == 1 || mode == 5) {
                         printText(ansArray[a], xp, qBaseNum + (qSpacing/2) + (qSpacing*a));
@@ -153,7 +141,7 @@ function doTriviaClick() {
                 }
 
                 ctx.fillStyle = "Yellow";
-                if (ans > 0 && ans-1 == rightAns) {
+                if (ans > 0 && (ans-1 == rightAns || rightAns == 5)) {
                     printText(getLangStr(2),400,25); // correct
                 } else {
                     printText(getLangStr(3),400,25); // wrong
@@ -166,16 +154,16 @@ function doTriviaClick() {
 }
 
 function nextQuestion() {
-    if (score > 0 && score < 5) {
-        mode = 1;
-    } else if (score > 4 && score < 6) {
-        mode = 4;
-    } else if (score > 5 && score < 20) {
-        mode = 3;
-    } else if (score > 19 && score < 30) {
-        mode = 5;
-    } else {
-        mode = 1;
+    let s = score % 30;
+    if ((score%10) == 0 && score != 0 ) {
+        // every ten questions do mugshot
+        mode = 4; // pq2mug
+    } else if (s >= 0 && s < 10) {
+        mode = 5; // lsl1vga
+    } else if (s > 10 && s < 20) {
+        mode = 3; // kingsQuestions
+    } else if (s > 20 && s < 30) {
+        mode = 1; // lsl3
     }
 
     if (mode == 1) {
@@ -201,7 +189,7 @@ function nextQuestion() {
         //textLowerLim = 721;
         qSpacing = 75;
         qBaseNum = 150;
-        wrapLen = 50;
+        wrapLen = 45;
         lsl3Question();
     }
 }
@@ -215,6 +203,9 @@ function pqQuestion() {
     if (mode4I >= mode4Arr.length) {
         mode4I = 0;
         mode4Arr = shuffle(mode4Arr);
+        // one time score bonus for seeing all pqmugs
+        score = score + modeCompletionBonus[mode];
+        modeCompletionBonus[mode] = 0;
     }
 }
 
@@ -230,6 +221,9 @@ function kqQuestion() {
         // reshuffle
         mode3I = 0;
         mode3Arr = shuffle(mode3Arr);
+        // one time score bonus for seeing all kings questions
+        score = score + modeCompletionBonus[mode];
+        modeCompletionBonus[mode] = 0;
     } 
     let s = "data/" + lang + "/kq/" + r + ".tex";
     fetch(s)
@@ -323,6 +317,9 @@ function lsl3Question() {
                     // reshuffle
                     mode1I = 0;
                     mode1Arr = shuffle(mode1Arr);
+                    // one time score bonus for seeing all lsl1vga
+                    score = score + modeCompletionBonus[mode];
+                    modeCompletionBonus[mode] = 0;
                 } 
             }
             r = mode1Arr[mode1I];
@@ -337,6 +334,9 @@ function lsl3Question() {
                     // reshuffle
                     mode5I = 0;
                     mode5Arr = shuffle(mode5Arr);
+                    // one time score bonus for seeing all lsl3
+                    score = score + modeCompletionBonus[mode];
+                    modeCompletionBonus[mode] = 0;
                 } 
             }
             r = mode5Arr[mode5I];
@@ -538,6 +538,7 @@ function drawBkgnd() {
         // KingsQuestions background
         bkgnd = document.getElementById("kQuestions");
         ctx.drawImage(bkgnd, 0, 0);
+        drawKQShip();
         let xp = 100;
         ctx.fillStyle = "Blue";
         printText(ansArray[8],xp-29,qBaseNum-30); // the question string
@@ -564,7 +565,6 @@ function drawBkgnd() {
         for (let i = 0; i < 4; i ++) {
             printText(la[i], xp, qBaseNum + (qSpacing/2) + (qSpacing*i));
         }
-        drawKQShip();
     } else if (mode == 4) {
         // PoliceQuest Mugshot background
         bkgnd = document.getElementById("pq2bkgrnd");
