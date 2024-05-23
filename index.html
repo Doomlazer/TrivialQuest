@@ -74,12 +74,49 @@ let prevSong = -1;
 var animateIntervalID;
 var counterArray = [0,0,0,0,0,0]; // [c1x,c1y,c2x,c2y,c3x,c3y]
 const myAudio = document.createElement("audio");
-var textUpperLim = 166; // lsl3 text file numbers
-var textLowerLim = 141;
+//var textUpperLim = 166; // lsl3 text file numbers
+//var textLowerLim = 141;
+var mode1Arr = [], mode3Arr = [], mode4Arr = [], mode5Arr = [];
+var mode1JArr = [], mode5JArr = [];
+var mode1I = 0, mode3I = 0, mode4I = 0, mode5I = 0;
+var mode1J = 0, mode5J = 0;
 
 function start() {
     ctx.imageSmoothingEnabled = false;
     ctx.font = "26px SQ3font";
+
+    // randomize question arrays
+    // lsl3 141-166 with five questions each
+    for (let i = 141; i < 167; i++) {
+        mode1Arr.push(i);
+    }
+    mode1Arr = shuffle(mode1Arr);
+    for (let i = 0; i < 5; i++) {
+        mode1JArr.push(i);
+    }
+    mode1JArr = shuffle(mode1JArr);
+    // kings questions 0-41 files, one question each
+    for (let i = 0; i < 42; i++) {
+        mode3Arr.push(i);
+    }
+    mode3Arr = shuffle(mode3Arr);
+    // pqMugs 8 images
+    for (let i = 0; i < 8; i++) {
+        mode4Arr.push(i);
+    }
+    mode4Arr = shuffle(mode4Arr);
+    // lsl1vga 721-752 with five questions each
+    for (let i = 721; i < 753; i++) {
+        mode5Arr.push(i);
+    }
+    console.log("mode5Arr: " + mode5Arr);
+    mode5Arr = shuffle(mode5Arr);
+    console.log("shuffled mode5Arr: " + mode5Arr);
+    for (let i = 0; i < 5; i++) {
+        mode5JArr.push(i);
+    }
+    mode5JArr = shuffle(mode5JArr);
+
     drawTitle();
     initClick();
     mugCel = Math.floor(Math.random()*8);

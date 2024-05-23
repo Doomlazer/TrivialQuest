@@ -179,8 +179,8 @@ function nextQuestion() {
     }
 
     if (mode == 1) {
-        textUpperLim = 166;
-        textLowerLim = 141;
+        //textUpperLim = 166;
+        //textLowerLim = 141;
         qSpacing = 75;
         qBaseNum = 100; // horribily named question y pos
         wrapLen = 30;
@@ -188,17 +188,17 @@ function nextQuestion() {
     } else if (mode == 2) {
         otQuestion();
     } else if (mode == 3) {
-        textUpperLim = 0;
-        textLowerLim = 41;
-        qSpacing = 50;
+        //textUpperLim = 0;
+        //textLowerLim = 41;
+        qSpacing = 60;
         qBaseNum = 75;
         wrapLen = 40;
         kqQuestion();
     } else if (mode == 4) {
         pqQuestion();
     } else if (mode == 5) {
-        textUpperLim = 752;
-        textLowerLim = 721;
+        //textUpperLim = 752;
+        //textLowerLim = 721;
         qSpacing = 75;
         qBaseNum = 150;
         wrapLen = 50;
@@ -209,14 +209,28 @@ function nextQuestion() {
 function pqQuestion() {
     mugStr = "";
     console.log("next mugshot");
-    mugCel = Math.floor(Math.random()*8);
+    //mugCel = Math.floor(Math.random()*8);
+    mugCel = mode4Arr[mode4I];
+    mode4I ++;
+    if (mode4I >= mode4Arr.length) {
+        mode4I = 0;
+        mode4Arr = shuffle(mode4Arr);
+    }
 }
 
 function kqQuestion() {
     console.log("new kings question");
     ans = 0;
     ansArray = [];
-    let r = Math.floor(Math.random() * (textUpperLim - textLowerLim) + textLowerLim);
+    //let r = Math.floor(Math.random() * (textUpperLim - textLowerLim) + textLowerLim);
+    // use next shuffled array question
+    let r = mode3Arr[mode3I];
+    mode3I ++;
+    if (mode3I >= mode3Arr.length) {
+        // reshuffle
+        mode3I = 0;
+        mode3Arr = shuffle(mode3Arr);
+    } 
     let s = "data/" + lang + "/kq/" + r + ".tex";
     fetch(s)
     .then(response => response.arrayBuffer())
@@ -293,28 +307,48 @@ function lsl3Question() {
     drawBkgnd();
     ctx.fillStyle = "Yellow";
     printText(getLangStr(1),400,50); //score: 
+    
     // load questions
-    // each text file has five questions
-    // files range from 141 to 166. Looks like in the game only 141-161 are used?
-
+    // each lsl3 and lsl1vga text file has five questions
+    // first get the next randomized file
+    let r;
     switch (mode) {
         case 1:
             gm = "lsl3"
+            if (mode1J >= 5) {
+                mode1JArr = shuffle(mode1JArr);
+                mode1J = 0;
+                mode1I ++;
+                if (mode1I >= mode1Arr.length) {
+                    // reshuffle
+                    mode1I = 0;
+                    mode1Arr = shuffle(mode1Arr);
+                } 
+            }
+            r = mode1Arr[mode1I];
             break;
         case 5:
             gm = "lsl1vga"
+            if (mode5J >= 5) {
+                mode5JArr = shuffle(mode5JArr);
+                mode5J = 0;
+                mode5I ++;
+                if (mode5I >= mode5Arr.length) {
+                    // reshuffle
+                    mode5I = 0;
+                    mode5Arr = shuffle(mode5Arr);
+                } 
+            }
+            r = mode5Arr[mode5I];
             break;
         default:
     }
 
-    let r = Math.floor(Math.random() * (textUpperLim - textLowerLim) + textLowerLim);
-    //r = 148 // testing only!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     if (mode == 5 && lang != "PL") {
         s = "data/" + lang + "/" + gm + "/" + r + ".tex";
     } else {
         s = "data/" + lang + "/" + gm + "/text."+r;
     }
-    console.log("s: " + s);
     fetch(s)
     //.then(response => response.text())
     .then(response => response.arrayBuffer())
@@ -356,14 +390,25 @@ function lsl3Question() {
                 trunk = trunk.replaceAll("\u007c","\u00ed"); // | -> í
                 trunk = trunk.replaceAll("\u005e","\u00a1"); // ^ -> ¡
             } else if (lang == "SP" && mode == 5) {
-                // TODO: lsl1vga sp uses different encoding from lsl3 sp
+                // TODO: lsl1vga Spanish uses different encoding from lsl3 SP
             }
-            //console.log(trunk);
             splitData = trunk.split("\x00");
-            q = Math.floor(Math.random()*4)*5;
-            //q = 5 // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-            console.log("q: " + q);
-            //console.log(splitData[0]);
+
+            // get next randomized question
+
+            switch (mode) {
+                case 1:
+                    q = mode1JArr[mode1J]*5;
+                    mode1J ++;
+                    break;
+                case 5:
+                    q = mode5JArr[mode5J]*5;
+                    mode5J ++;
+                    break;
+                default:
+            }
+        
+            // change color for lsl1vga mode 5
             if (mode == 5) {
                 switch (q/5) {
                     case 0:
@@ -426,10 +471,10 @@ function lsl3Question() {
                 let tempArray4 = temp4.split("#S");
                 temp4 = tempArray4[1];
             }
-            let string = wrapText(temp, wrapLen);
-            // console.log(string);
+
             // print question
             let xp;
+            let string = wrapText(temp, wrapLen);
             // reposition questions for mode 1 or 5
             if (mode == 5) {
                 xp = 100;

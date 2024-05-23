@@ -58,7 +58,7 @@ function fjson(text) {
 
 function wrapText(text, maxWidth) {
     if (text.length >= maxWidth) {
-        console.log("maxWidth: " + maxWidth);
+        //console.log("maxWidth: " + maxWidth);
         let i = maxWidth;
         let x;
         let pre;
@@ -112,4 +112,22 @@ function printText(text, x ,y) {
             ctx.fillText(textArray[2], x, y+36);
         }
     }
+}
+
+function shuffle(array) {
+    var m = array.length, t, i;
+
+    // While there remain elements to shuffle…
+    while (m) {
+
+    // Pick a remaining element…
+    i = Math.floor(Math.random() * m--);
+
+    // And swap it with the current element.
+    t = array[m];
+    array[m] = array[i];
+    array[i] = t;
+  }
+
+  return array;
 }
