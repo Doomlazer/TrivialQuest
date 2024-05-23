@@ -80,6 +80,8 @@ var mode1Arr = [], mode3Arr = [], mode4Arr = [], mode5Arr = [];
 var mode1JArr = [], mode5JArr = [];
 var mode1I = 0, mode3I = 0, mode4I = 0, mode5I = 0;
 var mode1J = 0, mode5J = 0;
+var modeCompletionBonus = [0, 200, 0, 50, 300, 400];
+var notPerfect = 0; 
 
 function start() {
     ctx.imageSmoothingEnabled = false;
@@ -241,7 +243,7 @@ function drawCounter() {
     } else if (mode == 5) {
         //lsl1vga
         x = 560;
-        y = 400;
+        y = 20;
     }
     for (let i = 0; i < 3; i++){
         let sx = counterArray[i*2] * 12 // Num's x loc on spritesheet
