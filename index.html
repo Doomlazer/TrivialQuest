@@ -72,6 +72,7 @@ let ansArray = [];
 let wrapLen = 30; //32;
 let prevSong = -1;
 var animateIntervalID;
+var animationSpeed = 100;
 var counterArray = [0,0,0,0,0,0]; // [c1x,c1y,c2x,c2y,c3x,c3y]
 const myAudio = document.createElement("audio");
 //var textUpperLim = 166; // lsl3 text file numbers
@@ -147,6 +148,21 @@ function animateCounter() {
     
     if (score < 0) score = 0;
     if (score != counterVal) {
+        // speed up if needed
+        if (Math.abs(score-counterVal) > 5) {
+            if (animationSpeed != 10) {
+                stopAnimate();
+                animationSpeed = animationSpeed - 10;
+                startAnimate();
+            }
+        } else {
+            if (animationSpeed != 100) {
+                stopAnimate();
+                animationSpeed ++;
+                startAnimate();
+            }
+        }
+
         if (score < counterVal) {
             // count down
 
@@ -296,7 +312,7 @@ function drawPQ2Mug() {
 
 }
 
-/*
+
 function startAnimate() {
     animateIntervalID = setInterval(animate, parseInt(animationSpeed, 10));
 }
@@ -304,13 +320,15 @@ function startAnimate() {
 function stopAnimate() {
     clearInterval(animateIntervalID);
 }
-*/
+
 
 function scoreUpDown(v) {
     if (v == 1) {
-        score ++;
+        //score ++;
+        score = score + 40;
     } else {
-        score --;
+        //score --;
+        score = score - 40;
     }
     drawBkgnd();
 }

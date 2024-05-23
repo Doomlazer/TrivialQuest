@@ -54,7 +54,7 @@ function initClick() {
 function doTitleClick() {
     mode = 5;
     nextQuestion();
-    animateIntervalID = setInterval(animate, 100);
+    animateIntervalID = setInterval(animate, animationSpeed);
 }
 
 function doTriviaClick() {
@@ -189,7 +189,7 @@ function nextQuestion() {
         //textLowerLim = 721;
         qSpacing = 75;
         qBaseNum = 150;
-        wrapLen = 50;
+        wrapLen = 45;
         lsl3Question();
     }
 }
@@ -538,6 +538,7 @@ function drawBkgnd() {
         // KingsQuestions background
         bkgnd = document.getElementById("kQuestions");
         ctx.drawImage(bkgnd, 0, 0);
+        drawKQShip();
         let xp = 100;
         ctx.fillStyle = "Blue";
         printText(ansArray[8],xp-29,qBaseNum-30); // the question string
@@ -564,7 +565,6 @@ function drawBkgnd() {
         for (let i = 0; i < 4; i ++) {
             printText(la[i], xp, qBaseNum + (qSpacing/2) + (qSpacing*i));
         }
-        drawKQShip();
     } else if (mode == 4) {
         // PoliceQuest Mugshot background
         bkgnd = document.getElementById("pq2bkgrnd");
