@@ -13,7 +13,7 @@ function initClick() {
 
         if (mode == 0) {
             doTitleClick();
-        } else if (mode == 1 || mode == 3 || mode == 5) {
+        } else if (mode == 1 || mode == 3 || mode == 5 || mode == 6) {
             doTriviaClick();
         } else if (mode == 4) {
             //pqQuestion();
@@ -52,7 +52,7 @@ function initClick() {
 }
 
 function doTitleClick() {
-    mode = 5;
+    mode = 6;
     nextQuestion();
     animateIntervalID = setInterval(animate, animationSpeed);
 }
@@ -97,6 +97,8 @@ function doTriviaClick() {
                 } 
                 nxt ++;
             }
+        } else if (mode == 6) {
+            // sq3
         } else {
             // check if clicked in an answer
             for (let i = 0; i<4; i++) {
@@ -154,7 +156,7 @@ function doTriviaClick() {
 }
 
 function nextQuestion() {
-    let s = score % 30;
+    /*let s = score % 30;
     if ((score%10) == 0 && score != 0 ) {
         // every ten questions do mugshot
         mode = 4; // pq2mug
@@ -164,20 +166,19 @@ function nextQuestion() {
         mode = 3; // kingsQuestions
     } else if (s > 20 && s < 30) {
         mode = 1; // lsl3
-    }
+    }*/
 
     if (mode == 1) {
-        //textUpperLim = 166;
-        //textLowerLim = 141;
         qSpacing = 75;
         qBaseNum = 100; // horribily named question y pos
         wrapLen = 30;
         lsl3Question();
-    } else if (mode == 2) {
+    } else if (mode == 2 || mode == 6) {
+        qSpacing = 50;
+        qBaseNum = 80;
+        wrapLen = 60;
         otQuestion();
     } else if (mode == 3) {
-        //textUpperLim = 0;
-        //textLowerLim = 41;
         qSpacing = 60;
         qBaseNum = 75;
         wrapLen = 40;
@@ -185,8 +186,6 @@ function nextQuestion() {
     } else if (mode == 4) {
         pqQuestion();
     } else if (mode == 5) {
-        //textUpperLim = 752;
-        //textLowerLim = 721;
         qSpacing = 75;
         qBaseNum = 150;
         wrapLen = 45;
@@ -213,7 +212,6 @@ function kqQuestion() {
     console.log("new kings question");
     ans = 0;
     ansArray = [];
-    //let r = Math.floor(Math.random() * (textUpperLim - textLowerLim) + textLowerLim);
     // use next shuffled array question
     let r = mode3Arr[mode3I];
     mode3I ++;
@@ -264,34 +262,43 @@ function kqQuestion() {
 }
 
 function otQuestion() {
-    drawBkgnd();
-    ctx.fillStyle = "Blue";
-    printText("Fetching question...",320,120);
-    fetch("https://opentdb.com/api.php?amount=10&type=multiple")
-    .then(response => { return response.json(); })
-    .then((data) => {
-        // Work with JSON data here
-        questionJson = data.results[0];
-        drawBkgnd();
-        ctx.fillStyle = "Yellow";
-        printText(getLangStr(1),400,50); //score: 
-        ctx.fillStyle = "Blue";
-        let s1 = wrapText(fjson(questionJson.question), wrapLen);
-        printText(s1, 331, 120);
-        r = Math.floor(Math.random() * 4);
-        let ia = 0;
-        for (let i = 0;i<4;i++) {
-            if (i == r) {
-                let s = wrapText(fjson(questionJson.correct_answer), wrapLen);
-                printText(s, 331, qBaseNum + (qSpacing/2) + (qSpacing*i));
-                rightAns = i+1;
-            } else {
-                let s = wrapText(questionJson.incorrect_answers[ia], wrapLen);
-                printText(s, 331, qBaseNum + (qSpacing/2) + (qSpacing*i));
-                ia ++;
-            }
+    if (mode6I == 0) {
+        fetch("https://opentdb.com/api.php?amount=10&type=multiple")
+        .then(response => { return response.json(); })
+        .then((data) => {
+            // Work with JSON data here
+            jsonData = data.results;
+            questionJson = data.results[0];
+            addOTQuestion();
+        }).catch(err => {});
+    } else {
+        questionJson = jsonData[mode6I];
+        addOTQuestion();
+    }
+}
+
+function addOTQuestion() {
+    ansArray.push(fjson(questionJson.question), wrapLen);
+    r = Math.floor(Math.random() * 4);
+    let ia = 0;
+    for (let i = 0;i<4;i++) {
+        if (i == r) {
+            ansArray.push(fjson(questionJson.correct_answer));
+            rightAns = i+1;
+        } else {
+            ansArray.push(fjson(questionJson.incorrect_answers[ia]));
+            ia ++;
         }
-    }).catch(err => {});
+    }
+    for (let i=0; i<ansArray.length; i++) {
+        console.log(ansArray[i]);
+    }
+    console.log("rightAns): " + rightAns);
+
+    mode6I ++;
+    if (modegI == jsonData.length) {
+        mode6I = 0;
+    }
 }
 
 function lsl3Question() {
@@ -577,32 +584,22 @@ function drawBkgnd() {
         // lsl1vga background
         bkgnd = document.getElementById("lsl1vgabkgrnd");
         ctx.drawImage(bkgnd, 0, 0);
+    } else if (mode == 6) {
+        // sq3 background
+        bkgnd = document.getElementById("sq3bkgrnd");
+        ctx.drawImage(bkgnd, 0, 0);
+        drawSQ3grind();
+
+        // print the question
+        if (questionJson) {
+            ctx.fillStyle = "Yellow";
+            printText(ansArray[0], 30, qBaseNum-30);
+            for (let i = 2;i<6;i++) {
+                //console.log("ansArray[i]: "+ansArray[i] +", i: "+i);
+                printText(ansArray[i], 60, qBaseNum + (qSpacing/2) + (qSpacing*(i-2)));
+            }
+        }
     }
     
     drawCounter();
 };
-
-function switchLSLorOpenTrivia() { // REDO
-    if (langLock == 0) {
-        // SWITCH qType to use mode instead
-        if (mode == 2) {
-            mode = 1;
-        } else {
-            mode = 2;
-        }
-    }
-    nextQuestion();
-    if (langLock == 0) {
-        if (mode == 1) {
-            if (lang == "SP") {
-                printText("Preguntas sobre LSL3",350,400);
-            } else if (lang == "EN") {
-                printText("LSL3 questions",350,400);
-            }
-        } else if (mode == 2) {
-            printText("Open Trivia questions",350,400);
-            printText("English only :(",350,420);
-        }
-        langLock = 1;
-    }
-}

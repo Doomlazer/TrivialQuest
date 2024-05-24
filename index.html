@@ -36,13 +36,15 @@ Your browser does not support the HTML5 canvas tag.</canvas>
 <img id="pq2bkgrnd" src="img/pq2Mug/pq2bkgrnd.png" width="642" height="458" hidden>
 <img id="pq2mug" src="img/pq2Mug/pq2mug.png" width="312" height="52" hidden>
 <img id="lsl1vgabkgrnd" src="img/lsl1vga/lsl1vgabkgrnd.png" width="642" height="458" hidden>
+<img id="sq3bkgrnd" src="img/sq3/sq3bkgrnd.png" width="642" height="458" hidden>
+<img id="sq3grind" src="img/sq3/sq3grind.png" width="180" height="15" hidden>
 
 <script>
 var c = document.getElementById("myCanvas");
 var ctx = c.getContext("2d");
 //ctx.scale(2, 2);
 var mode = 0; // 0 = title, 1 = lsl3, 2 = OpenTrivia, 3 = Kings questions, 
-              // 4 = pq2Mugshots, 5 = lsl1vga
+              // 4 = pq2Mugshots, 5 = lsl1vga, 6 = sq3
 var mask = document.getElementById("maskEN");
 var cNumImg = document.getElementById("counter");
 var kQShipImg = document.getElementById("rockSide");
@@ -52,12 +54,14 @@ var mugCel = 0;
 var mugArray = ["BAINS", "COLBY", "DICKEY", "GRANANDEZ", "JONES",
                 "SIMMS", "SNIDER", "TASELLI"];
 var mugStr = "";
+var grindCel = 0;
 var bkgnd;
 var xPosition;
 var yPosition;
 var score = 0;
 var rightAns; 
 var ans = 0; // player's answer
+var jsonData;
 var splitData;
 var questionJson;
 var q;
@@ -79,7 +83,7 @@ const myAudio = document.createElement("audio");
 //var textLowerLim = 141;
 var mode1Arr = [], mode3Arr = [], mode4Arr = [], mode5Arr = [];
 var mode1JArr = [], mode5JArr = [];
-var mode1I = 0, mode3I = 0, mode4I = 0, mode5I = 0;
+var mode1I = 0, mode3I = 0, mode4I = 0, mode5I = 0, mode6I = 0;
 var mode1J = 0, mode5J = 0;
 var modeCompletionBonus = [0, 200, 0, 50, 300, 400];
 var notPerfect = 0; 
@@ -130,13 +134,15 @@ function animate() {
     if (mode == 1 || mode == 5) {
         //
     } else if (mode == 3) {
-        // shipAnimation
+        // kq
         drawBkgnd();
-        drawKQShip();
     } else if (mode == 4) {
-        // shipAnimation
+        // pq
         drawBkgnd();
         drawPQ2Mug();    
+    } else if (mode == 6) {
+        // sq
+        drawBkgnd();    
     }
     animateCounter()
     drawCounter();
@@ -257,9 +263,13 @@ function drawCounter() {
         x = 95;
         y = 190;
     } else if (mode == 5) {
-        //lsl1vga
+        // lsl1vga
         x = 560;
         y = 20;
+    } else if (mode == 6) {
+        // sq3
+        x = 12;
+        y = 400;
     }
     for (let i = 0; i < 3; i++){
         let sx = counterArray[i*2] * 12 // Num's x loc on spritesheet
@@ -290,6 +300,22 @@ function drawKQShip() {
     shipCel ++;
     if (shipCel > 7) {
         shipCel = 0;
+    }
+}
+
+function drawSQ3grind() {
+    kQShipImg = document.getElementById("sq3grind");
+    let x = 362;
+    let y = 376;
+    let celW = 45;
+    let celH = 15;
+    let sx = grindCel*(celW);
+    let sy = 0;
+
+    ctx.drawImage(kQShipImg, sx,sy, celW, celH, x, y, celW*2, celH*2);
+    grindCel ++;
+    if (grindCel > 3) {
+        grindCel = 0;
     }
 }
 
