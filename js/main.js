@@ -47,6 +47,10 @@ function initClick() {
                 mugStr = mugStr + String.fromCharCode(e.keyCode);
                 //mugStr = mugStr + e.keyCode;
             }
+        } else if (mode == 0) {
+            if (e.keyCode == 68) {
+                debug = 1;
+            }
         }
     }
 }
@@ -61,10 +65,10 @@ function doTriviaClick() {
     if (nxt == 1) {
         // 2nd click triggers new question
         nxt = 0;
+        ans = 0;
         nextQuestion();
     } else {
         // player selects answer
-        ans = 0;
 
         /* testing guidelines
         for (let i=0; i<5; i++) {
@@ -79,13 +83,12 @@ function doTriviaClick() {
         */
         
 
-        if (mode == 3) {
+        if (mode == 3 || mode == 6) {
             // kingsQuestions works different
             // check if clicked in an answer
             for (let i = 0; i<4; i++) {
                 if (yPosition > (qBaseNum + (i*qSpacing)) && yPosition <= (qBaseNum + qSpacing + (i*qSpacing))) {
                     ans = i+1;
-                    console.log("ans: "+ans);
                 }
             }
             if (ans > 0) {
@@ -104,7 +107,6 @@ function doTriviaClick() {
             for (let i = 0; i<4; i++) {
                 if (yPosition > (qBaseNum + (i*qSpacing)) && yPosition <= (qBaseNum + qSpacing + (i*qSpacing))) {
                     ans = i+2;
-                    //console.log("ans: "+ans);
                 }
             }
 
@@ -125,7 +127,6 @@ function doTriviaClick() {
                         str = wrapText(questionJson.correct_answer, wrapLen); 
                     }
                     printText(str, xp, qBaseNum + (qSpacing/2) + (qSpacing*a));
-                    //console.log("score: " + score);
                 } else {
                     score --;
                     notPerfect = 1;
@@ -156,7 +157,7 @@ function doTriviaClick() {
 }
 
 function nextQuestion() {
-    /*let s = score % 30;
+    let s = score % 40;
     if ((score%10) == 0 && score != 0 ) {
         // every ten questions do mugshot
         mode = 4; // pq2mug
@@ -166,7 +167,9 @@ function nextQuestion() {
         mode = 3; // kingsQuestions
     } else if (s > 20 && s < 30) {
         mode = 1; // lsl3
-    }*/
+    } else if (s > 30 && s < 40) {
+        mode = 6; // sq3 open trivia
+    }
 
     if (mode == 1) {
         qSpacing = 75;
@@ -195,8 +198,6 @@ function nextQuestion() {
 
 function pqQuestion() {
     mugStr = "";
-    console.log("next mugshot");
-    //mugCel = Math.floor(Math.random()*8);
     mugCel = mode4Arr[mode4I];
     mode4I ++;
     if (mode4I >= mode4Arr.length) {
@@ -210,7 +211,6 @@ function pqQuestion() {
 
 function kqQuestion() {
     console.log("new kings question");
-    ans = 0;
     ansArray = [];
     // use next shuffled array question
     let r = mode3Arr[mode3I];
@@ -230,7 +230,6 @@ function kqQuestion() {
 
             let decoder = new TextDecoder("iso-8859-1");
             let data = decoder.decode(buffer);
-            console.log("data: "+data);
             let trunk = data.slice(2);
             splitData = trunk.split("\x00");
             ctx.fillStyle = "Blue";
@@ -278,6 +277,7 @@ function otQuestion() {
 }
 
 function addOTQuestion() {
+    ansArray = [];
     ansArray.push(fjson(questionJson.question), wrapLen);
     r = Math.floor(Math.random() * 4);
     let ia = 0;
@@ -296,7 +296,7 @@ function addOTQuestion() {
     console.log("rightAns): " + rightAns);
 
     mode6I ++;
-    if (modegI == jsonData.length) {
+    if (mode6I == jsonData.length) {
         mode6I = 0;
     }
 }
@@ -306,13 +306,11 @@ function lsl3Question() {
     let s;
     ansArray = [];
     drawBkgnd();
-    ctx.fillStyle = "Yellow";
-    printText(getLangStr(1),400,50); //score: 
     
     // load questions
     // each lsl3 and lsl1vga text file has five questions
     // first get the next randomized file
-    let r;
+    let p;
     switch (mode) {
         case 1:
             gm = "lsl3"
@@ -329,7 +327,7 @@ function lsl3Question() {
                     modeCompletionBonus[mode] = 0;
                 } 
             }
-            r = mode1Arr[mode1I];
+            p = mode1Arr[mode1I];
             break;
         case 5:
             gm = "lsl1vga"
@@ -346,15 +344,15 @@ function lsl3Question() {
                     modeCompletionBonus[mode] = 0;
                 } 
             }
-            r = mode5Arr[mode5I];
+            p = mode5Arr[mode5I];
             break;
         default:
     }
 
     if (mode == 5 && lang != "PL") {
-        s = "data/" + lang + "/" + gm + "/" + r + ".tex";
+        s = "data/" + lang + "/" + gm + "/" + p + ".tex";
     } else {
-        s = "data/" + lang + "/" + gm + "/text."+r;
+        s = "data/" + lang + "/" + gm + "/text." + p;
     }
     fetch(s)
     //.then(response => response.text())
@@ -593,13 +591,24 @@ function drawBkgnd() {
         // print the question
         if (questionJson) {
             ctx.fillStyle = "Yellow";
-            printText(ansArray[0], 30, qBaseNum-30);
+            printText(wrapText(ansArray[0], wrapLen), 30, qBaseNum-30);
             for (let i = 2;i<6;i++) {
-                //console.log("ansArray[i]: "+ansArray[i] +", i: "+i);
-                printText(ansArray[i], 60, qBaseNum + (qSpacing/2) + (qSpacing*(i-2)));
+                if (i-1 == ans) {
+                    if (ans == rightAns) {
+                        ctx.fillStyle = "Green";
+                    } else {
+                        ctx.fillStyle = "Red";
+                    }
+                    
+                } else {
+                    ctx.fillStyle = "Yellow";
+                }
+                printText(wrapText(ansArray[i], wrapLen), 60, qBaseNum + (qSpacing/2) + (qSpacing*(i-2)));
             }
         }
     }
     
     drawCounter();
+    ctx.fillStyle = "White";
+    printText(getLangStr(1),10,445); //score: 
 };

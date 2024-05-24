@@ -23,7 +23,7 @@
 <script type="text/javascript" src="./js/lang.js"></script>
 <script type="text/javascript" src="./js/util.js"></script>
 
-<canvas id="myCanvas" width="640" height="458" style="border:1px solid #d3d3d3; cursor: url(img/Cursor999.cur), default;">
+<canvas id="myCanvas" width="640" height="458" style="border:1px solid #000000; cursor: url(img/Cursor999.cur), default;">
 Your browser does not support the HTML5 canvas tag.</canvas>
 <img id="title" src="img/title.png" width="642" height="458" hidden>
 <img id="maskEN" src="img/lsl3/mask.png" width="642" height="458" hidden>
@@ -86,7 +86,8 @@ var mode1JArr = [], mode5JArr = [];
 var mode1I = 0, mode3I = 0, mode4I = 0, mode5I = 0, mode6I = 0;
 var mode1J = 0, mode5J = 0;
 var modeCompletionBonus = [0, 200, 0, 50, 300, 400];
-var notPerfect = 0; 
+var notPerfect = 0;
+var debug = 0;
 
 function start() {
     ctx.imageSmoothingEnabled = false;
@@ -116,9 +117,7 @@ function start() {
     for (let i = 721; i < 753; i++) {
         mode5Arr.push(i);
     }
-    console.log("mode5Arr: " + mode5Arr);
     mode5Arr = shuffle(mode5Arr);
-    console.log("shuffled mode5Arr: " + mode5Arr);
     for (let i = 0; i < 5; i++) {
         mode5JArr.push(i);
     }
@@ -146,6 +145,26 @@ function animate() {
     }
     animateCounter()
     drawCounter();
+    let x = 121;
+    let y = 445;
+    if (mode == 1) {
+        x = 30;
+        y = 430;
+    }
+    if (debug) {
+        ctx.fillStyle = "White";
+        let dbs;
+        if (mode == 4) {
+            dbs = "mode: " + mode + ", answer: " + mugArray[mugCel];
+        } else {
+            if (rightAns == 5) {
+                dbs = "mode: " + mode + ", answer: any";
+            } else {
+                dbs = "mode: " + mode + ", answer: " + rightAns;
+            }
+        }
+        printText(dbs, x, y);
+    }
 }
 
 function animateCounter() {
