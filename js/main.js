@@ -572,7 +572,11 @@ function drawBkgnd() {
         }
     } else if (mode == 4) {
         // PoliceQuest Mugshot background
-        bkgnd = document.getElementById("pq2bkgrnd");
+        if (lang == "SP") {
+            bkgnd = document.getElementById("pq2bkgrndSP");
+        } else {
+            bkgnd = document.getElementById("pq2bkgrnd");
+        }
         ctx.drawImage(bkgnd, 0, 0);
         drawPQ2Mug();
         ctx.font = "28px SQ3font";
