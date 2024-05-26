@@ -574,6 +574,8 @@ function drawBkgnd() {
         // PoliceQuest Mugshot background
         if (lang == "SP") {
             bkgnd = document.getElementById("pq2bkgrndSP");
+        } else if (lang == "FR") {
+            bkgnd = document.getElementById("pq2bkgrndFR");
         } else {
             bkgnd = document.getElementById("pq2bkgrnd");
         }
