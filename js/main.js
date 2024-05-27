@@ -188,7 +188,7 @@ function nextQuestion() {
             // every ten questions do mugshot
             mode = 4; // pq2mug
         } else if (s >= 0 && s < 10) {
-            //mode = 5; // lsl1vga
+            mode = 5; // lsl1vga
         } else if (s > 10 && s < 20) {
             mode = 3; // kingsQuestions
         } else if (s > 20 && s < 30) {
