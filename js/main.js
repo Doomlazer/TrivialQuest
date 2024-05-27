@@ -39,6 +39,7 @@ function initClick() {
                 // return key
                 if (mugStr == mugArray[mugCel]) {
                     score ++;
+                    pqQuestionsCorrect ++;
                 } else {
                     score --;
                     notPerfect = 1; 
@@ -50,7 +51,7 @@ function initClick() {
                     mode4Arr = shuffle(mode4Arr);
                     if (modeCompletionBonus[mode] > 0) {
                         // one time score bonus for seeing all pqmugs
-                        score = score + modeCompletionBonus[mode];
+                        score = score + (modeCompletionBonus[mode]*pqQuestionsCorrect);
                         modeCompletionBonus[mode] = 0;
                         mode = 7;
                     }

@@ -87,7 +87,7 @@ function getLangStr(n) {
     }
     if (n == 2) { // Correct
         if (lang == "EN") {
-            str = "Correct"
+            str = "Correct";
             return str
         } else if (lang == "FR") {
             str = "Correct";
@@ -106,7 +106,7 @@ function getLangStr(n) {
     }
     if (n == 3) { // "Wrong "
         if (lang == "EN") {
-            str = "Wrong"
+            str = "Wrong";
             return str
         } else if (lang == "FR") {
             str = "Faux";
@@ -121,6 +121,51 @@ function getLangStr(n) {
             str = "\u0179le"; // Źle
             return str
         }
-
+    }
+    if (n == 7) { // Police quest bonus string 1
+        if (lang == "EN") {
+            str = "\"For answering " + pqQuestionsCorrect + 
+                    " of " + mode4Arr.length + " correctly";
+            return str
+        } else if (lang == "FR") {
+            str = "\"Pour avoir répondu correctement à " + pqQuestionsCorrect + 
+                    " questions sur " + mode4Arr.length;
+            return str
+        } else if (lang == "SP") {
+            str = "\"Por responder correctamente " + pqQuestionsCorrect + 
+                    " de " + mode4Arr.length + " preguntas";
+            return str
+        } else if (lang == "GR") {
+            str = "\"Für die richtige Beantwortung von " + pqQuestionsCorrect + 
+                    " von " + mode4Arr.length + " Fragen";
+            return str
+        } else if (lang == "PL") {
+            str = "\"Za poprawną odpowiedź na " + pqQuestionsCorrect + 
+                    " z " + mode4Arr.length + " pytań";
+            return str
+        }
+    }
+    if (n == 8) { // Police quest bonus string 2
+        if (lang == "EN") {
+            str = "here is a bonus of " + 
+                    (modeCompletionBonus[mode]*pqQuestionsCorrect) + " points.\"";
+            return str
+        } else if (lang == "FR") {
+            str = "voici un bonus de " + 
+                    (modeCompletionBonus[mode]*pqQuestionsCorrect) + " points.\"";
+            return str
+        } else if (lang == "SP") {
+            str = "aquí hay una bonificación de " + 
+                    (modeCompletionBonus[mode]*pqQuestionsCorrect) + " puntos.\"";
+            return str
+        } else if (lang == "GR") {
+            str = "hier gibt es einen Bonus von " + 
+                    (modeCompletionBonus[mode]*pqQuestionsCorrect) + " Punkten.\"";
+            return str
+        } else if (lang == "PL") {
+            str = "oto bonus w wysokości " + 
+                    (modeCompletionBonus[mode]*pqQuestionsCorrect) + " punktów.\"";
+            return str
+        }
     }
 }

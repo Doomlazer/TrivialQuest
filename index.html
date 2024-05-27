@@ -58,6 +58,7 @@ var mugCel = 0;
 var mugArray = ["BAINS", "COLBY", "DICKEY", "GRANANDEZ", "JONES",
                 "SIMMS", "SNIDER", "TASELLI"];
 var mugStr = "";
+var pqQuestionsCorrect = 0;
 var grindCel = 0;
 var chiefCel = 0;
 var bkgnd;
@@ -406,8 +407,9 @@ function drawPQ2chief() {
     }
     //console.log("chiefCel: " + chiefCel + ", (chiefCel%10):"+(chiefCel%10));
     ctx.fillStyle = "Yellow";
-    printText("\"For completing all of the mugshot questions", 120, 400);
-    printText("you've earned a bonus of 50 points.\"", 140,420);
+    // print bonus points awarded in current language
+    printText(getLangStr(7), 120, 400);
+    printText(getLangStr(8), 140, 420);
 }
 
 
