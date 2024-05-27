@@ -17,6 +17,10 @@ function initClick() {
             doTriviaClick();
         } else if (mode == 4) {
             //pqQuestion();
+        } else if (mode == 7) {
+            //pqQuestion();
+            mode = 6; // change to anything but 7 to advance
+            nextQuestion();
         }
     }
 
@@ -29,6 +33,7 @@ function initClick() {
                 e.preventDefault();
             }
             if (e.keyCode == 8) {
+                // delete
                 mugStr = mugStr.slice(0, -1)
             } else if (e.keyCode == 13) {
                 // return key
@@ -38,6 +43,19 @@ function initClick() {
                     score --;
                     notPerfect = 1; 
                 }
+
+                mode4I ++;
+                if (mode4I >= mode4Arr.length) {
+                    mode4I = 0;
+                    mode4Arr = shuffle(mode4Arr);
+                    if (modeCompletionBonus[mode] > 0) {
+                        // one time score bonus for seeing all pqmugs
+                        score = score + modeCompletionBonus[mode];
+                        modeCompletionBonus[mode] = 0;
+                        mode = 7;
+                    }
+                }
+
                 nxt == 1;
                 nextQuestion();
                 mugStr = "";
@@ -51,14 +69,21 @@ function initClick() {
             if (e.keyCode == 68) {
                 debug = 1;
             }
+        } else if (mode == 7) {
+            if (e.keyCode == 13) {
+                //nxt == 1;
+                mode = 6; // change to anything but 7 to advance
+                nextQuestion();
+            };
         }
     }
 }
 
 function doTitleClick() {
-    mode = 6;
+    mode = mode = 5;
     nextQuestion();
     animateIntervalID = setInterval(animate, animationSpeed);
+    counterAnimateIntervalID = setInterval(animateCounter, animationSpeed);
 }
 
 function doTriviaClick() {
@@ -158,17 +183,19 @@ function doTriviaClick() {
 
 function nextQuestion() {
     let s = score % 40;
-    if ((score%10) == 0 && score != 0 ) {
-        // every ten questions do mugshot
-        mode = 4; // pq2mug
-    } else if (s >= 0 && s < 10) {
-        mode = 5; // lsl1vga
-    } else if (s > 10 && s < 20) {
-        mode = 3; // kingsQuestions
-    } else if (s > 20 && s < 30) {
-        mode = 1; // lsl3
-    } else if (s > 30 && s < 40) {
-        mode = 6; // sq3 open trivia
+    if (mode != 7) {
+        if ((score%10) == 0 && score != 0 ) {
+            // every ten questions do mugshot
+            mode = 4; // pq2mug
+        } else if (s >= 0 && s < 10) {
+            //mode = 5; // lsl1vga
+        } else if (s > 10 && s < 20) {
+            mode = 3; // kingsQuestions
+        } else if (s > 20 && s < 30) {
+            mode = 1; // lsl3
+        } else if (s > 30 && s < 40) {
+            mode = 6; // sq3 open trivia
+        }
     }
 
     if (mode == 1) {
@@ -193,24 +220,21 @@ function nextQuestion() {
         qBaseNum = 150;
         wrapLen = 45;
         lsl3Question();
+    } else if (mode == 7) {
+        pq2Bonus();
     }
 }
 
 function pqQuestion() {
     mugStr = "";
     mugCel = mode4Arr[mode4I];
-    mode4I ++;
-    if (mode4I >= mode4Arr.length) {
-        mode4I = 0;
-        mode4Arr = shuffle(mode4Arr);
-        // one time score bonus for seeing all pqmugs
-        score = score + modeCompletionBonus[mode];
-        modeCompletionBonus[mode] = 0;
-    }
+}
+
+function pq2Bonus() {
+    drawBkgnd();
 }
 
 function kqQuestion() {
-    console.log("new kings question");
     ansArray = [];
     // use next shuffled array question
     let r = mode3Arr[mode3I];
@@ -612,6 +636,11 @@ function drawBkgnd() {
                 printText(wrapText(ansArray[i], wrapLen), 60, qBaseNum + (qSpacing/2) + (qSpacing*(i-2)));
             }
         }
+    } else if (mode == 7) {
+        // PQ2 Bonus
+        bkgnd = document.getElementById("pq2bkgrndBonus");
+        ctx.drawImage(bkgnd, 0, 0);
+        drawPQ2chief();
     }
     
     drawCounter();

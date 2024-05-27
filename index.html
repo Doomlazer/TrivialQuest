@@ -37,6 +37,8 @@ Your browser does not support the HTML5 canvas tag.</canvas>
 <img id="pq2bkgrndSP" src="img/pq2Mug/pq2bkgrndSP.png" width="642" height="458" hidden>
 <img id="pq2bkgrndFR" src="img/pq2Mug/pq2bkgrndFR.png" width="642" height="458" hidden>
 <img id="pq2mug" src="img/pq2Mug/pq2mug.png" width="312" height="52" hidden>
+<img id="pq2bkgrndBonus" src="img/pq2Mug/bonus/pq2bkgrndBonus.png" width="642" height="458" hidden>
+<img id="pq2bonusSprites" src="img/pq2Mug/bonus/pq2bonusSprites.png" width="330" height="115" hidden>
 <img id="lsl1vgabkgrnd" src="img/lsl1vga/lsl1vgabkgrnd.png" width="642" height="458" hidden>
 <img id="sq3bkgrnd" src="img/sq3/sq3bkgrnd.png" width="642" height="458" hidden>
 <img id="sq3grind" src="img/sq3/sq3grind.png" width="180" height="15" hidden>
@@ -46,7 +48,7 @@ var c = document.getElementById("myCanvas");
 var ctx = c.getContext("2d");
 //ctx.scale(2, 2);
 var mode = 0; // 0 = title, 1 = lsl3, 2 = OpenTrivia, 3 = Kings questions, 
-              // 4 = pq2Mugshots, 5 = lsl1vga, 6 = sq3
+              // 4 = pq2Mugshots, 5 = lsl1vga, 6 = sq3, 7 = pq2 Bonus caption
 var mask = document.getElementById("maskEN");
 var cNumImg = document.getElementById("counter");
 var kQShipImg = document.getElementById("rockSide");
@@ -57,6 +59,7 @@ var mugArray = ["BAINS", "COLBY", "DICKEY", "GRANANDEZ", "JONES",
                 "SIMMS", "SNIDER", "TASELLI"];
 var mugStr = "";
 var grindCel = 0;
+var chiefCel = 0;
 var bkgnd;
 var xPosition;
 var yPosition;
@@ -78,6 +81,7 @@ let ansArray = [];
 let wrapLen = 30; //32;
 let prevSong = -1;
 var animateIntervalID;
+var counterAnimateIntervalID;
 var animationSpeed = 100;
 var counterArray = [0,0,0,0,0,0]; // [c1x,c1y,c2x,c2y,c3x,c3y]
 const myAudio = document.createElement("audio");
@@ -87,7 +91,7 @@ var mode1Arr = [], mode3Arr = [], mode4Arr = [], mode5Arr = [];
 var mode1JArr = [], mode5JArr = [];
 var mode1I = 0, mode3I = 0, mode4I = 0, mode5I = 0, mode6I = 0;
 var mode1J = 0, mode5J = 0;
-var modeCompletionBonus = [0, 200, 0, 50, 300, 400];
+var modeCompletionBonus = [0, 200, 0, 300, 50, 400];
 var notPerfect = 0;
 var debug = 0;
 
@@ -144,16 +148,19 @@ function animate() {
     } else if (mode == 6) {
         // sq
         drawBkgnd();    
+    } else if (mode == 7) {
+        // pq2 bonus
+        drawBkgnd();    
     }
-    animateCounter()
-    drawCounter();
-    let x = 121;
-    let y = 445;
-    if (mode == 1) {
-        x = 30;
-        y = 430;
-    }
+    //animateCounter()
+    //drawCounter();
     if (debug) {
+        let x = 121;
+        let y = 445;
+        if (mode == 1) {
+            x = 30;
+            y = 430;
+        }
         ctx.fillStyle = "White";
         let dbs;
         if (mode == 4) {
@@ -270,6 +277,7 @@ function animateCounter() {
             }
         }
     }
+    drawCounter();
 }
 
 function drawCounter() {
@@ -291,6 +299,10 @@ function drawCounter() {
         // sq3
         x = 12;
         y = 400;
+    } else if (mode == 7) {
+        // pq bonus
+        x = 20;
+        y = 380;
     }
     for (let i = 0; i < 3; i++){
         let sx = counterArray[i*2] * 12 // Num's x loc on spritesheet
@@ -359,13 +371,52 @@ function drawPQ2Mug() {
 
 }
 
+function drawPQ2chief() {
+    pqMugImg = document.getElementById("pq2bonusSprites"); //39 x 52 x 8 mugs
+    let x = 212;
+    let y = 240;
+    let celW;
+    let celH;
+    let sx;
+    let sy;
+
+    // chief neck x76 y17 83 37
+    let cw = 83, ch = 37;
+    let cx = 142, cy = 282;
+    ctx.drawImage(pqMugImg, 76, 17, cw, ch, cx, cy, cw*2, ch*2);
+    
+    // chief head
+    cw = 76, ch = 88;
+    cx = 142, cy = 130;
+    ctx.drawImage(pqMugImg, 0, 17, cw, ch, cx, cy, cw*2, ch*2);
+
+    // Sonny head
+    cw = 84, ch = 99;
+    cx = 343, cy = 158;
+    ctx.drawImage(pqMugImg, 159, 17, cw, ch, cx, cy, cw*2, ch*2);
+
+    // chief mouth
+    celW = 33;
+    celH = 16; 
+    sx = (chiefCel%10)*(celW); //Num's x loc on spritesheet
+    sy = 0 // one row, so always 0
+    ctx.drawImage(pqMugImg, sx, sy, celW, celH, x, y, celW*2, celH*2);
+    if (chiefCel<149) {
+        chiefCel ++;
+    }
+    //console.log("chiefCel: " + chiefCel + ", (chiefCel%10):"+(chiefCel%10));
+    ctx.fillStyle = "Yellow";
+    printText("\"For completing all of the mugshot questions", 120, 400);
+    printText("you've earned a bonus of 50 points.\"", 140,420);
+}
+
 
 function startAnimate() {
-    animateIntervalID = setInterval(animate, parseInt(animationSpeed, 10));
+    counterAnimateIntervalID = setInterval(animateCounter, parseInt(animationSpeed, 10));
 }
 
 function stopAnimate() {
-    clearInterval(animateIntervalID);
+    clearInterval(counterAnimateIntervalID);
 }
 
 
