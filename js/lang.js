@@ -148,23 +148,23 @@ function getLangStr(n) {
     if (n == 8) { // Police quest bonus string 2
         if (lang == "EN") {
             str = "here is a bonus of " + 
-                    (modeCompletionBonus[4]*pqQuestionsCorrect) + " points.\"";
+                    (5*pqQuestionsCorrect) + " points.\"";
             return str
         } else if (lang == "FR") {
             str = "voici un bonus de " + 
-                    (modeCompletionBonus[4]*pqQuestionsCorrect) + " points.\"";
+                    (5*pqQuestionsCorrect) + " points.\"";
             return str
         } else if (lang == "SP") {
             str = "aquí hay una bonificación de " + 
-                    (modeCompletionBonus[4]*pqQuestionsCorrect) + " puntos.\"";
+                    (5*pqQuestionsCorrect) + " puntos.\"";
             return str
         } else if (lang == "GR") {
             str = "hier gibt es einen Bonus von " + 
-                    (modeCompletionBonus[4]*pqQuestionsCorrect) + " Punkten.\"";
+                    (5*pqQuestionsCorrect) + " Punkten.\"";
             return str
         } else if (lang == "PL") {
             str = "oto bonus w wysokości " + 
-                    (modeCompletionBonus[4]*pqQuestionsCorrect) + " punktów.\"";
+                    (5*pqQuestionsCorrect) + " punktów.\"";
             return str
         }
     }
