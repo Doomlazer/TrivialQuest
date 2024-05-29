@@ -71,22 +71,24 @@ function initClick() {
             if (e.keyCode == 68) {
                 debug = 1;
                 const button = document.createElement('button')
-                button.innerText = 'Score up'
+                button.innerText = 'Score up, finish lsl1vga'
                 button.id = 'button'
                 button.addEventListener('click', () => {
                     scoreUpDown(1);
+                    mode5I = mode5Arr.length;
                 })
                 const button1 = document.createElement('button')
-                button.innerText = 'Score down'
-                button.id = 'button'
-                button.addEventListener('click', () => {
-                    scoreUpDown(0);
+                button1.innerText = 'Score down'
+                button1.id = 'button'
+                button1.addEventListener('click', () => {
+                    scoreUpDown(0); 
                 })
                 const button2 = document.createElement('button')
-                button.innerText = 'Dump ans[] to console'
-                button.id = 'button'
-                button.addEventListener('click', () => {
+                button2.innerText = 'Dump ans[] to console'
+                button2.id = 'button'
+                button2.addEventListener('click', () => {
                     console.log("ansArray:");
+                    console.log(ansArray);
                     for (i=0; i<ansArray.length;i++) {
                         console.log(ansArray[i]);
                     }
