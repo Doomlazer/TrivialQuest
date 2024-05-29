@@ -53,6 +53,7 @@ function initClick() {
                         // one time score bonus for seeing all pqmugs
                         score = score + (modeCompletionBonus[mode]*pqQuestionsCorrect);
                         modeCompletionBonus[mode] = 0;
+                        prevMode = mode;
                         mode = 7;
                     }
                 }
@@ -69,6 +70,33 @@ function initClick() {
         } else if (mode == 0) {
             if (e.keyCode == 68) {
                 debug = 1;
+                const button = document.createElement('button')
+                button.innerText = 'Score up'
+                button.id = 'button'
+                button.addEventListener('click', () => {
+                    scoreUpDown(1);
+                })
+                const button1 = document.createElement('button')
+                button.innerText = 'Score down'
+                button.id = 'button'
+                button.addEventListener('click', () => {
+                    scoreUpDown(0);
+                })
+                const button2 = document.createElement('button')
+                button.innerText = 'Dump ans[] to console'
+                button.id = 'button'
+                button.addEventListener('click', () => {
+                    console.log("ansArray:");
+                    for (i=0; i<ansArray.length;i++) {
+                        console.log(ansArray[i]);
+                    }
+                })
+
+                document.body.appendChild(button);
+                document.body.appendChild(button1);
+                document.body.appendChild(button2);
+                
+            
             }
         } else if (mode == 7) {
             if (e.keyCode == 13) {
@@ -120,14 +148,17 @@ function doTriviaClick() {
             if (ans > 0) {
                 if (ans == rightAns) {
                     score ++;
+                    if (mode == 3) {
+                        kqQuestionCorrect ++;
+                    } else if (mode == 6) {
+                        sq3QuestionCorrect ++;
+                    }
                 } else {
                     score --;
                     notPerfect = 1;
                 } 
                 nxt ++;
             }
-        } else if (mode == 6) {
-            // sq3
         } else {
             // check if clicked in an answer
             for (let i = 0; i<4; i++) {
@@ -147,7 +178,11 @@ function doTriviaClick() {
                     score ++;
                     ctx.fillStyle = "Green";
                     let str;
-                    if (mode == 1 || mode == 5) {
+                    if (mode == 1) {
+                        lsl3QuestionCorrect ++;
+                        str = ansArray[a]
+                    } else if (mode == 5) {
+                        lsl1vgaQuestionCorrect ++;
                         str = ansArray[a];
                     } else if (mode == 2) {
                         str = wrapText(questionJson.correct_answer, wrapLen); 
@@ -177,6 +212,33 @@ function doTriviaClick() {
                 }
                 // wait a click before next question
                 nxt ++;
+
+                if (mode5I >= mode5Arr.length) {
+                    // reshuffle
+                    mode5I = 0;
+                    mode5Arr = shuffle(mode5Arr);
+
+                    if (modeCompletionBonus[mode] > 0) {
+                        // one time score bonus for seeing all lsl1vga questions
+                        score = score + (modeCompletionBonus[mode]*lsl1vgaQuestionsCorrect);
+                        modeCompletionBonus[mode] = 0;
+                        prevMode = mode;
+                        mode = 7;
+                    }
+                }
+                if (mode1I >= mode1Arr.length) {
+                    // reshuffle
+                    mode1I = 0;
+                    mode1Arr = shuffle(mode1Arr);
+                    
+                    if (modeCompletionBonus[mode] > 0) {
+                        // one time score bonus for seeing all lsl3 questions
+                        score = score + (modeCompletionBonus[mode]*lsl3QuestionsCorrect);
+                        modeCompletionBonus[mode] = 0;
+                        prevMode = mode;
+                        mode = 7;
+                    }
+                }
             }
         }
     }
@@ -229,6 +291,7 @@ function nextQuestion() {
 function pqQuestion() {
     mugStr = "";
     mugCel = mode4Arr[mode4I];
+    if (debug) { console.log("Question number: "+mugCel);}
 }
 
 function pq2Bonus() {
@@ -239,6 +302,7 @@ function kqQuestion() {
     ansArray = [];
     // use next shuffled array question
     let r = mode3Arr[mode3I];
+    if (debug) { console.log("Question number: "+r);}
     mode3I ++;
     if (mode3I >= mode3Arr.length) {
         // reshuffle
@@ -339,18 +403,11 @@ function lsl3Question() {
     switch (mode) {
         case 1:
             gm = "lsl3"
+            lsl1vgaQuestionsAsked ++;
             if (mode1J >= 5) {
                 mode1JArr = shuffle(mode1JArr);
                 mode1J = 0;
                 mode1I ++;
-                if (mode1I >= mode1Arr.length) {
-                    // reshuffle
-                    mode1I = 0;
-                    mode1Arr = shuffle(mode1Arr);
-                    // one time score bonus for seeing all lsl1vga
-                    score = score + modeCompletionBonus[mode];
-                    modeCompletionBonus[mode] = 0;
-                } 
             }
             p = mode1Arr[mode1I];
             break;
@@ -360,14 +417,6 @@ function lsl3Question() {
                 mode5JArr = shuffle(mode5JArr);
                 mode5J = 0;
                 mode5I ++;
-                if (mode5I >= mode5Arr.length) {
-                    // reshuffle
-                    mode5I = 0;
-                    mode5Arr = shuffle(mode5Arr);
-                    // one time score bonus for seeing all lsl3
-                    score = score + modeCompletionBonus[mode];
-                    modeCompletionBonus[mode] = 0;
-                } 
             }
             p = mode5Arr[mode5I];
             break;
@@ -403,8 +452,8 @@ function lsl3Question() {
             } else if (lang == "GR") {
                 trunk = trunk.replaceAll("\u0081","\u00fc"); //  -> ü
                 trunk = trunk.replaceAll("\u00e1","\u00df"); // á -> ß
-                trunk = trunk.replaceAll("\u0161","?2"); // š
-                trunk = trunk.replaceAll("\u017d","?3"); // Ž
+                trunk = trunk.replaceAll("\u0161","\u00dc"); // š -> Ü
+                trunk = trunk.replaceAll("\u017d","\u00c4"); // Ž -> Ä
                 trunk = trunk.replaceAll("\u0192","?4"); // ƒ
                 trunk = trunk.replaceAll("\u201a","?5"); // ‚
                 trunk = trunk.replaceAll("\u201d","\u00f6"); // ” -> ö

@@ -38,8 +38,10 @@ Your browser does not support the HTML5 canvas tag.</canvas>
 <img id="pq2bkgrndSP" src="img/pq2Mug/pq2bkgrndSP.png" width="642" height="458" hidden>
 <img id="pq2bkgrndFR" src="img/pq2Mug/pq2bkgrndFR.png" width="642" height="458" hidden>
 <img id="pq2mug" src="img/pq2Mug/pq2mug.png" width="312" height="52" hidden>
-<img id="pq2bkgrndBonus" src="img/pq2Mug/bonus/pq2bkgrndBonus.png" width="642" height="458" hidden>
-<img id="pq2bonusSprites" src="img/pq2Mug/bonus/pq2bonusSprites.png" width="330" height="115" hidden>
+<img id="pq2bkgrndBonus" src="img/bonus/pq2bkgrndBonus.png" width="642" height="458" hidden>
+<img id="lsl1vgabkgrndBonus" src="img/bonus/lslvgabkgrndBonus.png" width="642" height="458" hidden>
+<img id="pq2bonusSprites" src="img/bonus/pq2bonusSprites.png" width="330" height="115" hidden>
+<img id="lsl1vgabonusSprites" src="img/bonus/lsl1vgabonusSprites.png" width="306" height="47" hidden>
 <img id="lsl1vgabkgrnd" src="img/lsl1vga/lsl1vgabkgrnd.png" width="642" height="458" hidden>
 <img id="sq3bkgrnd" src="img/sq3/sq3bkgrnd.png" width="642" height="458" hidden>
 <img id="sq3grind" src="img/sq3/sq3grind.png" width="180" height="15" hidden>
@@ -50,6 +52,7 @@ var ctx = c.getContext("2d");
 //ctx.scale(2, 2);
 var mode = 0; // 0 = title, 1 = lsl3, 2 = OpenTrivia, 3 = Kings questions, 
               // 4 = pq2Mugshots, 5 = lsl1vga, 6 = sq3, 7 = pq2 Bonus caption
+var prevMode = 0;
 var mask = document.getElementById("maskEN");
 var cNumImg = document.getElementById("counter");
 var kQShipImg = document.getElementById("rockSide");
@@ -60,8 +63,15 @@ var mugArray = ["BAINS", "COLBY", "DICKEY", "GRANANDEZ", "JONES",
                 "SIMMS", "SNIDER", "TASELLI"];
 var mugStr = "";
 var pqQuestionsCorrect = 0;
+var lsl1vgaQuestionsAsked = 0;
+var lsl1vgaQuestionsCorrect = 0;
+var lsl3QuestionsAsked = 0;
+var lsl3QuestionsCorrect = 0;
+var kqQuestionsCorrect = 0;
+var sq3QuestionsAsked = 0;
+var sqQ3uestionsCorrect = 0;
 var grindCel = 0;
-var chiefCel = 0;
+var bonusCel = 0;
 var bkgnd;
 var xPosition;
 var yPosition;

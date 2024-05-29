@@ -168,4 +168,50 @@ function getLangStr(n) {
             return str
         }
     }
+    if (n == 9) { // lsl1vga bonus string 1
+        if (lang == "EN") {
+            str = "\"For answering " + lsl1vgaQuestionsCorrect + 
+                    " of " + lsl3QuestionsAsked + " LSL1VGA questions correctly";
+            return str
+        } else if (lang == "FR") {
+            str = "\"Pour avoir répondu correctement à " + lsl1vgaQuestionsCorrect + 
+                    " questions sur les photos d'identité judiciaire " + lsl3QuestionsAsked;
+            return str
+        } else if (lang == "SP") {
+            str = "\"Por responder correctamente " + lsl1vgaQuestionsCorrect + 
+                    " de " + lsl3QuestionsAsked + " preguntas sobre la foto policial";
+            return str
+        } else if (lang == "GR") {
+            str = "\"Für die richtige Beantwortung von " + lsl1vgaQuestionsCorrect + 
+                    " von " + lsl3QuestionsAsked + " fragen zu Fahndungsfotos";
+            return str
+        } else if (lang == "PL") {
+            str = "\"Za poprawną odpowiedź na " + lsl1vgaQuestionsCorrect + 
+                    " z " + lsl3QuestionsAsked + " pytania dotyczące zdjęć";
+            return str
+        }
+    }
+    if (n == 10) { // lsl1vga bonus string 2
+        if (lang == "EN") {
+            str = "here is a bonus of " + 
+                    (5*lsl1vgaQuestionsCorrect) + " points.\"";
+            return str
+        } else if (lang == "FR") {
+            str = "voici un bonus de " + 
+                    (5*lsl1vgaQuestionsCorrect) + " points.\"";
+            return str
+        } else if (lang == "SP") {
+            str = "aquí hay una bonificación de " + 
+                    (5*lsl1vgaQuestionsCorrect) + " puntos.\"";
+            return str
+        } else if (lang == "GR") {
+            str = "hier gibt es einen Bonus von " + 
+                    (5*lsl1vgaQuestionsCorrect) + " Punkten.\"";
+            return str
+        } else if (lang == "PL") {
+            str = "oto bonus w wysokości " + 
+                    (5*lsl1vgaQuestionsCorrect) + " punktów.\"";
+            return str
+        }
+    }
 }

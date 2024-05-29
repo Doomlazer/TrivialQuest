@@ -95,10 +95,15 @@ function drawBkgnd() {
             }
         }
     } else if (mode == 7) {
-        // PQ2 Bonus
-        bkgnd = document.getElementById("pq2bkgrndBonus");
+        // Do Bonus
         ctx.drawImage(bkgnd, 0, 0);
-        drawPQ2chief();
+        if (prevMode == 5) {
+            bkgnd = document.getElementById("lsl1vgabkgrndBonus");
+            drawLSL3VGA();
+        } else if (prevMode == 4) {
+            drawPQ2chief();
+            bkgnd = document.getElementById("pq2bkgrndBonus");
+        }
     }
     
     drawCounter();
@@ -232,11 +237,11 @@ function drawPQ2chief() {
     // chief mouth
     celW = 33;
     celH = 16; 
-    sx = (chiefCel%10)*(celW); //Num's x loc on spritesheet
+    sx = (bonusCel%10)*(celW); //Num's x loc on spritesheet
     sy = 0 // one row, so always 0
     ctx.drawImage(pqMugImg, sx, sy, celW, celH, x, y, celW*2, celH*2);
-    if (chiefCel<149) {
-        chiefCel ++;
+    if (bonusCel<149) {
+        bonusCel ++;
     }
     //console.log("chiefCel: " + chiefCel + ", (chiefCel%10):"+(chiefCel%10));
     ctx.fillStyle = "Yellow";
@@ -244,3 +249,39 @@ function drawPQ2chief() {
     printText(getLangStr(7), 120, 400);
     printText(getLangStr(8), 140, 420);
 }
+
+function drawLSL3VGA() {
+    const img = document.getElementById("lsl1vgabonusSprites"); //
+    let x = 212;
+    let y = 240;
+    let celW;
+    let celH;
+    let sx;
+    let sy;
+
+    // eyes
+    celW = 51;
+    celH = 15; 
+    sx = (bonusCel%6)*(celW); //Num's x loc on spritesheet
+    sy = 0 // one row, so always 0
+    ctx.drawImage(img, sx, sy, celW, celH, x, y, celW*2, celH*2);
+    
+
+    // woman mouth
+    celW = 47;
+    celH = 31; 
+    x = 212;
+    y = 280;
+    sx = (bonusCel%10)*(celW); //Num's x loc on spritesheet
+    sy = 16
+    ctx.drawImage(img, sx, sy, celW, celH, x, y, celW*2, celH*2);
+    if (bonusCel<149) {
+        bonusCel ++;
+    }
+    //console.log("bonusCel: " + bonusCel + ", (bonusCelCel%10):"+(bonusCelCel%10));
+    ctx.fillStyle = "Yellow";
+    // print bonus points awarded in current language
+    printText(getLangStr(9), 120, 400);
+    printText(getLangStr(10), 140, 420);
+}
+
