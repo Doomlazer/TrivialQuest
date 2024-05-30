@@ -181,10 +181,10 @@ function doTriviaClick() {
                     ctx.fillStyle = "Green";
                     let str;
                     if (mode == 1) {
-                        lsl3QuestionCorrect ++;
+                        lsl3QuestionsCorrect ++;
                         str = ansArray[a]
                     } else if (mode == 5) {
-                        lsl1vgaQuestionCorrect ++;
+                        lsl1vgaQuestionsCorrect ++;
                         str = ansArray[a];
                     } else if (mode == 2) {
                         str = wrapText(questionJson.correct_answer, wrapLen); 
