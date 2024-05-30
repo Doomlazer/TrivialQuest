@@ -123,6 +123,7 @@ function doTriviaClick() {
         nxt = 0;
         ans = 0;
         nextQuestion();
+        console.log("do nextQuestion()");
     } else {
         // player selects answer
 
@@ -149,13 +150,15 @@ function doTriviaClick() {
             }
             if (ans > 0) {
                 if (ans == rightAns) {
+                    console.log("ans right");
                     score ++;
                     if (mode == 3) {
-                        kqQuestionCorrect ++;
+                        kqQuestionsCorrect ++;
                     } else if (mode == 6) {
-                        sq3QuestionCorrect ++;
+                        sq3QuestionsCorrect ++;
                     }
                 } else {
+                    console.log("ans wwrong");
                     score --;
                     notPerfect = 1;
                 } 
