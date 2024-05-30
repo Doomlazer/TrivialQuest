@@ -252,8 +252,8 @@ function drawPQ2chief() {
 
 function drawLSL3VGA() {
     const img = document.getElementById("lsl1vgabonusSprites"); //
-    let x = 212;
-    let y = 240;
+    let x = 243;
+    let y = 136;
     let celW;
     let celH;
     let sx;
@@ -262,19 +262,19 @@ function drawLSL3VGA() {
     // eyes
     celW = 51;
     celH = 15; 
-    sx = (bonusCel%6)*(celW); //Num's x loc on spritesheet
+    sx = (bonusCel%50)*(celW); //Num's x loc on spritesheet
     sy = 0 // one row, so always 0
-    ctx.drawImage(img, sx, sy, celW, celH, x, y, celW*2, celH*2);
+    ctx.drawImage(img, sx, sy, celW, celH, x, y, celW*2, celH*2.25);
     
 
     // woman mouth
     celW = 47;
-    celH = 31; 
-    x = 212;
-    y = 280;
+    celH = 36; 
+    x = 245;
+    y = 177;
     sx = (bonusCel%10)*(celW); //Num's x loc on spritesheet
     sy = 16
-    ctx.drawImage(img, sx, sy, celW, celH, x, y, celW*2, celH*2);
+    ctx.drawImage(img, sx, sy, celW, celH, x, y, celW*2, celH*2.25);
     if (bonusCel<149) {
         bonusCel ++;
     }
