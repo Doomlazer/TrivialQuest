@@ -356,6 +356,7 @@ function kqQuestion() {
 
 function otQuestion() {
     if (mode6I == 0) {
+        questionJson = null;
         fetch("https://opentdb.com/api.php?amount=10&type=multiple")
         .then(response => { return response.json(); })
         .then((data) => {

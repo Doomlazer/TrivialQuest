@@ -3,7 +3,7 @@ function drawBkgnd() {
     ctx.clearRect(0, 0, c.width, c.height);
 
     if (mode == 1 || mode == 2) {
-        // Larry 3 or open questions background
+        // Larry 3, mode 2 currently unused
         setFont(langNum); 
         bkgnd = document.getElementById("background");
         ctx.drawImage(bkgnd, 0, 0);
