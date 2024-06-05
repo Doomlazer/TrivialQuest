@@ -110,7 +110,7 @@ var egos = [];
 
 class ego {
     constructor() {
-        this.x = 0;
+        this.x = -16;
         this.y = 300;
         this.loop = 3;
         this.cel = 0;
@@ -118,12 +118,14 @@ class ego {
         this.cy;
         this.cw;
         this.ch;
-        this.dead = false;
+        this.dead = 0;
         // loops [cx1, cy1, cw1, ch1, cx2, cy2, cw2, ch2, ...]
         this.loops = [0, 16, 16, 43, // loop 0 jump
                       0, 61, 28, 33,  // loop 1 stuggle
-                      0,96,35,30,  // loop 2 rise on beam
-                      202,58,22,22]  // loop 3 sitting
+                      0, 96, 35, 30,  // loop 2 rise on beam
+                      202, 58, 22, 22, // loop 3 sitting
+                      0, 127, 15, 33, // loop 4 walk right
+                      0, 164, 55, 37]  // loop 5 not a pretty sight
     }
 }
 

@@ -191,10 +191,9 @@ function drawSQ3grind() {
     }
 
     // rogers
-    if (egos.length == 0) {
+    if (egos.length == 0 && nxt == 0) {
         const rog = new ego();
         egos.push(rog);
-        console.log("new rog added");
     }
     for (let i=0; i<egos.length; i++) {
         let rog = egos[i];
@@ -202,10 +201,14 @@ function drawSQ3grind() {
         
         //console.log("rog.x: " + rog.x);
         // find cell width/height
-        rog.cx = rog.loops[rog.loop*4];
-        rog.cy = rog.loops[rog.loop*4+1];
-        rog.cw = rog.loops[rog.loop*4+2];
-        rog.ch = rog.loops[rog.loop*4+3];
+        let tl = rog.loop;
+        if (rog.loop == 9) {
+            tl = 3; // sit until death by grinder
+        }
+        rog.cx = rog.loops[tl*4];
+        rog.cy = rog.loops[tl*4+1];
+        rog.cw = rog.loops[tl*4+2];
+        rog.ch = rog.loops[tl*4+3];
         let lcx;
         if (rog.loop == 3) {
             lcx = rog.cx;
@@ -213,6 +216,12 @@ function drawSQ3grind() {
             lcx = rog.cel*rog.cw;
         }
         ctx.drawImage(sqImg, lcx, rog.cy, rog.cw, rog.ch, rog.x, rog.y, rog.cw*2, rog.ch*2);
+        if (rog.x > 300 && rog.dead == 0) {
+            rog.dead = 1;
+        }
+        if (rog.dead == 1) {
+            rog.loop = 9;
+        }
         switch (rog.loop) {
             case 0:
                 rog.cel ++;
@@ -233,15 +242,52 @@ function drawSQ3grind() {
             case 2:
                 rog.cel ++;
                 if (rog.cel > 4) {
-                    rog.loop = 86;
+                    rog.loop = 4;
+                    rog.y = 230;
                     rog.cel = 0;
                 }
                 break;
             case 3:
+                // sitting
                 rog.x += 2;
                 if (ans == rightAns) {
                     rog.loop = 0;
                     rog.y = 260;
+                }
+                break;
+            case 4:
+                // walk left
+                rog.x -= 5;
+                rog.cel ++;
+                if (rog.cel > 7) {
+                    rog.cel = 0;
+                }
+                if (rog.x < -20) {
+                    rog.loop = 86;
+                }
+                break;
+            case 5:
+                // not a pretty sight
+                rog.cel ++;
+                if (rog.cel > 3) {
+                    rog.cel = 0;
+                    rog.dead ++;
+                    if (rog.dead > 6) {
+                        rog.loop = 86;
+                    }
+                }
+                break;
+            case 9:
+                // question wrong, kill roger
+                rog.x += 2;
+                // jump at end of track
+                if (rog.x > 250 && rog.x <253) {
+                    rog.y -= 2;
+                } else if (rog.x > 252 && rog.x <260) {
+                    rog.y += 2;
+                } else if (rog.x > 259) {
+                    rog.loop = 5;
+                    rog.dead ++;
                 }
                 break;
             case 86:
