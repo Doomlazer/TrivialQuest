@@ -50,9 +50,18 @@ function musicOnOff() {
 }
 
 function fjson(text) {
+    // fix open trivia strings
     let s = text.replaceAll("&quot;", "\"");
     s = s.replaceAll("&#039;", "'");
     s = s.replaceAll("&#amp;", "&");
+    s = s.replaceAll("&#eacute;", "é");
+    s = s.replaceAll("&#egrave;", "è");
+    s = s.replaceAll("&#aacute;", "á");
+    s = s.replaceAll("&#agrave;", "à");
+    s = s.replaceAll("&#Eacute;", "É");
+    s = s.replaceAll("&#Egrave;", "È");
+    s = s.replaceAll("&#Aacute;", "Á");
+    s = s.replaceAll("&#Agrave;", "À");
     return s;
 }
 

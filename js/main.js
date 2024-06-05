@@ -111,7 +111,7 @@ function initClick() {
 }
 
 function doTitleClick() {
-    mode = 6; // temp sq for tesing   //mode = 5;
+    mode = 5;
     nextQuestion();
     animateIntervalID = setInterval(animate, animationSpeed);
     counterAnimateIntervalID = setInterval(animateCounter, animationSpeed);
@@ -250,7 +250,7 @@ function doTriviaClick() {
 }
 
 function nextQuestion() {
-    /*let s = score % 40;
+    let s = score % 40;
     if (mode != 7) {
         if ((score%10) == 0 && score != 0 ) {
             // every ten questions do mugshot
@@ -264,7 +264,7 @@ function nextQuestion() {
         } else if (s > 30 && s < 40) {
             mode = 6; // sq3 open trivia
         }
-    }*/
+    }
 
     if (mode == 1) {
         qSpacing = 75;
