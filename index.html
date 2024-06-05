@@ -44,7 +44,7 @@ Your browser does not support the HTML5 canvas tag.</canvas>
 <img id="lsl1vgabonusSprites" src="img/bonus/lsl1vgabonusSprites.png" width="306" height="47" hidden>
 <img id="lsl1vgabkgrnd" src="img/lsl1vga/lsl1vgabkgrnd.png" width="642" height="458" hidden>
 <img id="sq3bkgrnd" src="img/sq3/sq3bkgrnd.png" width="642" height="458" hidden>
-<img id="sq3grind" src="img/sq3/sq3grind.png" width="180" height="15" hidden>
+<img id="sq3sprites" src="img/sq3/sq3sprites.png" width="224" height="126" hidden>
 
 <script>
 var c = document.getElementById("myCanvas");
@@ -106,6 +106,26 @@ var mode1J = 0, mode5J = 0;
 var modeCompletionBonus = [0, 200, 0, 300, 5, 400];
 var notPerfect = 0;
 var debug = 0;
+var egos = [];
+
+class ego {
+    constructor() {
+        this.x = 0;
+        this.y = 300;
+        this.loop = 3;
+        this.cel = 0;
+        this.cx;
+        this.cy;
+        this.cw;
+        this.ch;
+        this.dead = false;
+        // loops [cx1, cy1, cw1, ch1, cx2, cy2, cw2, ch2, ...]
+        this.loops = [0, 16, 16, 43, // loop 0 jump
+                      0, 61, 28, 33,  // loop 1 stuggle
+                      0,96,35,30,  // loop 2 rise on beam
+                      202,58,22,22]  // loop 3 sitting
+    }
+}
 
 function start() {
     ctx.imageSmoothingEnabled = false;

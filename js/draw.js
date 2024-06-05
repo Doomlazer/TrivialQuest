@@ -176,7 +176,7 @@ function drawKQShip() {
 }
 
 function drawSQ3grind() {
-    kQShipImg = document.getElementById("sq3grind");
+    let sqImg = document.getElementById("sq3sprites");
     let x = 362;
     let y = 376;
     let celW = 45;
@@ -184,10 +184,71 @@ function drawSQ3grind() {
     let sx = grindCel*(celW);
     let sy = 0;
 
-    ctx.drawImage(kQShipImg, sx,sy, celW, celH, x, y, celW*2, celH*2);
+    ctx.drawImage(sqImg, sx,sy, celW, celH, x, y, celW*2, celH*2);
     grindCel ++;
     if (grindCel > 3) {
         grindCel = 0;
+    }
+
+    // rogers
+    if (egos.length == 0) {
+        const rog = new ego();
+        egos.push(rog);
+        console.log("new rog added");
+    }
+    for (let i=0; i<egos.length; i++) {
+        let rog = egos[i];
+        // loop0 0-13 cels, loop3 1 cel
+        
+        //console.log("rog.x: " + rog.x);
+        // find cell width/height
+        rog.cx = rog.loops[rog.loop*4];
+        rog.cy = rog.loops[rog.loop*4+1];
+        rog.cw = rog.loops[rog.loop*4+2];
+        rog.ch = rog.loops[rog.loop*4+3];
+        let lcx;
+        if (rog.loop == 3) {
+            lcx = rog.cx;
+        } else {
+            lcx = rog.cel*rog.cw;
+        }
+        ctx.drawImage(sqImg, lcx, rog.cy, rog.cw, rog.ch, rog.x, rog.y, rog.cw*2, rog.ch*2);
+        switch (rog.loop) {
+            case 0:
+                rog.cel ++;
+                if (rog.cel > 13) {
+                    rog.loop = 1;
+                    rog.cel = 0;
+                    rog.y = 280;
+                }
+                break;
+            case 1:
+                rog.cel ++;
+                if (rog.cel > 5) {
+                    rog.loop = 2;
+                    rog.cel = 0;
+                    rog.y = 240;
+                }
+                break;
+            case 2:
+                rog.cel ++;
+                if (rog.cel > 4) {
+                    rog.loop = 86;
+                    rog.cel = 0;
+                }
+                break;
+            case 3:
+                rog.x += 2;
+                if (ans == rightAns) {
+                    rog.loop = 0;
+                    rog.y = 260;
+                }
+                break;
+            case 86:
+                egos = [];
+                break;
+            default:
+        }
     }
 }
 
