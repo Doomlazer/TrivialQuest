@@ -21,6 +21,35 @@ function drawBkgnd() {
             mask = document.getElementById("maskEN");
         }
         ctx.drawImage(mask, 0, 0); 
+
+        let xp = 331;
+        qBaseNum = 150;
+        wrapLen = 30;
+        ctx.fillStyle = "Blue";
+        printText(ansArray[4], xp-29, qBaseNum-30);
+        for (let i = 0; i < 4; i ++) {
+            if (ans == 0) {
+                printText(ansArray[i], xp+29, qBaseNum + (qSpacing/2) + (qSpacing*i));
+            } else {
+                if (ans == i+2) {
+                    // players selection
+                    if (ans-1 == rightAns) {
+                        ctx.fillStyle = "Green"; 
+                    } else {
+                        ctx.fillStyle = "Red"; 
+                    }
+                    printText(ansArray[i], xp+29, qBaseNum + (qSpacing/2) + (qSpacing*i));
+                } else {
+                    ctx.fillStyle = "Blue";
+                    printText(ansArray[i], xp+29, qBaseNum + (qSpacing/2) + (qSpacing*i));
+                }
+            }
+        }
+        let la = ["a.", "b.", "c.","d."];
+        for (let i = 0; i < 4; i ++) {
+            printText(la[i], xp-29, qBaseNum + (qSpacing/2) + (qSpacing*i));
+        }
+
     } else if (mode == 3) {
         // KingsQuestions background
         bkgnd = document.getElementById("kQuestions");
@@ -69,7 +98,36 @@ function drawBkgnd() {
     } else if (mode == 5) {
         // lsl1vga background
         bkgnd = document.getElementById("lsl1vgabkgrnd");
+
+        let xp = 100;
+        qBaseNum = 100;
+        wrapLen = 50;
         ctx.drawImage(bkgnd, 0, 0);
+        setLSL1Color();
+        printText(ansArray[4], xp-29, qBaseNum-30);
+        for (let i = 0; i < 4; i ++) {
+            if (ans == 0) {
+                printText(ansArray[i], xp+29, qBaseNum + (qSpacing/2) + (qSpacing*i));
+            } else {
+                if (ans == i+2) {
+                    // players selection
+                    if (ans-1 == rightAns) {
+                        ctx.fillStyle = "Green"; 
+                    } else {
+                        ctx.fillStyle = "Red"; 
+                    }
+                    printText(ansArray[i], xp+29, qBaseNum + (qSpacing/2) + (qSpacing*i));
+                } else {
+                    setLSL1Color();
+                    printText(ansArray[i], xp+29, qBaseNum + (qSpacing/2) + (qSpacing*i));
+                }
+            }
+        }
+        setLSL1Color();
+        let la = ["a.", "b.", "c.","d."];
+        for (let i = 0; i < 4; i ++) {
+            printText(la[i], xp-29, qBaseNum + (qSpacing/2) + (qSpacing*i));
+        }
     } else if (mode == 6) {
         // sq3 background
         bkgnd = document.getElementById("sq3bkgrnd");
@@ -148,7 +206,7 @@ function drawCounter() {
         let sy = counterArray[i*2+1] * 22 // Num's y loc on spritesheet
         let dx = x + (i * (11*2)); // 11*2 for 2x spacing
         ctx.drawImage(cNumImg, sx,sy, 11, 21, dx, y, 11*2, 21*2);
-    } 
+    }
 }
 
 function drawKQShip() {
@@ -210,7 +268,7 @@ function drawSQ3grind() {
         rog.cw = rog.loops[tl*4+2];
         rog.ch = rog.loops[tl*4+3];
         let lcx;
-        if (rog.loop == 3) {
+        if (rog.loop == 3 || rog.loop == 9) {
             lcx = rog.cx;
         } else {
             lcx = rog.cel*rog.cw;
@@ -281,11 +339,13 @@ function drawSQ3grind() {
                 // question wrong, kill roger
                 rog.x += 2;
                 // jump at end of track
-                if (rog.x > 250 && rog.x <253) {
+                if (rog.x > 299 && rog.x < 320) {
                     rog.y -= 2;
-                } else if (rog.x > 252 && rog.x <260) {
-                    rog.y += 2;
-                } else if (rog.x > 259) {
+                    rog.x += 2;
+                } else if (rog.x > 319 && rog.x <350) {
+                    rog.y += 4;
+                    rog.x += 2;
+                } else if (rog.x > 349) {
                     rog.loop = 5;
                     rog.dead ++;
                 }

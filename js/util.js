@@ -62,6 +62,8 @@ function fjson(text) {
     s = s.replaceAll("&#Egrave;", "È");
     s = s.replaceAll("&#Aacute;", "Á");
     s = s.replaceAll("&#Agrave;", "À");
+    s = s.replaceAll("&#Auml;", "Ä");
+    s = s.replaceAll("&#auml;", "ä");
     return s;
 }
 
@@ -109,17 +111,44 @@ function wrapText(text, maxWidth) {
 }
 
 function printText(text, x ,y) {
-    let textArray = text.split("\n");
-    ctx.fillText(textArray[0], x, y);
-    if (typeof textArray[1] !== 'undefined') {
-        if (textArray[0] != textArray[1]) {
-            ctx.fillText(textArray[1], x, y+18);
+    if (typeof text !== 'undefined') {
+        let textArray = text.split("\n");
+        ctx.fillText(textArray[0], x, y);
+        if (typeof textArray[1] !== 'undefined') {
+            if (textArray[0] != textArray[1]) {
+                ctx.fillText(textArray[1], x, y+18);
+            }
+        }
+        if (typeof textArray[2] !== 'undefined') {
+            if (textArray[0] != textArray[2]) {
+                ctx.fillText(textArray[2], x, y+36);
+            }
         }
     }
-    if (typeof textArray[2] !== 'undefined') {
-        if (textArray[0] != textArray[2]) {
-            ctx.fillText(textArray[2], x, y+36);
+}
+
+function setLSL1Color() {
+    if (mode == 5) {
+        switch (q/5) {
+            case 0:
+                ctx.fillStyle = "rgb(223, 223, 71)";
+                break;
+            case 1:
+                ctx.fillStyle = "rgb(135, 235, 135)";
+                break;
+            case 2:
+                ctx.fillStyle = "rgb(135,135, 235)";
+                break;
+            case 3:
+                ctx.fillStyle = "rgb(255, 77, 255)";
+                break;
+            case 4:
+                ctx.fillStyle = "rgb(77, 255, 255)";
+                break;
+            default:
         }
+    } else {
+        ctx.fillStyle = "Blue";
     }
 }
 
@@ -140,3 +169,11 @@ function shuffle(array) {
 
   return array;
 }
+
+function getMousePos(canvas, evt) {
+    var rect = canvas.getBoundingClientRect();
+    return {
+      x: evt.clientX - rect.left,
+      y: evt.clientY - rect.top
+    };
+  }

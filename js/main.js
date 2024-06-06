@@ -2,8 +2,9 @@ function initClick() {
     c.addEventListener('click', getClickPosition, false);
 
     function getClickPosition(e) {
-        xPosition = e.clientX;
-        yPosition = e.clientY - 10;
+        var pos = getMousePos(c, e);
+        xPosition = pos.x;
+        yPosition = pos.y;
 
         if (prevSong == -1) {
             prevSong = 0;
@@ -16,10 +17,12 @@ function initClick() {
         } else if (mode == 1 || mode == 3 || mode == 5 || mode == 6) {
             doTriviaClick();
         } else if (mode == 4) {
-            //pqQuestion();
+            // pq2
+            nxt = 1;
         } else if (mode == 7) {
-            //pqQuestion();
+            // bonus modes
             mode = 6; // change to anything but 7 to advance
+            nxt = 1;
             nextQuestion();
         }
     }
@@ -123,7 +126,6 @@ function doTriviaClick() {
         nxt = 0;
         ans = 0;
         nextQuestion();
-        console.log("do nextQuestion()");
     } else {
         // player selects answer
 
@@ -192,11 +194,11 @@ function doTriviaClick() {
                     } else if (mode == 2) {
                         str = wrapText(questionJson.correct_answer, wrapLen); 
                     }
-                    printText(str, xp, qBaseNum + (qSpacing/2) + (qSpacing*a));
+                    //printText(str, xp, qBaseNum + (qSpacing/2) + (qSpacing*a));
                 } else {
                     score --;
                     notPerfect = 1;
-                    ctx.fillStyle = "Red";
+                    /*ctx.fillStyle = "Red";
                     if (mode == 1 || mode == 5) {
                         printText(ansArray[a], xp, qBaseNum + (qSpacing/2) + (qSpacing*a));
                     } else {
@@ -206,15 +208,15 @@ function doTriviaClick() {
                         }
                         let s = wrapText(questionJson.incorrect_answers[b], wrapLen);
                         printText(s, xp, qBaseNum + (qSpacing/2) + (qSpacing*a));
-                    }
+                    }*/
                 }
 
-                ctx.fillStyle = "Yellow";
+                /*ctx.fillStyle = "Yellow";
                 if (ans > 0 && (ans-1 == rightAns || rightAns == 5)) {
                     printText(getLangStr(2),400,25); // correct
                 } else {
                     printText(getLangStr(3),400,25); // wrong
-                }
+                }*/
                 // wait a click before next question
                 nxt ++;
 
@@ -270,7 +272,7 @@ function nextQuestion() {
         qSpacing = 75;
         qBaseNum = 100; // horribily named question y pos
         wrapLen = 30;
-        lsl3Question();
+        lslQuestion();
     } else if (mode == 2 || mode == 6) {
         qSpacing = 50;
         qBaseNum = 80;
@@ -287,7 +289,7 @@ function nextQuestion() {
         qSpacing = 75;
         qBaseNum = 150;
         wrapLen = 45;
-        lsl3Question();
+        lslQuestion();
     } else if (mode == 7) {
         pq2Bonus();
     }
@@ -299,9 +301,9 @@ function pqQuestion() {
     if (debug) { console.log("Question number: "+mugCel);}
 }
 
-function pq2Bonus() {
+/*function pq2Bonus() {
     drawBkgnd();
-}
+}*/
 
 function kqQuestion() {
     ansArray = [];
@@ -388,7 +390,7 @@ function addOTQuestion() {
     for (let i=0; i<ansArray.length; i++) {
         console.log(ansArray[i]);
     }
-    console.log("rightAns): " + rightAns);
+    //console.log("rightAns): " + rightAns);
 
     mode6I ++;
     if (mode6I == jsonData.length) {
@@ -396,11 +398,11 @@ function addOTQuestion() {
     }
 }
 
-function lsl3Question() {
+function lslQuestion() {
     let gm;
     let s;
     ansArray = [];
-    drawBkgnd();
+    //drawBkgnd();
     
     // load questions
     // each lsl3 and lsl1vga text file has five questions
@@ -419,6 +421,7 @@ function lsl3Question() {
             break;
         case 5:
             gm = "lsl1vga"
+            lsl3QuestionsAsked ++;
             if (mode5J >= 5) {
                 mode5JArr = shuffle(mode5JArr);
                 mode5J = 0;
@@ -434,157 +437,128 @@ function lsl3Question() {
     } else {
         s = "data/" + lang + "/" + gm + "/text." + p;
     }
-    fetch(s)
-    //.then(response => response.text())
-    .then(response => response.arrayBuffer())
-    .then((buffer) => {
+    if (typeof p !== "undefined") {
+        fetch(s)
+        //.then(response => response.text())
+        .then(response => response.arrayBuffer())
+        .then((buffer) => {
 
-            let decoder = new TextDecoder("iso-8859-1");
-            let data = decoder.decode(buffer);
-            //console.log(data);
-            let trunk = data.slice(2);
-            if (lang == "FR") {
-                trunk = trunk.replaceAll("\u0152","\u00ee"); // Œ -> î
-                trunk = trunk.replaceAll("\u0160","\u00e8"); // Š -> è
-                trunk = trunk.replaceAll("\u0192","\u00e2"); // ƒ -> â
-                trunk = trunk.replaceAll("\u02c6","\u00ea"); // ^ -> ê
-                trunk = trunk.replaceAll("\u2013","\u00fb"); // — -> û
-                trunk = trunk.replaceAll("\u2014","\u00f9"); // — -> ù
-                trunk = trunk.replaceAll("\u201a","\u00e9"); // ‚ -> é
-                trunk = trunk.replaceAll("\u201c","\u00f4"); // “ -> ô
-                trunk = trunk.replaceAll("\u2021","\u00e7"); // ‡ -> ç
-                trunk = trunk.replaceAll("\u2026","\u00e0"); // … -> à
-                trunk = trunk.replaceAll("\u2030","\u00eb"); // ‰ -> ë
-            } else if (lang == "GR") {
-                trunk = trunk.replaceAll("\u0081","\u00fc"); //  -> ü
-                trunk = trunk.replaceAll("\u00e1","\u00df"); // á -> ß
-                trunk = trunk.replaceAll("\u0161","\u00dc"); // š -> Ü
-                trunk = trunk.replaceAll("\u017d","\u00c4"); // Ž -> Ä
-                trunk = trunk.replaceAll("\u0192","?4"); // ƒ
-                trunk = trunk.replaceAll("\u201a","?5"); // ‚
-                trunk = trunk.replaceAll("\u201d","\u00f6"); // ” -> ö
-                trunk = trunk.replaceAll("\u201e","\u00e4"); // „ -> ä
-                trunk = trunk.replaceAll("\u2122","\u00d6"); // ™ -> Ö
-            } else if (lang == "SP" && mode == 1) {
-                trunk = trunk.replaceAll("\u0026","\u00bf"); // & -> ¿
-                trunk = trunk.replaceAll("\u002b","\u00e9"); // + -> é
-                trunk = trunk.replaceAll("\u007d","\u00f1"); // } -> ñ
-                trunk = trunk.replaceAll("\u003e","\u00f3"); // > -> ó
-                trunk = trunk.replaceAll("\u007b","\u00fa"); // { -> ú
-                trunk = trunk.replaceAll("\u002a","\u00e1"); // * -> á
-                trunk = trunk.replaceAll("\u007c","\u00ed"); // | -> í
-                trunk = trunk.replaceAll("\u005e","\u00a1"); // ^ -> ¡
-            } else if (lang == "SP" && mode == 5) {
-                // TODO: lsl1vga Spanish uses different encoding from lsl3 SP
-            }
-            splitData = trunk.split("\x00");
+                let decoder = new TextDecoder("iso-8859-1");
+                let data = decoder.decode(buffer);
+                //console.log(data);
+                let trunk = data.slice(2);
+                if (lang == "FR") {
+                    trunk = trunk.replaceAll("\u0152","\u00ee"); // Œ -> î
+                    trunk = trunk.replaceAll("\u0160","\u00e8"); // Š -> è
+                    trunk = trunk.replaceAll("\u0192","\u00e2"); // ƒ -> â
+                    trunk = trunk.replaceAll("\u02c6","\u00ea"); // ^ -> ê
+                    trunk = trunk.replaceAll("\u2013","\u00fb"); // — -> û
+                    trunk = trunk.replaceAll("\u2014","\u00f9"); // — -> ù
+                    trunk = trunk.replaceAll("\u201a","\u00e9"); // ‚ -> é
+                    trunk = trunk.replaceAll("\u201c","\u00f4"); // “ -> ô
+                    trunk = trunk.replaceAll("\u2021","\u00e7"); // ‡ -> ç
+                    trunk = trunk.replaceAll("\u2026","\u00e0"); // … -> à
+                    trunk = trunk.replaceAll("\u2030","\u00eb"); // ‰ -> ë
+                } else if (lang == "GR") {
+                    trunk = trunk.replaceAll("\u0081","\u00fc"); //  -> ü
+                    trunk = trunk.replaceAll("\u00e1","\u00df"); // á -> ß
+                    trunk = trunk.replaceAll("\u0161","\u00dc"); // š -> Ü
+                    trunk = trunk.replaceAll("\u017d","\u00c4"); // Ž -> Ä
+                    trunk = trunk.replaceAll("\u0192","?4"); // ƒ
+                    trunk = trunk.replaceAll("\u201a","?5"); // ‚
+                    trunk = trunk.replaceAll("\u201d","\u00f6"); // ” -> ö
+                    trunk = trunk.replaceAll("\u201e","\u00e4"); // „ -> ä
+                    trunk = trunk.replaceAll("\u2122","\u00d6"); // ™ -> Ö
+                } else if (lang == "SP" && mode == 1) {
+                    trunk = trunk.replaceAll("\u0026","\u00bf"); // & -> ¿
+                    trunk = trunk.replaceAll("\u002b","\u00e9"); // + -> é
+                    trunk = trunk.replaceAll("\u007d","\u00f1"); // } -> ñ
+                    trunk = trunk.replaceAll("\u003e","\u00f3"); // > -> ó
+                    trunk = trunk.replaceAll("\u007b","\u00fa"); // { -> ú
+                    trunk = trunk.replaceAll("\u002a","\u00e1"); // * -> á
+                    trunk = trunk.replaceAll("\u007c","\u00ed"); // | -> í
+                    trunk = trunk.replaceAll("\u005e","\u00a1"); // ^ -> ¡
+                } else if (lang == "SP" && mode == 5) {
+                    // TODO: lsl1vga Spanish uses different encoding from lsl3 SP
+                }
+                splitData = trunk.split("\x00");
 
-            // get next randomized question
+                // get next randomized question
 
-            switch (mode) {
-                case 1:
-                    q = mode1JArr[mode1J]*5;
-                    mode1J ++;
-                    break;
-                case 5:
-                    q = mode5JArr[mode5J]*5;
-                    mode5J ++;
-                    break;
-                default:
-            }
-        
-            // change color for lsl1vga mode 5
-            if (mode == 5) {
-                switch (q/5) {
-                    case 0:
-                        ctx.fillStyle = "rgb(223, 223, 71)";
-                        break;
+                switch (mode) {
                     case 1:
-                        ctx.fillStyle = "rgb(135, 235, 135)";
+                        q = mode1JArr[mode1J]*5;
+                        mode1J ++;
                         break;
-                    case 2:
-                        ctx.fillStyle = "rgb(135,135, 235)";
-                        break;
-                    case 3:
-                        ctx.fillStyle = "rgb(255, 77, 255)";
-                        break;
-                    case 4:
-                         ctx.fillStyle = "rgb(77, 255, 255)";
+                    case 5:
+                        q = mode5JArr[mode5J]*5;
+                        mode5J ++;
                         break;
                     default:
                 }
-            } else {
-                ctx.fillStyle = "Blue";
-            }
-            let temp = splitData[q].slice(1);
-            let temp1 = splitData[q+1];
-            let temp2 = splitData[q+2];
-            let temp3 = splitData[q+3];
-            let temp4 = splitData[q+4];
-            // French, German, etc. patch files contain english, remove it
-            if (lang == "FR" && mode == 1) {
-                let tempArray = temp.split("%F");
-                temp = tempArray[1];
-                let tempArray1 = temp1.split("%F");
-                temp1 = tempArray1[1];
-                let tempArray2 = temp2.split("%F");
-                temp2 = tempArray2[1];
-                let tempArray3 = temp3.split("%F");
-                temp3 = tempArray3[1];
-                let tempArray4 = temp4.split("%F");
-                temp4 = tempArray4[1];
-            } else if (lang == "GR" && mode == 1) {
-                let tempArray = temp.split("%G");
-                temp = tempArray[1];
-                let tempArray1 = temp1.split("%G");
-                temp1 = tempArray1[1];
-                let tempArray2 = temp2.split("%G");
-                temp2 = tempArray2[1];
-                let tempArray3 = temp3.split("%G");
-                temp3 = tempArray3[1];
-                let tempArray4 = temp4.split("%G");
-                temp4 = tempArray4[1];
-            } else if (lang == "SP" && mode == 5) {
-                let tempArray = temp.split("#S");
-                temp = tempArray[1];
-                let tempArray1 = temp1.split("#S");
-                temp1 = tempArray1[1];
-                let tempArray2 = temp2.split("#S");
-                temp2 = tempArray2[1];
-                let tempArray3 = temp3.split("#S");
-                temp3 = tempArray3[1];
-                let tempArray4 = temp4.split("#S");
-                temp4 = tempArray4[1];
-            }
+        
+                let temp = splitData[q].slice(1);
+                let temp1 = splitData[q+1];
+                let temp2 = splitData[q+2];
+                let temp3 = splitData[q+3];
+                let temp4 = splitData[q+4];
+                // French, German, etc. patch files contain english, remove it
+                if (lang == "FR" && mode == 1) {
+                    let tempArray = temp.split("%F");
+                    temp = tempArray[1];
+                    let tempArray1 = temp1.split("%F");
+                    temp1 = tempArray1[1];
+                    let tempArray2 = temp2.split("%F");
+                    temp2 = tempArray2[1];
+                    let tempArray3 = temp3.split("%F");
+                    temp3 = tempArray3[1];
+                    let tempArray4 = temp4.split("%F");
+                    temp4 = tempArray4[1];
+                } else if (lang == "GR" && mode == 1) {
+                    let tempArray = temp.split("%G");
+                    temp = tempArray[1];
+                    let tempArray1 = temp1.split("%G");
+                    temp1 = tempArray1[1];
+                    let tempArray2 = temp2.split("%G");
+                    temp2 = tempArray2[1];
+                    let tempArray3 = temp3.split("%G");
+                    temp3 = tempArray3[1];
+                    let tempArray4 = temp4.split("%G");
+                    temp4 = tempArray4[1];
+                } else if (lang == "SP" && mode == 5) {
+                    let tempArray = temp.split("#S");
+                    temp = tempArray[1];
+                    let tempArray1 = temp1.split("#S");
+                    temp1 = tempArray1[1];
+                    let tempArray2 = temp2.split("#S");
+                    temp2 = tempArray2[1];
+                    let tempArray3 = temp3.split("#S");
+                    temp3 = tempArray3[1];
+                    let tempArray4 = temp4.split("#S");
+                    temp4 = tempArray4[1];
+                }
 
-            // print question
-            let xp;
-            let string = wrapText(temp, wrapLen);
-            // reposition questions for mode 1 or 5
-            if (mode == 5) {
-                xp = 100;
-                qBaseNum = 100;
-                wrapLen = 50;
-            } else {
-                xp = 331;
-                qBaseNum = 150;
-                wrapLen = 30;
+                // print question
+                let string = wrapText(temp, wrapLen);
+                //printText(string,xp-29,qBaseNum-30);
+                rightAns = splitData[q].slice(0,1);
+                let adj = 5;
+                ansArray.push(wrapText(temp1, wrapLen-adj));
+                ansArray.push(wrapText(temp2, wrapLen-adj));
+                ansArray.push(wrapText(temp3, wrapLen-adj));
+                ansArray.push(wrapText(temp4, wrapLen-adj));
+                ansArray.push(string);
+                /*for (let i = 0; i < 4; i ++) {
+                    printText(ansArray[i], xp, qBaseNum + (qSpacing/2) + (qSpacing*i));
+                }
+                let la = ["a.", "b.", "c.","d."];
+                for (let i = 0; i < 4; i ++) {
+                    printText(la[i], xp-29, qBaseNum + (qSpacing/2) + (qSpacing*i));
+                }*/
             }
-            printText(string,xp-29,qBaseNum-30);
-            rightAns = splitData[q].slice(0,1);
-            let adj = 5;
-            ansArray.push(wrapText(temp1, wrapLen-adj));
-            ansArray.push(wrapText(temp2, wrapLen-adj));
-            ansArray.push(wrapText(temp3, wrapLen-adj));
-            ansArray.push(wrapText(temp4, wrapLen-adj));
-            for (let i = 0; i < 4; i ++) {
-                printText(ansArray[i], xp, qBaseNum + (qSpacing/2) + (qSpacing*i));
-            }
-            let la = ["a.", "b.", "c.","d."];
-            for (let i = 0; i < 4; i ++) {
-                printText(la[i], xp-29, qBaseNum + (qSpacing/2) + (qSpacing*i));
-            }
-        }
-    )
+        )
+    } else {
+        return nextQuestion();
+    }
 };
 
