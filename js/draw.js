@@ -76,10 +76,12 @@ function drawBkgnd() {
                 }
             }
         }
-        let la = ["a.", "b.", "c.","d."];
-        ctx.fillStyle = "Blue";
-        for (let i = 0; i < 4; i ++) {
-            printText(la[i], xp, qBaseNum + (qSpacing/2) + (qSpacing*i));
+        if (ansArray[0].length > 0) {
+            let la = ["a.", "b.", "c.","d."];
+            ctx.fillStyle = "Blue";
+            for (let i = 0; i < 4; i ++) {
+                printText(la[i], xp, qBaseNum + (qSpacing/2) + (qSpacing*i));
+            }
         }
     } else if (mode == 4) {
         // PoliceQuest Mugshot background
