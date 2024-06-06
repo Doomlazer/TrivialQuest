@@ -51,7 +51,7 @@ function initClick() {
                 mode4I ++;
                 if (mode4I >= mode4Arr.length) {
                     mode4I = 0;
-                    mode4Arr = shuffle(mode4Arr);
+                    shuffle(mode4Arr);
                     if (modeCompletionBonus[mode] > 0) {
                         // one time score bonus for seeing all pqmugs
                         score = score + (modeCompletionBonus[mode]*pqQuestionsCorrect);
@@ -223,7 +223,7 @@ function doTriviaClick() {
                 if (mode5I >= mode5Arr.length) {
                     // reshuffle
                     mode5I = 0;
-                    mode5Arr = shuffle(mode5Arr);
+                    shuffle(mode5Arr);
 
                     if (modeCompletionBonus[mode] > 0) {
                         // one time score bonus for seeing all lsl1vga questions
@@ -236,7 +236,7 @@ function doTriviaClick() {
                 if (mode1I >= mode1Arr.length) {
                     // reshuffle
                     mode1I = 0;
-                    mode1Arr = shuffle(mode1Arr);
+                    shuffle(mode1Arr);
                     
                     if (modeCompletionBonus[mode] > 0) {
                         // one time score bonus for seeing all lsl3 questions
@@ -314,7 +314,7 @@ function kqQuestion() {
     if (mode3I >= mode3Arr.length) {
         // reshuffle
         mode3I = 0;
-        mode3Arr = shuffle(mode3Arr);
+        shuffle(mode3Arr);
         // one time score bonus for seeing all kings questions
         score = score + modeCompletionBonus[mode];
         modeCompletionBonus[mode] = 0;
@@ -413,7 +413,7 @@ function lslQuestion() {
             gm = "lsl3"
             lsl1vgaQuestionsAsked ++;
             if (mode1J >= 5) {
-                mode1JArr = shuffle(mode1JArr);
+                shuffle(mode1JArr);
                 mode1J = 0;
                 mode1I ++;
             }
@@ -423,7 +423,7 @@ function lslQuestion() {
             gm = "lsl1vga"
             lsl3QuestionsAsked ++;
             if (mode5J >= 5) {
-                mode5JArr = shuffle(mode5JArr);
+                shuffle(mode5JArr);
                 mode5J = 0;
                 mode5I ++;
             }

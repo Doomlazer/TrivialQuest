@@ -36,12 +36,13 @@ function setFont(l) {
 }
 
 function langSel(l) {
-    ctx.fillStyle = "Green";
+    //ctx.fillStyle = "Green";
     setFont(l);
+    if (mode != 0) {
+        nextQuestion();
+    }
 
-    nextQuestion();
-
-    // indicate langague has changed
+    /*/ indicate langague has changed
     ctx.fillStyle = "Black";
     let str;
     switch (l) {
@@ -62,7 +63,7 @@ function langSel(l) {
             break;
         default:
     }
-    //printText(str,350,450);
+    printText(str,350,450);*/
 }
 
 function getLangStr(n) {

@@ -41,11 +41,28 @@ function initAudio() {
     });
 }
 
+function playJoke() {
+    myAudio2.pause(); 
+    myAudio2.volume = 0.6;  
+    let l = lang;
+    if (l != "EN") {
+        l = "EN";
+    }
+    myAudio2.src = "audio/jokes/" + l + "/"+ jokes[jokesI] + ".mp3";
+    myAudio2.play();
+    jokesI ++;
+    if (jokesI > jokes.length) {
+        jokesI = 0;
+        shuffle(jokes);
+    }
+}
+
 function musicOnOff() {
     if (myAudio.paused) {
         myAudio.play();
     } else {
         myAudio.pause();
+        myAudio2.pause();
     }
 }
 
@@ -56,14 +73,21 @@ function fjson(text) {
     s = s.replaceAll("&#amp;", "&");
     s = s.replaceAll("&#eacute;", "é");
     s = s.replaceAll("&#egrave;", "è");
-    s = s.replaceAll("&#aacute;", "á");
-    s = s.replaceAll("&#agrave;", "à");
     s = s.replaceAll("&#Eacute;", "É");
     s = s.replaceAll("&#Egrave;", "È");
+
+    s = s.replaceAll("&#aacute;", "á");
+    s = s.replaceAll("&#agrave;", "à");
+    s = s.replaceAll("&#auml;", "ä");
     s = s.replaceAll("&#Aacute;", "Á");
     s = s.replaceAll("&#Agrave;", "À");
     s = s.replaceAll("&#Auml;", "Ä");
-    s = s.replaceAll("&#auml;", "ä");
+
+    s = s.replaceAll("&#oacute;", "ó");
+    s = s.replaceAll("&#ograve;", "ò");
+    s = s.replaceAll("&#Oacute;", "Ó");
+    s = s.replaceAll("&#Ograve;", "Ò");
+    
     return s;
 }
 

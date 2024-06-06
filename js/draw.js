@@ -6,13 +6,6 @@ function drawBkgnd() {
         // Larry 3, mode 2 currently unused
         setFont(langNum); 
         bkgnd = document.getElementById("background");
-        ctx.drawImage(bkgnd, 0, 0);
-        // bikini, y between 120 - 200
-        ctx.fillStyle = "Black";
-        ctx.beginPath();
-        ctx.rect(50, 120+score, 125, 125);
-        ctx.fill(); 
-        // overlay 
         if (lang == "FR") {
             mask = document.getElementById("maskFR");
         } else if (lang == "GR") {
@@ -20,6 +13,12 @@ function drawBkgnd() {
         } else {
             mask = document.getElementById("maskEN");
         }
+        ctx.drawImage(bkgnd, 0, 0);
+        // bikini, y between 120 - 200
+        ctx.fillStyle = "Black";
+        ctx.beginPath();
+        ctx.rect(50, 120+score, 125, 125);
+        ctx.fill(); 
         ctx.drawImage(mask, 0, 0); 
 
         let xp = 331;
@@ -45,6 +44,7 @@ function drawBkgnd() {
                 }
             }
         }
+        ctx.fillStyle = "Blue";
         let la = ["a.", "b.", "c.","d."];
         for (let i = 0; i < 4; i ++) {
             printText(la[i], xp-29, qBaseNum + (qSpacing/2) + (qSpacing*i));
@@ -341,14 +341,15 @@ function drawSQ3grind() {
                 // question wrong, kill roger
                 rog.x += 2;
                 // jump at end of track
-                if (rog.x > 299 && rog.x < 320) {
+                if (rog.x > 299 && rog.x < 340) {
                     rog.y -= 2;
-                    rog.x += 2;
-                } else if (rog.x > 319 && rog.x <350) {
-                    rog.y += 4;
-                    rog.x += 2;
-                } else if (rog.x > 349) {
+                    rog.x += 5;
+                } else if (rog.x > 339 && rog.x <360) {
+                    rog.y += 12;
+                    rog.x += 1;
+                } else if (rog.x > 359) {
                     rog.loop = 5;
+                    rog.x -= 10;
                     rog.dead ++;
                 }
                 break;

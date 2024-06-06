@@ -10,7 +10,7 @@ body {
     margin-left: auto;
     margin-right: auto;
     display: block;
-    width: 642px;
+    width: 656px;
 }
 canvas {
     padding-left: 0;
@@ -115,6 +115,9 @@ var counterAnimateIntervalID;
 var animationSpeed = 100;
 var counterArray = [0,0,0,0,0,0]; // [c1x,c1y,c2x,c2y,c3x,c3y]
 const myAudio = document.createElement("audio");
+const myAudio2 = document.createElement("audio");
+var jokes = [];
+var jokesI = 0;
 //var textUpperLim = 166; // lsl3 text file numbers
 //var textLowerLim = 141;
 var mode1Arr = [], mode3Arr = [], mode4Arr = [], mode5Arr = [];
@@ -156,30 +159,35 @@ function start() {
     for (let i = 141; i < 167; i++) {
         mode1Arr.push(i);
     }
-    mode1Arr = shuffle(mode1Arr);
+    shuffle(mode1Arr);
     for (let i = 0; i < 5; i++) {
         mode1JArr.push(i);
     }
-    mode1JArr = shuffle(mode1JArr);
+    shuffle(mode1JArr);
     // kings questions 0-41 files, one question each
     for (let i = 0; i < 42; i++) {
         mode3Arr.push(i);
     }
-    mode3Arr = shuffle(mode3Arr);
+    shuffle(mode3Arr);
     // pqMugs 8 images
     for (let i = 0; i < 8; i++) {
         mode4Arr.push(i);
     }
-    mode4Arr = shuffle(mode4Arr);
+    shuffle(mode4Arr);
     // lsl1vga 721-752 with five questions each
     for (let i = 721; i < 753; i++) {
         mode5Arr.push(i);
     }
-    mode5Arr = shuffle(mode5Arr);
+    shuffle(mode5Arr);
     for (let i = 0; i < 5; i++) {
         mode5JArr.push(i);
     }
-    mode5JArr = shuffle(mode5JArr);
+    shuffle(mode5JArr);
+
+    for (let i = 71; i < 184; i++) {
+        jokes.push(i);
+    }
+    shuffle(jokes);
 
     drawTitle();
     initClick();
@@ -377,6 +385,7 @@ function scoreUpDown(v) {
 <button type="button" class="butt" onclick="langSel(5)">Polski</button>
 <!--button type="button" class="butt" onclick="switchLSLorOpenTrivia()">lsl3/OpenTrivia</button-->
 <button type="button" class="butt" onclick="musicOnOff()">Music On/Off</button>
+<button type="button" class="butt" onclick="playJoke()">CyberLarry 2000</button>
 <!--button type="button" class="butt" onclick="scoreUpDown(1)">scoreUp</button>
 <button type="button" class="butt" onclick="scoreUpDown(0)">scoreDown</button-->
 </body>
