@@ -156,7 +156,6 @@ function drawBkgnd() {
         }
     } else if (mode == 7) {
         // Do Bonus
-        ctx.drawImage(bkgnd, 0, 0);
         if (prevMode == 5) {
             bkgnd = document.getElementById("lsl1vgabkgrndBonus");
             drawLSL3VGA();
@@ -389,6 +388,9 @@ function drawPQ2chief() {
     let sx;
     let sy;
 
+    // bkgnd
+    ctx.drawImage(bkgnd, 0, 0);
+
     // chief neck x76 y17 83 37
     let cw = 83, ch = 37;
     let cx = 142, cy = 282;
@@ -410,10 +412,10 @@ function drawPQ2chief() {
     sx = (bonusCel%10)*(celW); //Num's x loc on spritesheet
     sy = 0 // one row, so always 0
     ctx.drawImage(pqMugImg, sx, sy, celW, celH, x, y, celW*2, celH*2);
-    if (bonusCel<149) {
+    if (bonusCel<79) {
         bonusCel ++;
     }
-    //console.log("chiefCel: " + chiefCel + ", (chiefCel%10):"+(chiefCel%10));
+
     ctx.fillStyle = "Yellow";
     // print bonus points awarded in current language
     printText(getLangStr(7), 120, 400);
@@ -429,13 +431,15 @@ function drawLSL3VGA() {
     let sx;
     let sy;
 
+    // bkgnd
+    ctx.drawImage(bkgnd, 0, 0);
+    
     // eyes
     celW = 51;
     celH = 15; 
     sx = (bonusCel%50)*(celW); //Num's x loc on spritesheet
     sy = 0 // one row, so always 0
     ctx.drawImage(img, sx, sy, celW, celH, x, y, celW*2, celH*2.25);
-    
 
     // woman mouth
     celW = 47;
@@ -448,7 +452,7 @@ function drawLSL3VGA() {
     if (bonusCel<149) {
         bonusCel ++;
     }
-    //console.log("bonusCel: " + bonusCel + ", (bonusCelCel%10):"+(bonusCelCel%10));
+
     ctx.fillStyle = "Yellow";
     // print bonus points awarded in current language
     printText(getLangStr(9), 120, 400);

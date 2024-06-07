@@ -22,7 +22,7 @@ function initClick() {
         } else if (mode == 7) {
             // bonus modes
             mode = 6; // change to anything but 7 to advance
-            nxt = 1;
+            //nxt = 1;
             nextQuestion();
         }
     }
@@ -50,7 +50,7 @@ function initClick() {
 
                 mode4I ++;
                 if (mode4I >= mode4Arr.length) {
-                    mode4I = 0;
+                    //mode4I = 0;
                     shuffle(mode4Arr);
                     if (modeCompletionBonus[mode] > 0) {
                         // one time score bonus for seeing all pqmugs
@@ -61,7 +61,7 @@ function initClick() {
                     }
                 }
 
-                nxt == 1;
+                //nxt == 1;
                 nextQuestion();
                 mugStr = "";
             } else if (e.keyCode == 16 || e.keyCode == 20) {
@@ -254,8 +254,9 @@ function doTriviaClick() {
 function nextQuestion() {
     let s = score % 40;
     if (mode != 7) {
-        if ((score%10) == 0 && score != 0 ) {
-            // every ten questions do mugshot
+        if ((score%10) == 0 && score != 0 && mode4I < mode4Arr.length) {
+            // every ten questions do mugshot, until all 8 have been seen.
+            // to do: add LSL2 copy protection? LB2CP?
             mode = 4; // pq2mug
         } else if (s >= 0 && s < 10) {
             mode = 5; // lsl1vga

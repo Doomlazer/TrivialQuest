@@ -3,8 +3,7 @@ Sierra On-line trivia and copy protection game in JS.
 
 Playable beta version: https://doomlazer.github.io/TrivialQuest/
 
-Work in Progress
-Partially completed:
+Work in Progress, Partially completed:
 - LSL1VGA Age verification
 - King's Questions
 - LSL3 Age verification
