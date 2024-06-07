@@ -32,7 +32,7 @@ function drawBkgnd() {
             } else {
                 if (ans == i+2) {
                     // players selection
-                    if (ans-1 == rightAns) {
+                    if (ans-1 == rightAns || rightAns == 5) {
                         ctx.fillStyle = "Green"; 
                     } else {
                         ctx.fillStyle = "Red"; 
@@ -113,7 +113,7 @@ function drawBkgnd() {
             } else {
                 if (ans == i+2) {
                     // players selection
-                    if (ans-1 == rightAns) {
+                    if (ans-1 == rightAns || rightAns == 5) {
                         ctx.fillStyle = "Green"; 
                     } else {
                         ctx.fillStyle = "Red"; 
