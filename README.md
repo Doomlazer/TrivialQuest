@@ -1,8 +1,10 @@
 # TrivialQuest
-Sierra On-line trivia and copy protection in JS.
+Sierra On-line trivia and copy protection game in JS.
+
+Playable beta version: https://doomlazer.github.io/TrivialQuest/
 
 Work in Progress
-- Partially completed:
+Partially completed:
 - LSL1VGA Age verification
 - King's Questions
 - LSL3 Age verification
@@ -13,8 +15,6 @@ Work in Progress
 - Teilweise Unterstützung der deutschen Sprache
 - Compatibilidad parcial con el idioma español
 - Częściowa obsługa języka polskiego
-
-Playable beta version: https://doomlazer.github.io/TrivialQuest/
 
 To Do:
 - Better language support 
