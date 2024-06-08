@@ -1,5 +1,9 @@
 # Extract wav files from Larry's Casino audio.vol
+# Sound effects can also be dumped from resources.vol
 # jokes are 71.wav - 183.wav
+#
+# command to convert wav to mp3:
+# for f in *.wav; do ffmpeg -i "$f" "${f%.wav}.mp3"; done
 
 import struct
 fnum = 0

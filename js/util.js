@@ -45,7 +45,9 @@ function playJoke() {
     myAudio2.pause(); 
     myAudio2.volume = 0.6;  
     let l = lang;
-    if (l != "EN") {
+    if (l == "GR") {
+        // German translation exists
+    } else {
         l = "EN";
     }
     myAudio2.src = "audio/jokes/" + l + "/"+ jokes[jokesI] + ".mp3";
