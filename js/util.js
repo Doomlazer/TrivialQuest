@@ -1,34 +1,3 @@
-function searchForSpecialChars() {
-    lang = "GR";
-    let holder = [];
-    for (let i = 155; i < 156; i++) {
-        let s = "data/" + lang + "/lsl3/text." + i;
-        console.log("Searching file: " + s);
-        fetch(s)
-        //.then(response => response.text())
-        .then(response => response.arrayBuffer())
-        .then((buffer) => {
-
-                let decoder = new TextDecoder("iso-8859-1");
-                let data = decoder.decode(buffer);
-                //console.log(data);
-                let x2=0;
-                for (let x of data) {
-                    if (data.charCodeAt(x2) > 0) {
-                        console.log("x: " + x + " charat: " + data.charCodeAt(x2));
-                        let st = x+" - "+data.charCodeAt(x2).toString(16) + " - " + i;
-                        if (!holder.includes(st)) {
-                            holder.push(st);
-                        }
-                    }
-                    x2 ++;
-                }
-                console.log(holder);
-            }
-        )
-    }
-}
-
 function initAudio() {
     myAudio.src = "audio/0.mp3";
     myAudio.addEventListener("ended", function() {
@@ -72,23 +41,28 @@ function fjson(text) {
     // fix open trivia strings
     let s = text.replaceAll("&quot;", "\"");
     s = s.replaceAll("&#039;", "'");
-    s = s.replaceAll("&#amp;", "&");
-    s = s.replaceAll("&#eacute;", "é");
-    s = s.replaceAll("&#egrave;", "è");
-    s = s.replaceAll("&#Eacute;", "É");
-    s = s.replaceAll("&#Egrave;", "È");
+    s = s.replaceAll("&amp;", "&");
+    s = s.replaceAll("&#195;&#169;", "é"); //Ã© charat: 195, © charat: 169
+    s = s.replaceAll("&eacute;", "é");
+    s = s.replaceAll("&egrave;", "è");
+    s = s.replaceAll("&Eacute;", "É");
+    s = s.replaceAll("&Egrave;", "È");
 
-    s = s.replaceAll("&#aacute;", "á");
-    s = s.replaceAll("&#agrave;", "à");
-    s = s.replaceAll("&#auml;", "ä");
-    s = s.replaceAll("&#Aacute;", "Á");
-    s = s.replaceAll("&#Agrave;", "À");
-    s = s.replaceAll("&#Auml;", "Ä");
+    s = s.replaceAll("&aacute;", "á");
+    s = s.replaceAll("&agrave;", "à");
+    s = s.replaceAll("&auml;", "ä");
+    s = s.replaceAll("&Aacute;", "Á");
+    s = s.replaceAll("&Agrave;", "À");
+    s = s.replaceAll("&Auml;", "Ä");
 
-    s = s.replaceAll("&#oacute;", "ó");
-    s = s.replaceAll("&#ograve;", "ò");
-    s = s.replaceAll("&#Oacute;", "Ó");
-    s = s.replaceAll("&#Ograve;", "Ò");
+    s = s.replaceAll("&oacute;", "ó");
+    s = s.replaceAll("&ograve;", "ò");
+    s = s.replaceAll("&Oacute;", "Ó");
+    s = s.replaceAll("&Ograve;", "Ò");
+
+    s = s.replaceAll("&deg;", "°");
+
+    // letters missin from font: ō
     
     return s;
 }
@@ -226,16 +200,20 @@ function getMousePos(canvas, evt) {
             array = ["TrivialQuest v0.4.0 Juin 2024",
                 "par DoomLazer",
                 "",
-                "Les questions de sc\u00e8ne SQ3 sont extraites de OpenTDB.com appels d'API.",
+                "Les questions de sc\u00e8ne SQ3 sont extraites de OpenTDB.com",
+                "appels d'API.",
                 "LSL3 Questions espagnoles du LSL3PnC de Pakolmo.",
                 "LSL1VGA questions en fran\u00e7ais traduites par Hrvg.",
-                "LSL3 versions fran\u00e7aise, espagnole, allemande et polonaise par Sierra On-Line.",
-                "Larry's Casino CyberLarry 2000 Anglais et Allemand par Sierra On-line.",
+                "LSL3 versions fran\u00e7aise, espagnole, allemande et", 
+                "polonaise par Sierra On-Line.",
+                "Larry's Casino CyberLarry 2000 Anglais et Allemand",
+                "par Sierra On-line.",
                 "Un merci sp\u00e9cial \u00e0 Threepwang.",
                 "Un merci sp\u00e9cial \u00e0 Sierra On-Line et \u00e0 ses fans.",
                 "",
                 "Les traductions sont incompl\u00e8tes.",
-                "N'h\u00e9sitez pas \u00e0 me contacter si vous \u00eates en mesure de m'aider \u00e0 les am\u00e9liorer.",
+                "N'h\u00e9sitez pas \u00e0 me contacter si vous \u00eates en mesure",
+                "de m'aider \u00e0 les am\u00e9liorer.",
                 "",
                 "Cliquez pour revenir \u00e0 l'\u00e9cran titre."];
             break;

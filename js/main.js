@@ -117,7 +117,13 @@ function initClick() {
                     console.log("ansArray:");
                     console.log(ansArray);
                     for (i=0; i<ansArray.length;i++) {
-                        console.log(ansArray[i]);
+                        let a = ansArray[i];
+                        console.log("a: " + a);
+                        console.log("a.length: " + a.length);
+                        for (let j=0; j<a.length; j++) {
+                            
+                            console.log(a.charAt(j) + " charat: " + a.charCodeAt(j));
+                        }
                     }
                 })
                 document.body.appendChild(button);
@@ -353,7 +359,7 @@ function otQuestion() {
             jsonData = data.results;
             questionJson = data.results[0];
             addOTQuestion();
-        }).catch(err => {});
+        }).catch(err => {console.log("Error: " + err)});
     } else {
         questionJson = jsonData[mode6I];
         addOTQuestion();
@@ -380,7 +386,7 @@ function addOTQuestion() {
     //console.log("rightAns): " + rightAns);
 
     mode6I ++;
-    if (mode6I == jsonData.length) {
+    if (mode6I >= jsonData.length) {
         mode6I = 0;
     }
 }

@@ -143,13 +143,17 @@ function drawBkgnd() {
             for (let i = 2;i<6;i++) {
                 if (i-1 == ans) {
                     if (ans == rightAns) {
-                        ctx.fillStyle = "Green";
+                        ctx.fillStyle = "rgb(0,255,0)";
                     } else {
-                        ctx.fillStyle = "Red";
+                        ctx.fillStyle = "rgb(255,0,0)";
                     }
                     
                 } else {
-                    ctx.fillStyle = "Yellow";
+                    if (i-1 == rightAns && ans != 0) {
+                        ctx.fillStyle = "rgb(0,200,0)";
+                    } else {
+                        ctx.fillStyle = "Yellow";
+                    }
                 }
                 printText(wrapText(ansArray[i], wrapLen), 60, qBaseNum + (qSpacing/2) + (qSpacing*(i-2)));
             }
