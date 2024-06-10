@@ -40,6 +40,10 @@ function langSel(l) {
     setFont(l);
     if (mode != 0) {
         nextQuestion();
+    } else {
+        if (gameplayMode == 2) {
+            printCredits();
+        }
     }
 
     /*/ indicate langague has changed

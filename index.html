@@ -68,6 +68,7 @@ Your browser does not support the HTML5 canvas tag.</canvas>
 var c = document.getElementById("myCanvas");
 var ctx = c.getContext("2d");
 //ctx.scale(2, 2);
+var gameplayMode = 0;
 var mode = 0; // 0 = title, 1 = lsl3, 2 = OpenTrivia, 3 = Kings questions, 
               // 4 = pq2Mugshots, 5 = lsl1vga, 6 = sq3, 7 = pq2 Bonus caption
 var prevMode = 0;
@@ -245,6 +246,7 @@ function animate() {
                 ctx.rect(0, qBaseNum+(i*qSpacing), 600, 2);
             }
         }
+        
         //mouse
         ctx.rect(xPosition, yPosition, 5, 5);
         ctx.fill();

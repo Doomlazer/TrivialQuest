@@ -203,3 +203,58 @@ function getMousePos(canvas, evt) {
       y: evt.clientY - rect.top
     };
   }
+
+  function printCredits() {
+    let credStrArray = getCredLang();
+    ctx.clearRect(0, 0, c.width, c.height);
+    
+    let col = 200;
+    for (let i = 0; i < credStrArray.length; i++) {
+        ctx.fillStyle = "rgb("+(col-(5*i))+", 0, 0)";
+        printText(credStrArray[i], 8, (i * 20)+42);
+    }
+    for (let i = 0; i < credStrArray.length; i++) {
+        ctx.fillStyle = "rgb(255, 255, 255)";
+        printText(credStrArray[i], 10, (i * 20)+40);
+    }
+  }
+
+  function getCredLang() {
+    let array;
+    switch (lang) {
+        case "FR":
+            array = ["TrivialQuest v0.4.0 Juin 2024",
+                "par DoomLazer",
+                "",
+                "Les questions de sc\u00e8ne SQ3 sont extraites de OpenTDB.com appels d'API.",
+                "LSL3 Questions espagnoles du LSL3PnC de Pakolmo.",
+                "LSL1VGA questions en fran\u00e7ais traduites par Hrvg.",
+                "LSL3 versions fran\u00e7aise, espagnole, allemande et polonaise par Sierra On-Line.",
+                "Larry's Casino CyberLarry 2000 Anglais et Allemand par Sierra On-line.",
+                "Un merci sp\u00e9cial \u00e0 Threepwang.",
+                "Un merci sp\u00e9cial \u00e0 Sierra On-Line et \u00e0 ses fans.",
+                "",
+                "Les traductions sont incompl\u00e8tes.",
+                "N'h\u00e9sitez pas \u00e0 me contacter si vous \u00eates en mesure de m'aider \u00e0 les am\u00e9liorer.",
+                "",
+                "Cliquez pour revenir \u00e0 l'\u00e9cran titre."];
+            break;
+        default:
+            array = ["TrivialQuest v0.4.0 June 2024",
+                    "by DoomLazer",
+                    "",
+                    "\"SQ3 scene\" questions are pulled from OpenTDB.com API calls.",
+                    "LSL3 Spanish questions from Pakolmo's LSL3PnC.",
+                    "LSL1VGA French questions translated by Hrvg.",
+                    "LSL3 French, Spanish, German and Polish versions by Sierra On-Line.",
+                    "Larry's Casino CyberLarry 2000 English and German by Sierra On-line.",
+                    "Special thanks to Threepwang.",
+                    "Extra special thanks to Sierra On-Line and its fans.",
+                    "",
+                    "Translations are incomplete.",
+                    "Please contact me if you're able to help improve them.",
+                    "",
+                    "Click to return to title screen."];
+    }
+    return array;
+  }

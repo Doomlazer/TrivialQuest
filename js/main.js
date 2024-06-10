@@ -13,7 +13,31 @@ function initClick() {
         }
 
         if (mode == 0) {
-            doTitleClick();
+        
+            if (xPosition > 430 && xPosition < 580 && yPosition > 410 && yPosition < 450) {
+                gameplayMode = 1; // openTDB only
+                ctx.beginPath();
+                ctx.fillStyle = "Green";
+                ctx.rect(430, 410, 150, 40);
+                ctx.fill();
+            }
+            if (xPosition > 60 && xPosition < 210 && yPosition > 410 && yPosition < 450) {
+                if (gameplayMode == 2) {
+                    gameplayMode = 0;
+                    drawTitle();
+                } else {
+                    gameplayMode = 2;
+                    printCredits();
+                }
+            } else {
+                if (gameplayMode == 2) {
+                    gameplayMode = 0;
+                    drawTitle();
+                } else {
+                    doTitleClick();
+                }
+            }
+
         } else if (mode == 1 || mode == 3 || mode == 5 || mode == 6) {
             doTriviaClick();
         } else if (mode == 4) {
@@ -96,12 +120,9 @@ function initClick() {
                         console.log(ansArray[i]);
                     }
                 })
-
                 document.body.appendChild(button);
                 document.body.appendChild(button1);
                 document.body.appendChild(button2);
-                
-            
             }
         } else if (mode == 7) {
             if (e.keyCode == 13) {
@@ -128,20 +149,6 @@ function doTriviaClick() {
         nextQuestion();
     } else {
         // player selects answer
-
-        /* testing guidelines
-        for (let i=0; i<5; i++) {
-            ctx.fillStyle = "Black";
-            ctx.rect(0, qBaseNum+(i*qSpacing), 600, 5);
-            ctx.fill(); 
-        }
-
-        //mouse
-        ctx.rect(xPosition, yPosition, 10, 10);
-        ctx.fill(); 
-        */
-        
-
         if (mode == 3 || mode == 6) {
             // kingsQuestions works different
             // check if clicked in an answer
@@ -152,7 +159,6 @@ function doTriviaClick() {
             }
             if (ans > 0) {
                 if (ans == rightAns) {
-                    console.log("ans right");
                     score ++;
                     if (mode == 3) {
                         kqQuestionsCorrect ++;
@@ -160,7 +166,6 @@ function doTriviaClick() {
                         sq3QuestionsCorrect ++;
                     }
                 } else {
-                    console.log("ans wwrong");
                     score --;
                     notPerfect = 1;
                 } 
@@ -198,26 +203,7 @@ function doTriviaClick() {
                 } else {
                     score --;
                     notPerfect = 1;
-                    /*ctx.fillStyle = "Red";
-                    if (mode == 1 || mode == 5) {
-                        printText(ansArray[a], xp, qBaseNum + (qSpacing/2) + (qSpacing*a));
-                    } else {
-                        let b = a
-                        if (b > rightAns) {
-                            b --;
-                        }
-                        let s = wrapText(questionJson.incorrect_answers[b], wrapLen);
-                        printText(s, xp, qBaseNum + (qSpacing/2) + (qSpacing*a));
-                    }*/
                 }
-
-                /*ctx.fillStyle = "Yellow";
-                if (ans > 0 && (ans-1 == rightAns || rightAns == 5)) {
-                    printText(getLangStr(2),400,25); // correct
-                } else {
-                    printText(getLangStr(3),400,25); // wrong
-                }*/
-                // wait a click before next question
                 nxt ++;
 
                 if (mode5I >= mode5Arr.length) {
@@ -252,20 +238,24 @@ function doTriviaClick() {
 }
 
 function nextQuestion() {
-    let s = score % 40;
-    if (mode != 7) {
-        if ((score%10) == 0 && score != 0 && mode4I < mode4Arr.length) {
-            // every ten questions do mugshot, until all 8 have been seen.
-            // to do: add LSL2 copy protection? LB2CP?
-            mode = 4; // pq2mug
-        } else if (s >= 0 && s < 10) {
-            mode = 5; // lsl1vga
-        } else if (s > 10 && s < 20) {
-            mode = 3; // kingsQuestions
-        } else if (s > 20 && s < 30) {
-            mode = 1; // lsl3
-        } else if (s > 30 && s < 40) {
-            mode = 6; // sq3 open trivia
+    if (gameplayMode == 1) {
+        mode = 6; // ALWAYS sq3 open trivia
+    } else if (gameplayMode == 0) {
+        let s = score % 40;
+        if (mode != 7) {
+            if ((score%10) == 0 && score != 0 && mode4I < mode4Arr.length) {
+                // every ten questions do mugshot, until all 8 have been seen.
+                // to do: add LSL2 copy protection? LB2CP?
+                mode = 4; // pq2mug
+            } else if (s >= 0 && s < 10) {
+                mode = 5; // lsl1vga
+            } else if (s > 10 && s < 20) {
+                mode = 3; // kingsQuestions
+            } else if (s > 20 && s < 30) {
+                mode = 1; // lsl3
+            } else if (s > 30 && s < 40) {
+                mode = 6; // sq3 open trivia
+            }
         }
     }
 
@@ -274,7 +264,7 @@ function nextQuestion() {
         qBaseNum = 100; // horribily named question y pos
         wrapLen = 30;
         lslQuestion();
-    } else if (mode == 2 || mode == 6) {
+    } else if (mode == 6) {
         qSpacing = 50;
         qBaseNum = 80;
         wrapLen = 60;
@@ -301,10 +291,6 @@ function pqQuestion() {
     mugCel = mode4Arr[mode4I];
     if (debug) { console.log("Question number: "+mugCel);}
 }
-
-/*function pq2Bonus() {
-    drawBkgnd();
-}*/
 
 function kqQuestion() {
     ansArray = [];
