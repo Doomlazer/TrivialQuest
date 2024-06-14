@@ -367,8 +367,7 @@ function doAd() {
             s = "Aces of the Deep";
             break;
         case "aotp320":
-            s = "Aces over the Pacific";
-            x -= 20;
+            s = "A.O.T.P.";
             break;
         case "earth320":
             s = "Earth Siege";
