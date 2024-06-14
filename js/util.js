@@ -10,6 +10,7 @@ function initAudio() {
     });
 
     myVideo.addEventListener("ended", function() {
+        score ++;
         nextQuestion();
     });
     myVideo.addEventListener('play', function() {
