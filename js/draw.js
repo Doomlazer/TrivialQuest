@@ -167,11 +167,14 @@ function drawBkgnd() {
             drawPQ2chief();
             bkgnd = document.getElementById("pq2bkgrndBonus");
         }
+    } else if (mode == 8) {
+        //  ad
+        bkgnd = document.getElementById("320bkgrnd");
+        ctx.drawImage(bkgnd, 0, 0);
     }
-    
-    drawCounter();
-    ctx.fillStyle = "White";
-    printText(getLangStr(1),10,445); //score: 
+    if (mode != 8) {
+        drawCounter();
+    }
 };
 
 function drawTitle() {

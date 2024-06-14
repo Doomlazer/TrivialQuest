@@ -8,13 +8,19 @@ function initAudio() {
         myAudio.src = "audio/" + r + ".mp3";
         myAudio.play();
     });
-    
+
+    myVideo.addEventListener("ended", function() {
+        nextQuestion();
+    });
     myVideo.addEventListener('play', function() {
         var $this = this; //cache
         (function loop() {
         if (!$this.paused && !$this.ended) {
-            ctx.clearRect(0, 0, c.width, c.height);
-            ctx.drawImage($this, 0, 0);
+            if (myVideo.src.includes("320")) {
+                ctx.drawImage($this, 150, 125);
+            } else {
+                ctx.drawImage($this, 0, 0);
+            }
             setTimeout(loop, 1000 / 30); // drawing at 30fps
         }
         })();

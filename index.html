@@ -10,7 +10,7 @@ body {
     margin-left: auto;
     margin-right: auto;
     display: block;
-    width: 656px;
+    width: 660px;
 }
 canvas {
     padding-left: 0;
@@ -18,7 +18,7 @@ canvas {
     margin-left: auto;
     margin-right: auto;
     display: block;
-    width: 642px;
+    width: 640px;
 }
 @font-face {
     font-family: SQ3font;
@@ -42,27 +42,28 @@ canvas {
 <script type="text/javascript" src="./js/lang.js"></script>
 <script type="text/javascript" src="./js/util.js"></script>
 
-<canvas id="myCanvas" width="642" height="458" style="border:1px solid #000000; cursor: url(img/Cursor999.cur), default;">
+<canvas id="myCanvas" width="640" height="460" style="border:1px solid #000000; cursor: url(img/Cursor999.cur), default;">
 Your browser does not support the HTML5 canvas tag.</canvas>
 <video id="video" src="video/sq6.mp4" controls hidden></video>
-<img id="title" src="img/title.png" width="642" height="458" hidden>
-<img id="maskEN" src="img/lsl3/mask.png" width="642" height="458" hidden>
-<img id="maskFR" src="img/lsl3/maskFR.png" width="642" height="458" hidden>
-<img id="maskGR" src="img/lsl3/maskGR.png" width="642" height="458" hidden>
-<img id="background" src="img/lsl3/background.png" width="642" height="458" hidden>
+<img id="title" src="img/title.png" width="640" height="460" hidden>
+<img id="maskEN" src="img/lsl3/mask.png" width="640" height="460" hidden>
+<img id="maskFR" src="img/lsl3/maskFR.png" width="640" height="460" hidden>
+<img id="maskGR" src="img/lsl3/maskGR.png" width="640" height="460" hidden>
+<img id="background" src="img/lsl3/background.png" width="640" height="460" hidden>
 <img id="counter" src="img/misc/counter.bmp" width="191" height="219" hidden>
-<img id="kQuestions" src="img/kQuestions/background.png" width="642" height="458" hidden>
+<img id="kQuestions" src="img/kQuestions/background.png" width="640" height="460" hidden>
 <img id="rockSide" src="img/kQuestions/rockSide51x57.png" hidden>
-<img id="pq2bkgrnd" src="img/pq2Mug/pq2bkgrnd.png" width="642" height="458" hidden>
-<img id="pq2bkgrndSP" src="img/pq2Mug/pq2bkgrndSP.png" width="642" height="458" hidden>
-<img id="pq2bkgrndFR" src="img/pq2Mug/pq2bkgrndFR.png" width="642" height="458" hidden>
+<img id="pq2bkgrnd" src="img/pq2Mug/pq2bkgrnd.png" width="650" height="460" hidden>
+<img id="pq2bkgrndSP" src="img/pq2Mug/pq2bkgrndSP.png" width="640" height="460" hidden>
+<img id="pq2bkgrndFR" src="img/pq2Mug/pq2bkgrndFR.png" width="640" height="460" hidden>
+<img id="320bkgrnd" src="video/sneakPeek2/320pic.png" width="640" height="460" hidden>
 <img id="pq2mug" src="img/pq2Mug/pq2mug.png" width="312" height="52" hidden>
-<img id="pq2bkgrndBonus" src="img/bonus/pq2bkgrndBonus.png" width="642" height="458" hidden>
-<img id="lsl1vgabkgrndBonus" src="img/bonus/lsl1vgabkgrndBonus.png" width="642" height="458" hidden>
+<img id="pq2bkgrndBonus" src="img/bonus/pq2bkgrndBonus.png" width="640" height="460" hidden>
+<img id="lsl1vgabkgrndBonus" src="img/bonus/lsl1vgabkgrndBonus.png" width="640" height="460" hidden>
 <img id="pq2bonusSprites" src="img/bonus/pq2bonusSprites.png" width="330" height="115" hidden>
 <img id="lsl1vgabonusSprites" src="img/bonus/lsl1vgabonusSprites.png" width="306" height="47" hidden>
-<img id="lsl1vgabkgrnd" src="img/lsl1vga/lsl1vgabkgrnd.png" width="642" height="458" hidden>
-<img id="sq3bkgrnd" src="img/sq3/sq3bkgrnd.png" width="642" height="458" hidden>
+<img id="lsl1vgabkgrnd" src="img/lsl1vga/lsl1vgabkgrnd.png" width="640" height="460" hidden>
+<img id="sq3bkgrnd" src="img/sq3/sq3bkgrnd.png" width="640" height="460" hidden>
 <img id="sq3sprites" src="img/sq3/sq3sprites.png" width="224" height="126" hidden>
 
 <script>
@@ -122,7 +123,9 @@ const myAudio2 = document.createElement("audio");
 const myVideo = document.getElementById("video");
 var jokes = [];
 var jokesI = 0;
-var ads = ["sq6","fred","gk","lsl6","kq7","lsl6","phant","pq4"];
+var ads = ["sq6","fred","gk","lsl6","kq7","lsl6","phant","pq4",
+            "alien320","gk320","kq7320","lsl6320","phant320",
+            "pq4320","sq6320"];
 var adsI = 0;
 //var textUpperLim = 166; // lsl3 text file numbers
 //var textLowerLim = 141;
@@ -234,6 +237,7 @@ function animate() {
             y = 430;
         }
         ctx.fillStyle = "White";
+        printText(getLangStr(1),10,445); //score: 
         let dbs;
         if (mode == 4) {
             dbs = "mode: " + mode + ", answer: " + mugArray[mugCel];

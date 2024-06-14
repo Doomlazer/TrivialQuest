@@ -264,7 +264,11 @@ function doTriviaClick() {
 
 function nextQuestion() {
     if (gameplayMode == 1) {
-        mode = 6; // ALWAYS sq3 open trivia
+        if (debug) {
+            mode = 8; // ALWAYS video ads
+        } else {
+            mode = 6; // ALWAYS sq3 open trivia
+        }
     } else if (gameplayMode == 0) {
         let s = score % 40;
         if (mode == 7) {
@@ -319,33 +323,33 @@ function nextQuestion() {
 }
 
 function doAd() {
-    let vs = "video/sneakPeek2" + ads[adsI] + ".mp4";
+    let vs = "video/sneakPeek2/" + ads[adsI] + ".mp4";
+
+    myVideo.setAttribute('src', vs);
+    myVideo.setAttribute('type', 'video/mp4');
     adsI ++; 
     if (adsI >= ads.length) {
         adsI = 0;
         shuffle(ads);
     }
-    //myVideo.scr = vs;
-    myVideo.setAttribute('src', vs);
-    myVideo.setAttribute('type', 'video/mp4');
     if (!musicMuted) {
         myAudio.pause();
         myAudio2.pause();
     }
+    drawBkgnd();
     myVideo.play();
+    console.log("myVideo: " + myVideo.src);
 }
 
 function pqQuestion() {
     mugStr = "";
     mugCel = mode4Arr[mode4I];
-    if (debug) { console.log("Question number: "+mugCel);}
 }
 
 function kqQuestion() {
     ansArray = [];
     // use next shuffled array question
     let r = mode3Arr[mode3I];
-    if (debug) { console.log("Question number: "+r);}
     mode3I ++;
     if (mode3I >= mode3Arr.length) {
         // reshuffle
