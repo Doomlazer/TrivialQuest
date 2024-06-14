@@ -327,18 +327,67 @@ function doAd() {
 
     myVideo.setAttribute('src', vs);
     myVideo.setAttribute('type', 'video/mp4');
+    drawBkgnd();
+    ctx.fillStyle = "rgb(0,255,0)";
+    let x = 30;
+    let y = 40;
+    let s = "";
+    switch (ads[adsI]) {
+        case "alien320":
+            s = "Alien Legacy";
+            break;
+        case "lsl6320":
+            s = "Leisure Suit Larry 6";
+            x -= 20;
+            break;
+        case "gk320":
+            s = "Gabriel Knight";
+            break;
+        case "kq7320":
+            s = "King's Quest 7";
+            break;
+        case "phant320":
+            s = "Phantasmagoria";
+            break;
+        case "pq4320":
+            s = "Police Quest 4";
+            break;
+        case "sq6320":
+            s = "Space Quest 6";
+            break;
+        case "tim2320":
+            s = "T.I.M. 2";
+            break;
+        case "aod320":
+            s = "Aces of the Deep";
+            break;
+        case "aotp320":
+            s = "Aces over the Pacific";
+            x -= 20;
+            break;
+        case "earth320":
+            s = "Earth Siege";
+            break;
+        case "outp320":
+            s = "Outpost";
+            break;
+        case "base320":
+            s = "F.P.S. Baseball";
+            break;
+        default:
+            s = "Sneak Peek 2";
+    }
+    printText(s,x,y);
+    if (!musicMuted) {
+        myAudio.pause();
+        myAudio2.pause();
+    }
+    myVideo.play();
     adsI ++; 
     if (adsI >= ads.length) {
         adsI = 0;
         shuffle(ads);
     }
-    if (!musicMuted) {
-        myAudio.pause();
-        myAudio2.pause();
-    }
-    drawBkgnd();
-    myVideo.play();
-    console.log("myVideo: " + myVideo.src);
 }
 
 function pqQuestion() {
