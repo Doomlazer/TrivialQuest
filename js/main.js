@@ -278,7 +278,12 @@ function nextQuestion() {
                 // every ten questions do mugshot, until all 8 have been seen.
                 // to do: add LSL2 copy protection? LB2CP?
                 if (mode4I < mode4Arr.length) {
-                    mode = 4; // pq2mug
+                    let r = Math.floor(Math.random() * 100);
+                    if (r < 40) {
+                        mode = 8; // doAd()
+                    } else {
+                        mode = 4; // pq2mug
+                    }
                 } else {
                     mode = 8; // doAd()
                 }
