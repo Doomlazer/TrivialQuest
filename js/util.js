@@ -10,6 +10,9 @@ function initAudio() {
     });
 
     myVideo.addEventListener("ended", function() {
+        if (!musicMuted) {
+            myAudio.play();
+        }
         score ++;
         nextQuestion();
     });
