@@ -384,6 +384,7 @@ function drawPQ2Mug() {
 }
 
 function drawPQ2chief() {
+    console.log("drawPQ2chief();");
     pqMugImg = document.getElementById("pq2bonusSprites"); //39 x 52 x 8 mugs
     let x = 212;
     let y = 240;

@@ -8,6 +8,17 @@ function initAudio() {
         myAudio.src = "audio/" + r + ".mp3";
         myAudio.play();
     });
+    
+    myVideo.addEventListener('play', function() {
+        var $this = this; //cache
+        (function loop() {
+        if (!$this.paused && !$this.ended) {
+            ctx.clearRect(0, 0, c.width, c.height);
+            ctx.drawImage($this, 0, 0);
+            setTimeout(loop, 1000 / 30); // drawing at 30fps
+        }
+        })();
+    }, 0);
 }
 
 function playJoke() {
@@ -31,9 +42,11 @@ function playJoke() {
 function musicOnOff() {
     if (myAudio.paused) {
         myAudio.play();
+        musicMuted = 0;
     } else {
         myAudio.pause();
         myAudio2.pause();
+        musicMuted = 1;
     }
 }
 
@@ -42,7 +55,7 @@ function fjson(text) {
     let s = text.replaceAll("&quot;", "\"");
     s = s.replaceAll("&#039;", "'");
     s = s.replaceAll("&amp;", "&");
-    s = s.replaceAll("&#195;&#169;", "é"); //Ã© charat: 195, © charat: 169
+    s = s.replaceAll("Ã©", "é"); //Ã© charat: 195, © charat: 169
     s = s.replaceAll("&eacute;", "é");
     s = s.replaceAll("&egrave;", "è");
     s = s.replaceAll("&Eacute;", "É");
@@ -60,7 +73,14 @@ function fjson(text) {
     s = s.replaceAll("&Oacute;", "Ó");
     s = s.replaceAll("&Ograve;", "Ò");
 
+    s = s.replaceAll("&ntilde;", "ñ");
+    s = s.replaceAll("&Ntilde;", "Ñ");
+
     s = s.replaceAll("&deg;", "°");
+    s = s.replaceAll("&rdquo;", "\"");
+    s = s.replaceAll("&ldquo;", "\"");
+    s = s.replaceAll("&rsquo;", "\'");
+    s = s.replaceAll("&lsquo;", "\'");
 
     // letters missin from font: ō
     

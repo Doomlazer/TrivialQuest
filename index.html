@@ -44,6 +44,7 @@ canvas {
 
 <canvas id="myCanvas" width="642" height="458" style="border:1px solid #000000; cursor: url(img/Cursor999.cur), default;">
 Your browser does not support the HTML5 canvas tag.</canvas>
+<video id="video" src="video/sq6.mp4" controls hidden></video>
 <img id="title" src="img/title.png" width="642" height="458" hidden>
 <img id="maskEN" src="img/lsl3/mask.png" width="642" height="458" hidden>
 <img id="maskFR" src="img/lsl3/maskFR.png" width="642" height="458" hidden>
@@ -69,8 +70,9 @@ var c = document.getElementById("myCanvas");
 var ctx = c.getContext("2d");
 //ctx.scale(2, 2);
 var gameplayMode = 0;
+var musicMuted = 0;
 var mode = 0; // 0 = title, 1 = lsl3, 2 = OpenTrivia, 3 = Kings questions, 
-              // 4 = pq2Mugshots, 5 = lsl1vga, 6 = sq3, 7 = pq2 Bonus caption
+              // 4 = pq2Mugshots, 5 = lsl1vga, 6 = sq3, 7 = pq2 Bonus caption, mode 8 = ads
 var prevMode = 0;
 var mask = document.getElementById("maskEN");
 var cNumImg = document.getElementById("counter");
@@ -117,8 +119,11 @@ var animationSpeed = 100;
 var counterArray = [0,0,0,0,0,0]; // [c1x,c1y,c2x,c2y,c3x,c3y]
 const myAudio = document.createElement("audio");
 const myAudio2 = document.createElement("audio");
+const myVideo = document.getElementById("video");
 var jokes = [];
 var jokesI = 0;
+var ads = ["sq6","fred","gk","lsl6","kq7","lsl6","phant","pq4"];
+var adsI = 0;
 //var textUpperLim = 166; // lsl3 text file numbers
 //var textLowerLim = 141;
 var mode1Arr = [], mode3Arr = [], mode4Arr = [], mode5Arr = [];
@@ -189,6 +194,7 @@ function start() {
         jokes.push(i);
     }
     shuffle(jokes);
+    shuffle(ads);
 
     drawTitle();
     initClick();
@@ -214,11 +220,13 @@ function animate() {
         drawBkgnd();    
     } else if (mode == 7) {
         // pq2 bonus
-        drawBkgnd();    
+        drawBkgnd();   
     }
     //animateCounter()
-    drawCounter();
-    if (debug) {
+    if (mode != 8) {
+        drawCounter();
+    }
+    if (debug && mode != 8) {
         let x = 121;
         let y = 445;
         if (mode == 1) {
@@ -257,7 +265,7 @@ function animateCounter() {
     // inc counter
     let counterVal = counterArray[1]*100+counterArray[3]*10+counterArray[5]+(counterArray[4]/15);
     
-    if (score < 0) score = 0;
+    if (score < 0) {score = 0};
     if (score != counterVal) {
         // speed up if needed
         if (Math.abs(score-counterVal) > 5) {
@@ -354,7 +362,6 @@ function animateCounter() {
             }
         }
     }
-    //drawCounter();
 }
 
 function startAnimate() {

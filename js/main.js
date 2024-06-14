@@ -37,7 +37,6 @@ function initClick() {
                     doTitleClick();
                 }
             }
-
         } else if (mode == 1 || mode == 3 || mode == 5 || mode == 6) {
             doTriviaClick();
         } else if (mode == 4) {
@@ -47,6 +46,15 @@ function initClick() {
             // bonus modes
             mode = 6; // change to anything but 7 to advance
             //nxt = 1;
+            nextQuestion();
+        } else if (mode == 8) {
+            // ads mode
+            mode = 6; // change to anything but 7 to advance
+            myVideo.pause();
+            if (!musicMuted) {
+                myAudio.play();
+            }
+            score ++;
             nextQuestion();
         }
     }
@@ -132,8 +140,19 @@ function initClick() {
             }
         } else if (mode == 7) {
             if (e.keyCode == 13) {
-                //nxt == 1;
+                console.log("mode7 retunkey: ");
                 mode = 6; // change to anything but 7 or 0 to advance
+                nextQuestion();
+            };
+        } else if (mode == 8) {
+            // ads
+            if (e.keyCode == 13) {
+                mode = 6; // change to anything but 7 or 0 to advance
+                myVideo.pause();
+                if (!musicMuted) {
+                    myAudio.play();
+                }
+                score ++;
                 nextQuestion();
             };
         }
@@ -248,11 +267,17 @@ function nextQuestion() {
         mode = 6; // ALWAYS sq3 open trivia
     } else if (gameplayMode == 0) {
         let s = score % 40;
-        if (mode != 7) {
-            if ((score%10) == 0 && score != 0 && mode4I < mode4Arr.length) {
+        if (mode == 7) {
+            // do nothing
+        } else if (mode != 7 || mode != 8) {
+            if ((score%10) == 0 && score != 0) {
                 // every ten questions do mugshot, until all 8 have been seen.
                 // to do: add LSL2 copy protection? LB2CP?
-                mode = 4; // pq2mug
+                if (mode4I < mode4Arr.length) {
+                    mode = 4; // pq2mug
+                } else {
+                    mode = 8; // doAd()
+                }
             } else if (s >= 0 && s < 10) {
                 mode = 5; // lsl1vga
             } else if (s > 10 && s < 20) {
@@ -264,7 +289,6 @@ function nextQuestion() {
             }
         }
     }
-
     if (mode == 1) {
         qSpacing = 75;
         qBaseNum = 100; // horribily named question y pos
@@ -288,8 +312,27 @@ function nextQuestion() {
         wrapLen = 45;
         lslQuestion();
     } else if (mode == 7) {
-        pq2Bonus();
+        // do noting
+    } else if (mode == 8) {
+        doAd();
     }
+}
+
+function doAd() {
+    let vs = "video/sneakPeek2" + ads[adsI] + ".mp4";
+    adsI ++; 
+    if (adsI >= ads.length) {
+        adsI = 0;
+        shuffle(ads);
+    }
+    //myVideo.scr = vs;
+    myVideo.setAttribute('src', vs);
+    myVideo.setAttribute('type', 'video/mp4');
+    if (!musicMuted) {
+        myAudio.pause();
+        myAudio2.pause();
+    }
+    myVideo.play();
 }
 
 function pqQuestion() {
