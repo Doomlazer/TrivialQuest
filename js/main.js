@@ -270,11 +270,11 @@ function nextQuestion() {
             mode = 6; // ALWAYS sq3 open trivia
         }
     } else if (gameplayMode == 0) {
-        let s = score % 40;
+        let s = questionCount % 40;
         if (mode == 7) {
             // do nothing
         } else if (mode != 7 || mode != 8) {
-            if ((score%10) == 0 && score != 0) {
+            if ((questionCount % 10) == 0 && questionCount != 0) {
                 // every ten questions do mugshot, until all 8 have been seen.
                 // to do: add LSL2 copy protection? LB2CP?
                 if (mode4I < mode4Arr.length) {
@@ -298,6 +298,8 @@ function nextQuestion() {
             }
         }
     }
+    questionCount ++;
+    
     if (mode == 1) {
         qSpacing = 75;
         qBaseNum = 100; // horribily named question y pos
