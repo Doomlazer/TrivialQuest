@@ -8,11 +8,10 @@ from PIL import Image, ImageFont, ImageDraw
 import struct
 
 def exportPalImg():
-	font = ImageFont.truetype("SQ3n001.ttf", 25)
 	i = 0
 	x = 0
 	y = 0
-	scale = 70
+	scale = 100
 	im = Image.new('RGB', (16*scale, 16*scale), (255, 255, 255))
 	draw = ImageDraw.Draw(im)
 	while (i<256):
@@ -51,7 +50,6 @@ def decodeRLE(imgSize, width):
 	x = 0
 	y = 0
 	data = []
-	start = f.tell()
 	print("imgSize: "+str(imgSize))
 	while ((x * y) < imgSize):
 		repeat = struct.unpack('<B', f.read(1))[0]
@@ -64,7 +62,9 @@ def decodeRLE(imgSize, width):
 		#print ("r: " + str(r) + ", g: " + str(g) + ", b: " + str(b))
 		i = 0
 		while (i < repeat):
-			draw.rectangle((x, y, x+1, y+1), fill=(r, g, b))
+			draw.rectangle((x*iScale, y*iScale, x*iScale+iScale, y*iScale+iScale), fill=(r, g, b))
+			draw.text((x*iScale, y*iScale), str(color), (255,255,255), font=font) # add pal number white
+			draw.text((x*iScale, y*iScale+15), str(color), (0,0,0), font=font) # black
 			data.append(color)
 			i += 1
 			x += 1
@@ -79,23 +79,43 @@ def decodeRLE(imgSize, width):
 def noDecoding(width, height):
 	y = 0
 	data = []
-	pos = f.tell()
 	while (y < height):
 		x = 0
 		while (x < width):
 			color = struct.unpack('<B', f.read(1))[0]
-			data.append(chr(color))
-			#print("color: "+str(color))
-			p = color * 3
-			r = pal[p]
-			g = pal[p + 1]
-			b = pal[p + 2]
-			draw.rectangle((x, y, x+1, y+1), fill=(r, g, b))
-			x += 1
+			# Compressed alpha testing
+			if (color == "disabled"): # set color == [alpha color]
+				repeat = struct.unpack('<B', f.read(1))[0]
+				print("color: "+str(color)+" repeating: "+str(repeat)+" data.len: "+str(len(data)))
+				while (repeat > 0):
+					repeat -= 1
+					data.append(int(color))
+					drawPixel(color,x,y)
+					x += 1
+					if (x >= width):
+						x = 0
+						y += 1
+			else:
+				#print("Single color: "+str(color))
+				data.append(int(color))
+				drawPixel(color,x,y)
+				x += 1
 		y += 1
 	#print("noDecoding image data:")
 	#print(data)
 	#check4OverRun(data)
+
+def drawPixel(color, x, y):
+	p = color * 3
+	r = pal[p]
+	g = pal[p + 1]
+	b = pal[p + 2]
+	draw.rectangle((x*iScale, y*iScale, x*iScale+iScale, y*iScale+iScale), fill=(r, g, b))
+	#### pixel debugging info. Very slow
+	iScale = 40
+	draw.text((x*iScale, y*iScale), str(color), (255,255,255), font=font) # add pal number white
+	draw.text((x*iScale, y*iScale+15), str(color), (0,0,0), font=font) # black
+	#### end pixel debugging info.
 
 def logUnknown(f):
 	f.seek(-8, 1)
@@ -133,7 +153,10 @@ def logUnknown(f):
 
 
 fnum = 0
-with open("resource.vol", "rb") as f:
+iScale = 5
+font = ImageFont.truetype("SQ3n001.ttf", 25)
+# "463" for testing. Default == "resource.vol"
+with open("463", "rb") as f:
 	while (byte := f.read(1)):
 		if (byte == b'\x74' and f.read(1) == b'\x65' and f.read(1) == b'\x78' and
 			f.read(1) == b'\x20' and f.read(1) == b'\x30' and f.read(1) == b'\x30' and 
@@ -155,11 +178,11 @@ with open("resource.vol", "rb") as f:
 			height = struct.unpack('<H', f.read(2))[0]
 			print("Width: " + str(width) + ", Height: " + str(height))
 			imgSize = width * height
-			im = Image.new('RGB', (width, height), (255, 255, 255))
+			im = Image.new('RGB', (width*iScale, height*iScale), (255, 255, 255))
 			draw = ImageDraw.Draw(im)
 			unknown2 = f.read(8)
 			print("Unknown 8 bytes @ 0x310: " + str(unknown2))
-			logUnknown(f) #debugging
+			#logUnknown(f) #debugging
 
 			#choose decode method
 			#decodeRLE(imgSize, width)
