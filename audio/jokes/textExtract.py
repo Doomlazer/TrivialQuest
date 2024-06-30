@@ -34,6 +34,19 @@ def exportPalImg():
 	s = "pal/" + str(fnum) + '_Pal.png'
 	im.save(s, quality=100)
 
+def check4OverRun(data):
+	l = len(data) - 1
+	while (l > 0):
+		pos += 1
+		if (data[l] == "t"):
+			if (len(data) > l + 7):
+				if (data[l+1] == "e" and data[l+2] == "x" and data[l+3] == " " and 
+					data[l+4] == "0" and data[l+5] == "0" and data[l+6] == "0" and 
+					data[l+7] == "1"):
+					#print("l: "+ str(l))
+					print("===DATA OVERRUN, matched tex 0 === at:" + str(pos))
+		l -= 1
+
 def decodeRLE(imgSize, width):
 	x = 0
 	y = 0
@@ -60,16 +73,7 @@ def decodeRLE(imgSize, width):
 				y += 1
 	#Print("decodeRLE image data:")
 	#print(data)
-	for d in data:
-		if (d == "t"):
-			print("Data+1: " + data[v+1])
-			print("Data+2: " + data[v+2])
-			v = data.index(d)
-			if (len(data) > v+7):
-				if (data[v+1] == "e" and data[v+2] == "x" and data[v+3] == " " and 
-					data[v+4] == "0" and data[v+5] == "0" and data[v+6] == "0" and 
-					data[v+7] == "1"):
-					print("===DATA OVERRUN, matched tex 0 === at:" + str(start + v))
+	#check4OverRun(data)
 
 
 def noDecoding(width, height):
@@ -91,17 +95,7 @@ def noDecoding(width, height):
 		y += 1
 	#print("noDecoding image data:")
 	#print(data)
-	l = len(data) - 1
-	while (l > 0):
-		pos += 1
-		if (data[l] == "t"):
-			if (len(data) > l + 7):
-				if (data[l+1] == "e" and data[l+2] == "x" and data[l+3] == " " and 
-					data[l+4] == "0" and data[l+5] == "0" and data[l+6] == "0" and 
-					data[l+7] == "1"):
-					print("l: "+ str(l))
-					print("===DATA OVERRUN, matched tex 0 === at:" + str(pos+l))
-		l -= 1
+	#check4OverRun(data)
 
 def logUnknown(f):
 	f.seek(-8, 1)
@@ -138,7 +132,7 @@ def logUnknown(f):
 	print("  bytes @ 0x310 as unsigned char: " + str(u2)+" "+str(u3)+" "+str(u4)+" "+str(u5)+" "+str(u6)+" "+str(u7)+" "+str(u8)+" "+str(u9))
 
 
-fnum = 1
+fnum = 0
 with open("resource.vol", "rb") as f:
 	while (byte := f.read(1)):
 		if (byte == b'\x74' and f.read(1) == b'\x65' and f.read(1) == b'\x78' and
