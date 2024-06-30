@@ -46,6 +46,25 @@ def check4OverRun(data):
 					print("===DATA OVERRUN, matched tex 0 === at:" + str(pos))
 		l -= 1
 
+def countConsecutive(data):
+	max = 0
+	p = 0
+	cur = 0
+	last = 0
+	i = len(data) - 1
+	while (i > 0):
+		if (data[i] == last):
+			cur += 1
+		else:
+			if (cur > max):
+				max = cur
+				p = last
+				print("string of " + str(max) + " " + str(p))
+			cur = 0
+		last = data[i]	
+		i -= 1
+	print(str(max) + " consecutive " + str(p) + " pixels in img data.")
+
 def decodeRLE(imgSize, width):
 	x = 0
 	y = 0
@@ -101,9 +120,11 @@ def noDecoding(width, height):
 				drawPixel(color,x,y)
 				x += 1
 		y += 1
+	countConsecutive(data)
 	#print("noDecoding image data:")
 	#print(data)
 	#check4OverRun(data)
+	
 
 def drawPixel(color, x, y):
 	p = color * 3
