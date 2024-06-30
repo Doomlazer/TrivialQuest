@@ -111,11 +111,9 @@ def drawPixel(color, x, y):
 	g = pal[p + 1]
 	b = pal[p + 2]
 	draw.rectangle((x*iScale, y*iScale, x*iScale+iScale, y*iScale+iScale), fill=(r, g, b))
-	#### pixel debugging info. Very slow
-	iScale = 40
+	# draw palette number on pixel. Very slow, debug only
 	draw.text((x*iScale, y*iScale), str(color), (255,255,255), font=font) # add pal number white
 	draw.text((x*iScale, y*iScale+15), str(color), (0,0,0), font=font) # black
-	#### end pixel debugging info.
 
 def logUnknown(f):
 	f.seek(-8, 1)
@@ -153,7 +151,7 @@ def logUnknown(f):
 
 
 fnum = 0
-iScale = 5
+iScale = 40 # large pixels for debugging, use 1 for fast processing
 font = ImageFont.truetype("SQ3n001.ttf", 25)
 # "463" for testing. Default == "resource.vol"
 with open("463", "rb") as f:
